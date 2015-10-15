@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.mojo.servicedocgen.its</groupId>
+  <artifactId>jaxrs-json-simple</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>servicedocgen-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptor>
+            <info>
+              <title>Demo Documentation</title>
+              <description>This is a showcase, example and integration test of the plugin.</description>
+            </info>
+            <host>my.service.com</host>
+            <port>8080</port>
+            <basePath>services/rest</basePath>
+            <schemes>
+              <scheme>http</scheme>
+            </schemes>
+            <javadocUrl>https://mojohaus.github.io/apidocs</javadocUrl>
+          </descriptor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>Apache Software Licenese</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <comments/>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <email>joerg.hohwiller@googlemail.com</email>
+      <name>Jörg Hohwiller</name>
+      <url>https://github.com/hohwille</url>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+  </dependencies>
+</project>
