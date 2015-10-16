@@ -230,7 +230,7 @@ li.operation div.heading {
   margin: 0;
   padding: 0;
 }
-li.operation div.heading h3 {
+div.heading h3 {
   display: block;
   clear: none;
   float: left;
@@ -240,17 +240,17 @@ li.operation div.heading h3 {
   line-height: 1.1em;
   color: black;
 }
-li.operation div.heading h3 span.path {
+.path {
   padding-left: 10px;
 }
-li.operation div.heading h3 span.path a {
+.path a {
   color: black;
   text-decoration: none;
 }
-li.operation div.heading h3 span.path a:hover {
+.path a:hover {
   text-decoration: underline;
 }
-li.operation div.heading h3 span.http_method a {
+.http_method a {
   text-transform: uppercase;
   text-decoration: none;
   color: white;
@@ -260,9 +260,15 @@ li.operation div.heading h3 span.http_method a {
   text-align: center;
   padding: 7px 0 4px;
 }
-li.operation div.heading h3 span {
+h3 span {
   margin: 0;
   padding: 0;
+}
+.code_method {
+
+    float: right;
+    padding: 0.4em;
+    line-height: 1.1em;
 }
 li.access {
   color: black;
@@ -452,6 +458,7 @@ h3 {
                       <span class="http_method"><a class="toggleOperation" onclick="toggle_visibility('$path.id')">$path.httpMethod</a></span>
                       <span class="path"><a class="toggleOperation" onclick="toggle_visibility('$path.id')">$service.basePath$path.path</a></span>
                     </h3>
+                    <div class="code_method">$path.javaByteMethod.name</div>
                   </div>
                   <div id="$path.id" class="content" style="display: none">
                     $path.description
@@ -475,8 +482,8 @@ h3 {
                         #foreach ($parameter in $path.parameters)
                         <tr>
                           <td>$parameter.name</td>
-                          <td>$parameter.in</td>
-                          <td>$esc.html($parameter.javaTypeString)</td>
+                          <td>$parameter.location</td>
+                          <td>$esc.html($parameter.javaByteType.toString())</td>
                           <td>$parameter.javaScriptType</td>
                           <td>
                             <div class="snippet">

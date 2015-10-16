@@ -134,6 +134,9 @@ public class GenerateMojo
     @Parameter( defaultValue = "Service-Documentation.html.vm" )
     private String templateName;
 
+    @Parameter( defaultValue = "${project.build.sourceEncoding}" )
+    private String sourceEncoding;
+
     private ClassLoader projectClassloader;
 
     private ReflectionUtil reflectionUtil;
@@ -159,13 +162,16 @@ public class GenerateMojo
         }
         if ( this.annotationUtil == null )
         {
-
             this.annotationUtil = AnnotationUtilImpl.getInstance();
         }
 
         this.classnamePattern = Pattern.compile( this.classnameRegex );
 
         JavaProjectBuilder builder = new JavaProjectBuilder();
+        if ( !isEmpty( this.sourceEncoding ) )
+        {
+            builder.setEncoding( this.sourceEncoding );
+        }
 
         try
         {
@@ -515,8 +521,6 @@ public class GenerateMojo
             this.reflectionUtil.createGenericType( byteParameter.getParameterizedType(),
                                                    serviceDescriptor.getJavaByteType() );
         parameterDescriptor.setJavaByteType( byteParameterType );
-        String javaTypeString = getJavaTypeString( byteParameterType );
-        parameterDescriptor.setJavaTypeString( javaTypeString );
         if ( sourceParameter == null )
         {
             parameterDescriptor.setName( byteParameter.getName() );
@@ -729,12 +733,6 @@ public class GenerateMojo
         return null;
     }
 
-    /**
-     * TODO: javadoc
-     *
-     * @param sourceDir
-     * @param builder
-     */
     private void scanJavaFilesRecursive( File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses )
         throws IOException
     {
@@ -777,9 +775,6 @@ public class GenerateMojo
         return false;
     }
 
-    /**
-     * @return the projectClassloader
-     */
     private ClassLoader getProjectClassloader()
         throws MojoExecutionException
     {

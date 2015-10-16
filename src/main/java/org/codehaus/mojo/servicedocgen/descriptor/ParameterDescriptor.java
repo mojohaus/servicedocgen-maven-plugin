@@ -41,8 +41,6 @@ public class ParameterDescriptor
 
     private GenericType<?> javaByteType;
 
-    private String javaTypeString;
-
     /**
      * @return the name
      */
@@ -163,22 +161,6 @@ public class ParameterDescriptor
     public void setJavaByteType( GenericType<?> javaType )
     {
         this.javaByteType = javaType;
-    }
-
-    /**
-     * @return the javaTypeString
-     */
-    public String getJavaTypeString()
-    {
-        return this.javaTypeString;
-    }
-
-    /**
-     * @param javaTypeString is the javaTypeString to set
-     */
-    public void setJavaTypeString( String javaTypeString )
-    {
-        this.javaTypeString = javaTypeString;
     }
 
 }
