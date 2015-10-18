@@ -84,6 +84,19 @@ public class JavaDocHelperTest
     }
 
     /**
+     * Test of {@link JavaDocHelperTest#testLinkNonArg() link tag to non-arg method}.
+     */
+    @Test
+    public void testLinkNonArg()
+    {
+        String parsedJavaDoc = parseMethodJavaDoc( "testLinkNonArg" );
+        String expected =
+            "Test of <code><a href='" + JAVADOC_URL + "/org/codehaus/mojo/servicedocgen/JavaDocHelperTest.html"
+                + "#testLinkNonArg--'>link tag to non-arg method</a></code>.";
+        assertThat( parsedJavaDoc ).isEqualTo( expected );
+    }
+
+    /**
      * Test of {@linkplain JavaDocHelper#parseJavaDoc(JavaClass, String)} with linkplain tag.
      */
     @Test
