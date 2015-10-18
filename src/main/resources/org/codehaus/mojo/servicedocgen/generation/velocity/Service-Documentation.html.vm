@@ -464,10 +464,6 @@ h3 {
                     $path.description
                     <h4>Parameters</h4>
                     <span>Content-Type:</span> $display.list($service.consumes)
-                    #if ($path.parameters.isEmpty())
-                    <br>
-                    No parameters
-                    #else
                     <table>
                       <thead>
                         <tr>
@@ -480,6 +476,16 @@ h3 {
                         </tr>
                       </thead>
                       <tbody>
+                        #if ($path.parameters.isEmpty())
+                        <tr>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>No parameters</td>
+                        </tr>
+                        #else
                         #foreach ($parameter in $path.parameters)
                         <tr>
                           <td>$parameter.name</td>
@@ -493,6 +499,7 @@ h3 {
                           </td>
                           <td>$parameter.description</td>
                         </tr>
+                        #end
                         #end
                       </tbody>
                     </table>
@@ -526,7 +533,6 @@ h3 {
                         #end
                       </tbody>
                     </table>
-                    #end
                   </div>
                 </li>
                 #end
