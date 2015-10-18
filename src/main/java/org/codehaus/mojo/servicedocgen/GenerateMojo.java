@@ -712,15 +712,14 @@ public class GenerateMojo
             if ( sourceMethod.getName().equals( byteMethod.getName() ) )
             {
                 List<JavaParameter> sourceParameters = sourceMethod.getParameters();
-                java.lang.reflect.Parameter[] byteParameters = byteMethod.getParameters();
+                Class<?>[] byteParameters = byteMethod.getParameterTypes();
                 if ( sourceParameters.size() == byteParameters.length )
                 {
                     for ( int i = 0; i < byteParameters.length; i++ )
                     {
-                        String byteName = byteParameters[i].getType().getName();
-                        String sourceName = sourceParameters.get( i ).getResolvedFullyQualifiedName();
-                        getLog().debug( "parameter name: " + byteName + " / " + sourceName );
-                        if ( !byteName.equals( sourceName ) )
+                        String byteTypeName = byteParameters[i].getName();
+                        String sourceTypeName = sourceParameters.get( i ).getType().getFullyQualifiedName();
+                        if ( !byteTypeName.equals( sourceTypeName ) )
                         {
                             return null;
                         }
