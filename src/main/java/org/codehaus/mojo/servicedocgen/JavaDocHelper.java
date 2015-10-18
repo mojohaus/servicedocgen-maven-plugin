@@ -447,18 +447,29 @@ public class JavaDocHelper
                     titleBuffer.append( comma );
                     String argType = scanner.readWhile( NO_COMMA_OR_CLOSING_BRACE ).trim();
                     elementSeparator = scanner.forceNext();
-                    if ( argType.contains( "." ) )
+                    if ( argType.isEmpty() )
                     {
-                        anchorBuffer.append( argType );
-                        titleBuffer.append( getSimpleName( argType ) );
+                        if ( elementSeparator == ')' )
+                        {
+                            anchorBuffer.append( '-' );
+                            break;
+                        }
                     }
                     else
                     {
-                        anchorBuffer.append( getQualifiedName( parentSource, argType ) );
-                        titleBuffer.append( argType );
+                        if ( argType.contains( "." ) )
+                        {
+                            anchorBuffer.append( argType );
+                            titleBuffer.append( getSimpleName( argType ) );
+                        }
+                        else
+                        {
+                            anchorBuffer.append( getQualifiedName( parentSource, argType ) );
+                            titleBuffer.append( argType );
+                        }
+                        anchorBuffer.append( '-' );
+                        comma = ", ";
                     }
-                    anchorBuffer.append( '-' );
-                    comma = ", ";
                 }
                 while ( elementSeparator == ',' );
                 titleBuffer.append( ')' );
