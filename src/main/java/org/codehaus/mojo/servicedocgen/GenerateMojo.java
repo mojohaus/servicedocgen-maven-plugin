@@ -454,7 +454,6 @@ public class GenerateMojo
     private void createParameters( ServiceDescriptor serviceDescriptor, Method method, Method byteMethod,
                                    PathDescriptor pathDescriptor, List<JavaParameter> sourceParameters )
     {
-        java.lang.reflect.Parameter[] byteParameters = method.getParameters();
         Type[] byteParameterTypes = method.getGenericParameterTypes();
         Annotation[][] byteParameterAnnotations = byteMethod.getParameterAnnotations();
         for ( int i = 0; i < byteParameterTypes.length; i++ )
@@ -466,7 +465,7 @@ public class GenerateMojo
             }
             ParameterDescriptor parameterDescriptor =
                 createParameterDescriptor( serviceDescriptor, pathDescriptor, byteMethod, sourceParameter,
-                                           byteParameterAnnotations[i], byteParameters[i] );
+                                           byteParameterAnnotations[i], byteParameterTypes[i] );
             pathDescriptor.getParameters().add( parameterDescriptor );
         }
     }
@@ -519,17 +518,15 @@ public class GenerateMojo
     private ParameterDescriptor createParameterDescriptor( ServiceDescriptor serviceDescriptor,
                                                            PathDescriptor pathDescriptor, Method byteMethod,
                                                            JavaParameter sourceParameter, Annotation[] byteAnnotations,
-                                                           java.lang.reflect.Parameter byteParameter )
+                                                           Type byteParameterType )
     {
         ParameterDescriptor parameterDescriptor = new ParameterDescriptor();
-        byteParameter.getParameterizedType();
-        GenericType<?> byteParameterType =
-            this.reflectionUtil.createGenericType( byteParameter.getParameterizedType(),
-                                                   serviceDescriptor.getJavaByteType() );
-        parameterDescriptor.setJavaByteType( byteParameterType );
+        GenericType<?> genericParameterType =
+            this.reflectionUtil.createGenericType( byteParameterType, serviceDescriptor.getJavaByteType() );
+        parameterDescriptor.setJavaByteType( genericParameterType );
         if ( sourceParameter == null )
         {
-            parameterDescriptor.setName( byteParameter.getName() );
+            parameterDescriptor.setName( "undefined" );
         }
         else
         {
@@ -596,7 +593,7 @@ public class GenerateMojo
         }
         parameterDescriptor.setLocation( location );
         parameterDescriptor.setRequired( required );
-        JavaScriptType javaScriptType = getJavaScriptType( byteParameterType.getAssignmentClass() );
+        JavaScriptType javaScriptType = getJavaScriptType( genericParameterType.getAssignmentClass() );
         parameterDescriptor.setJavaScriptType( javaScriptType.getName() );
         parameterDescriptor.setExample( javaScriptType.getExample() );
         return parameterDescriptor;
