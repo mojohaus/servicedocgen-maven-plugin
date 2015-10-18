@@ -143,14 +143,14 @@ public class GenerateMojo
 
     private AnnotationUtil annotationUtil;
 
+    private JavaDocHelper javaDocHelper;
+
     /**
      * {@inheritDoc}
      */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-
-        getLog().debug( "Hello World!" );
         if ( this.project.getParent() != null )
         {
             getLog().debug( "" + this.project.getParent().getBasedir() );
@@ -176,8 +176,10 @@ public class GenerateMojo
         try
         {
             List<JavaClass> serviceClasses = scanServices( builder );
+            this.javaDocHelper = new JavaDocHelper( getProjectClassloader(), builder, this.descriptor.getJavadocs() );
             ServicesDescriptor services = createServicesDescriptor( serviceClasses );
 
+            getLog().info( "Generating output..." );
             ServicesGenerator generator =
                 new VelocityServicesGenerator( appendPath( this.templatePath, this.templateName ) );
             boolean ok = this.outputDirectory.mkdirs();
@@ -200,7 +202,6 @@ public class GenerateMojo
         for ( String sourceDir : this.project.getCompileSourceRoots() )
         {
             File sourceFolder = new File( sourceDir );
-            getLog().debug( sourceFolder.getAbsolutePath() );
             builder.addSourceFolder( sourceFolder );
             if ( this.serviceClassName == null )
             {
@@ -258,41 +259,41 @@ public class GenerateMojo
         ContactDescriptor contact = info.getContact();
         if ( contact == null )
         {
-            List<Developer> developers = this.project.getDevelopers();
-            if ( ( developers != null ) && ( !developers.isEmpty() ) )
+            Organization organization = this.project.getOrganization();
+            if ( organization != null )
             {
                 contact = new ContactDescriptor();
-                Developer developer = developers.get( 0 );
-                contact.setUrl( getTrimmed( developer.getUrl() ) );
-                contact.setEmail( getTrimmed( developer.getEmail() ) );
-                contact.setName( getTrimmed( developer.getName() ) );
+                contact.setUrl( organization.getUrl() );
+                contact.setName( organization.getName() );
                 info.setContact( contact );
             }
             else
             {
-                Organization organization = this.project.getOrganization();
-                if ( organization == null )
-                {
-                    String url = getTrimmed( this.project.getUrl() );
-                    if ( !url.isEmpty() )
-                    {
-                        contact = new ContactDescriptor();
-                        contact.setUrl( url );
-                        String name = getTrimmed( this.project.getName() );
-                        if ( name.isEmpty() )
-                        {
-                            name = getTrimmed( this.project.getArtifactId() );
-                        }
-                        contact.setName( name );
-                        info.setContact( contact );
-                    }
-                }
-                else if ( organization != null )
+                String url = getTrimmed( this.project.getUrl() );
+                if ( !url.isEmpty() )
                 {
                     contact = new ContactDescriptor();
-                    contact.setUrl( organization.getUrl() );
-                    contact.setName( organization.getName() );
+                    contact.setUrl( url );
+                    String name = getTrimmed( this.project.getName() );
+                    if ( name.isEmpty() )
+                    {
+                        name = getTrimmed( this.project.getArtifactId() );
+                    }
+                    contact.setName( name );
                     info.setContact( contact );
+                }
+                else
+                {
+                    List<Developer> developers = this.project.getDevelopers();
+                    if ( ( developers != null ) && ( !developers.isEmpty() ) )
+                    {
+                        contact = new ContactDescriptor();
+                        Developer developer = developers.get( 0 );
+                        contact.setUrl( getTrimmed( developer.getUrl() ) );
+                        contact.setEmail( getTrimmed( developer.getEmail() ) );
+                        contact.setName( getTrimmed( developer.getName() ) );
+                        info.setContact( contact );
+                    }
                 }
             }
         }
@@ -335,28 +336,31 @@ public class GenerateMojo
     private ServiceDescriptor createServiceDescriptor( JavaClass sourceClass, ServicesDescriptor servicesDescriptor )
         throws Exception
     {
-        getLog().debug( "Generating: " + sourceClass.getFullyQualifiedName() );
+        getLog().info( "Analyzing " + sourceClass.getName() );
         ServiceDescriptor serviceDescriptor = new ServiceDescriptor();
         serviceDescriptor.setJavaSourceType( sourceClass );
         serviceDescriptor.setName( sourceClass.getName() );
-        serviceDescriptor.setDescription( sourceClass.getComment() );
         Class<?> byteClass = getProjectClassloader().loadClass( sourceClass.getFullyQualifiedName() );
         Path serviceBasePath = byteClass.getAnnotation( Path.class );
         if ( serviceBasePath != null )
         {
             serviceDescriptor.setBasePath( serviceBasePath.value() );
         }
+        GenericType<?> byteType = this.reflectionUtil.createGenericType( byteClass );
+        serviceDescriptor.setJavaByteType( byteType );
+        serviceDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( sourceClass, byteType,
+                                                                           sourceClass.getComment() ) );
         Consumes consumes = this.annotationUtil.getClassAnnotation( byteClass, Consumes.class );
         addConsumes( serviceDescriptor.getConsumes(), consumes );
         Produces produces = this.annotationUtil.getClassAnnotation( byteClass, Produces.class );
         addProduces( serviceDescriptor.getProduces(), produces );
-        GenericType<?> byteType = this.reflectionUtil.createGenericType( byteClass );
-        serviceDescriptor.setJavaByteType( byteType );
         for ( Method byteMethod : byteClass.getMethods() )
         {
+            getLog().debug( "Analyzing method " + byteMethod.toString() );
             PathDescriptor pathDescriptor = createPathDescriptor( serviceDescriptor, byteMethod );
             if ( pathDescriptor != null )
             {
+                getLog().debug( "Method has been detected as service operation." );
                 serviceDescriptor.getPaths().add( pathDescriptor );
             }
         }
@@ -412,7 +416,9 @@ public class GenerateMojo
         List<JavaParameter> sourceParameters = null;
         if ( sourceMethod != null )
         {
-            pathDescriptor.setDescription( sourceMethod.getComment() );
+            pathDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
+                                                                            serviceDescriptor.getJavaByteType(),
+                                                                            sourceMethod.getComment() ) );
             sourceParameters = sourceMethod.getParameters();
         }
         else
@@ -429,14 +435,12 @@ public class GenerateMojo
         {
             consumes.addAll( serviceDescriptor.getConsumes() );
         }
-        getLog().debug( consumes.toString() );
         Set<String> produces = pathDescriptor.getProduces();
         addProduces( produces, byteMethod.getAnnotation( Produces.class ) );
         if ( produces.isEmpty() )
         {
             produces.addAll( serviceDescriptor.getProduces() );
         }
-        getLog().debug( produces.toString() );
 
         pathDescriptor.setHttpMethod( createHttpMethodDescriptor( serviceDescriptor.getJavaSourceType(), byteMethod ) );
 
@@ -503,7 +507,9 @@ public class GenerateMojo
         responseSuccess.setReason( "Success" );
         responseSuccess.setJavaByteType( byteReturnType );
         responseSuccess.setJavaSourceType( javaSourceType );
-        responseSuccess.setDescription( description );
+        responseSuccess.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
+                                                                         serviceDescriptor.getJavaByteType(),
+                                                                         description ) );
         JavaScriptType javaScriptType = getJavaScriptType( byteReturnType.getAssignmentClass() );
         responseSuccess.setJavaScriptType( javaScriptType.getName() );
         responseSuccess.setExample( javaScriptType.getExample() );
@@ -541,7 +547,9 @@ public class GenerateMojo
                     }
                 }
             }
-            parameterDescriptor.setDescription( comment );
+            parameterDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
+                                                                                 serviceDescriptor.getJavaByteType(),
+                                                                                 comment ) );
         }
         String location = Descriptor.LOCATION_BODY;
         boolean required = false;
@@ -684,7 +692,6 @@ public class GenerateMojo
         for ( String mimeType : consumes.value() )
         {
             set.add( mimeType );
-            getLog().info( "added " + mimeType );
         }
     }
 
@@ -698,7 +705,6 @@ public class GenerateMojo
         for ( String mimeType : produces.value() )
         {
             set.add( mimeType );
-            getLog().info( "added " + mimeType );
         }
     }
 
@@ -706,16 +712,12 @@ public class GenerateMojo
     {
         for ( JavaMethod sourceMethod : sourceClass.getMethods() )
         {
-            getLog().debug( "Scanning method " + sourceMethod.toString() );
-            getLog().debug( "method name: " + sourceMethod.getName() + " / " + byteMethod.getName() );
             if ( sourceMethod.getName().equals( byteMethod.getName() ) )
             {
-                getLog().debug( "method name matches" );
                 List<JavaParameter> sourceParameters = sourceMethod.getParameters();
                 java.lang.reflect.Parameter[] byteParameters = byteMethod.getParameters();
                 if ( sourceParameters.size() == byteParameters.length )
                 {
-                    getLog().debug( "parameter size matches" );
                     for ( int i = 0; i < byteParameters.length; i++ )
                     {
                         String byteName = byteParameters[i].getType().getName();
@@ -793,7 +795,6 @@ public class GenerateMojo
         {
             try
             {
-                getLog().info( element );
                 urls.add( new File( element ).toURI().toURL() );
             }
             catch ( MalformedURLException e )

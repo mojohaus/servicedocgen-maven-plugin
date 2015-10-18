@@ -32,7 +32,11 @@
             <schemes>
               <scheme>http</scheme>
             </schemes>
-            <javadocUrl>https://mojohaus.github.io/apidocs</javadocUrl>
+            <javadocs>
+              <javadoc>
+                <url>https://mojohaus.github.io/apidocs</url>
+              </javadoc>
+            </javadocs>
           </descriptor>
         </configuration>
       </plugin>

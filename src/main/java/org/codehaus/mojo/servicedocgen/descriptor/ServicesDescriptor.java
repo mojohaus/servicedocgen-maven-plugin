@@ -41,7 +41,7 @@ public class ServicesDescriptor
 
     private String basePath;
 
-    private String javadocUrl;
+    private List<JavaDocDescriptor> javadocs;
 
     private Set<String> schemes;
 
@@ -130,19 +130,23 @@ public class ServicesDescriptor
     }
 
     /**
-     * @return the javadocUrl
+     * @return the javadocs
      */
-    public String getJavadocUrl()
+    public List<JavaDocDescriptor> getJavadocs()
     {
-        return this.javadocUrl;
+        if ( this.javadocs == null )
+        {
+            this.javadocs = new ArrayList<JavaDocDescriptor>();
+        }
+        return this.javadocs;
     }
 
     /**
-     * @param javadocUrl is the javadocUrl to set
+     * @param javadocs is the javadocs to set
      */
-    public void setJavadocUrl( String javadocUrl )
+    public void setJavadocs( List<JavaDocDescriptor> javadocs )
     {
-        this.javadocUrl = javadocUrl;
+        this.javadocs = javadocs;
     }
 
     /**
