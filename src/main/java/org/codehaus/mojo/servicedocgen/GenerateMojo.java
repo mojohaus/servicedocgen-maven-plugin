@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -184,10 +185,13 @@ public class GenerateMojo
             getLog().info( "Generating output..." );
             ServicesGenerator generator =
                 new VelocityServicesGenerator( appendPath( this.templatePath, this.templateName ) );
-            boolean ok = this.outputDirectory.mkdirs();
-            if ( !ok )
+            if ( !this.outputDirectory.isDirectory() )
             {
-                throw new MojoExecutionException( "Could not create directory " + this.outputDirectory );
+                boolean ok = this.outputDirectory.mkdirs();
+                if ( !ok )
+                {
+                    throw new MojoExecutionException( "Could not create directory " + this.outputDirectory );
+                }
             }
             generator.generate( services, this.outputDirectory );
         }
@@ -352,9 +356,9 @@ public class GenerateMojo
         serviceDescriptor.setJavaByteType( byteType );
         serviceDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( sourceClass, byteType,
                                                                            sourceClass.getComment() ) );
-        Consumes consumes = this.annotationUtil.getClassAnnotation( byteClass, Consumes.class );
+        Consumes consumes = this.annotationUtil.getTypeAnnotation( byteClass, Consumes.class );
         addConsumes( serviceDescriptor.getConsumes(), consumes );
-        Produces produces = this.annotationUtil.getClassAnnotation( byteClass, Produces.class );
+        Produces produces = this.annotationUtil.getTypeAnnotation( byteClass, Produces.class );
         addProduces( serviceDescriptor.getProduces(), produces );
         for ( Method byteMethod : byteClass.getMethods() )
         {
@@ -468,7 +472,10 @@ public class GenerateMojo
             ParameterDescriptor parameterDescriptor =
                 createParameterDescriptor( serviceDescriptor, pathDescriptor, byteMethod, sourceParameter,
                                            byteParameterAnnotations[i], byteParameterTypes[i] );
-            pathDescriptor.getParameters().add( parameterDescriptor );
+            if ( parameterDescriptor != null )
+            {
+                pathDescriptor.getParameters().add( parameterDescriptor );
+            }
         }
     }
 
@@ -487,34 +494,35 @@ public class GenerateMojo
             }
         }
         ResponseDescriptor responseSuccess =
-            createResponseDescriptor( serviceDescriptor, method.getGenericReturnType(), javaSourceType, description );
+            createResponseDescriptor( serviceDescriptor, method.getGenericReturnType(), javaSourceType, "Success",
+                                      description );
         pathDescriptor.getResponses().add( responseSuccess );
     }
 
     private ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor, Type type,
-                                                         JavaClass javaSourceType, String description )
+                                                         JavaClass javaSourceType, String reason, String description )
     {
-        ResponseDescriptor responseSuccess = new ResponseDescriptor();
+        ResponseDescriptor response = new ResponseDescriptor();
         GenericType<?> byteReturnType =
             this.reflectionUtil.createGenericType( type, serviceDescriptor.getJavaByteType() );
         if ( byteReturnType.getRetrievalClass() == void.class )
         {
-            responseSuccess.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
+            response.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
+            response.setDescription( "No content" );
         }
         else
         {
-            responseSuccess.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
+            response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
+            response.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
+                                                                      serviceDescriptor.getJavaByteType(), description ) );
         }
-        responseSuccess.setReason( "Success" );
-        responseSuccess.setJavaByteType( byteReturnType );
-        responseSuccess.setJavaSourceType( javaSourceType );
-        responseSuccess.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
-                                                                         serviceDescriptor.getJavaByteType(),
-                                                                         description ) );
+        response.setReason( reason );
+        response.setJavaByteType( byteReturnType );
+        response.setJavaSourceType( javaSourceType );
         JavaScriptType javaScriptType = getJavaScriptType( byteReturnType.getAssignmentClass() );
-        responseSuccess.setJavaScriptType( javaScriptType.getName() );
-        responseSuccess.setExample( javaScriptType.getExample() );
-        return responseSuccess;
+        response.setJavaScriptType( javaScriptType.getName() );
+        response.setExample( javaScriptType.getExample() );
+        return response;
     }
 
     private ParameterDescriptor createParameterDescriptor( ServiceDescriptor serviceDescriptor,
@@ -595,6 +603,12 @@ public class GenerateMojo
                     return null;
                 }
             }
+            else if ( annotation instanceof DefaultValue )
+            {
+                DefaultValue defaultValue = (DefaultValue) annotation;
+                parameterDescriptor.setDefaultValue( defaultValue.value() );
+                ;
+            }
             else if ( annotation instanceof NotNull )
             {
                 required = true;
@@ -610,22 +624,6 @@ public class GenerateMojo
         parameterDescriptor.setJavaScriptType( javaScriptType.getName() );
         parameterDescriptor.setExample( javaScriptType.getExample() );
         return parameterDescriptor;
-    }
-
-    private String getJavaTypeString( GenericType<?> byteParameterType )
-    {
-        // final StringBuilder buffer = new StringBuilder();
-        // Visitor<Class<?>> classFormatter = new Visitor<Class<?>>()
-        // {
-        // public void visit( Class<?> value )
-        // {
-        // buffer.append( value.getSimpleName() );
-        // }
-        // };
-        // this.reflectionUtil.toString( byteParameterType, buffer, classFormatter );
-        // String javaTypeString = buffer.toString();
-        // return javaTypeString;
-        return this.reflectionUtil.toString( byteParameterType );
     }
 
     private JavaScriptType getJavaScriptType( Class<?> clazz )
@@ -650,6 +648,10 @@ public class GenerateMojo
         else if ( Boolean.class.equals( byteClass ) )
         {
             return JavaScriptType.BOOLEAN;
+        }
+        else if ( Void.class.isAssignableFrom( byteClass ) )
+        {
+            return JavaScriptType.VOID;
         }
         else if ( CharSequence.class.isAssignableFrom( byteClass ) )
         {

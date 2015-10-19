@@ -35,6 +35,8 @@ public class ParameterDescriptor
 
     private String example;
 
+    private String defaultValue;
+
     private boolean required;
 
     private String javaScriptType;
@@ -113,6 +115,22 @@ public class ParameterDescriptor
     public void setExample( String example )
     {
         this.example = example;
+    }
+
+    /**
+     * @return the defaultValue
+     */
+    public String getDefaultValue()
+    {
+        return this.defaultValue;
+    }
+
+    /**
+     * @param defaultValue is the defaultValue to set
+     */
+    public void setDefaultValue( String defaultValue )
+    {
+        this.defaultValue = defaultValue;
     }
 
     /**

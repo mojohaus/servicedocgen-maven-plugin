@@ -34,6 +34,8 @@ public enum JavaScriptType
 
     STRING( "string", "'foo'" ),
 
+    VOID( "-", "" ),
+
     OBJECT( "object", "{...}" );
 
     private final String name;
