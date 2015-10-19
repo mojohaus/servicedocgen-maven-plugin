@@ -44,7 +44,7 @@ import com.thoughtworks.qdox.model.JavaSource;
 /**
  * Helper to parse JavaDoc tags and transform to regular HTML.
  *
- * @see #parseJavaDoc(JavaClass, String)
+ * @see #parseJavaDoc(JavaClass, GenericType, String)
  * @author hohwille
  */
 public class JavaDocHelper
@@ -54,8 +54,7 @@ public class JavaDocHelper
 
     private static final String CODE_END = "</code>";
 
-    private static final Pattern PATTERN_JAVADOC_TAG =
-        Pattern.compile( "\\{@([a-zA-Z]+) ([^}]*)\\}", Pattern.MULTILINE );
+    private static final Pattern PATTERN_JAVADOC_TAG = Pattern.compile( "\\{@([a-zA-Z]+) ([^}]*)\\}" );
 
     private static final String TAG_LINK = "link";
 
@@ -261,12 +260,13 @@ public class JavaDocHelper
         return packageName + "." + simpleName;
     }
 
-    public String parseJavaDoc( JavaClass sourceClass, GenericType<?> byteClass, String javadoc )
+    public String parseJavaDoc( JavaClass sourceClass, GenericType<?> byteClass, String jdoc )
     {
-        if ( ( javadoc == null ) || javadoc.isEmpty() )
+        if ( ( jdoc == null ) || jdoc.isEmpty() )
         {
             return "";
         }
+        String javadoc = jdoc.trim().replace( "\n", " " ).replace( "\r", "" );
         Matcher matcher = PATTERN_JAVADOC_TAG.matcher( javadoc );
         StringBuffer buffer = new StringBuffer();
         while ( matcher.find() )

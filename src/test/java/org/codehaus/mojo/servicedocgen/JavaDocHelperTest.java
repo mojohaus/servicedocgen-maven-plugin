@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.core.UriInfo;
+
 import net.sf.mmm.util.reflect.api.GenericType;
 import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
 
@@ -70,16 +72,31 @@ public class JavaDocHelperTest
     }
 
     /**
-     * Test of {@link JavaDocHelper#parseJavaDoc(JavaClass, String)} with link tag.
+     * Test of {@link JavaDocHelper#parseJavaDoc(JavaClass, net.sf.mmm.util.reflect.api.GenericType, String)} with link
+     * tag.
      */
     @Test
     public void testLink()
     {
         String parsedJavaDoc = parseMethodJavaDoc( "testLink" );
         String expected =
-            "Test of <code><a href='" + JAVADOC_URL + "/org/codehaus/mojo/servicedocgen/JavaDocHelper.html"
-                + "#parseJavaDoc-com.thoughtworks.qdox.model.JavaClass-java.lang.String-'>"
-                + "JavaDocHelper.parseJavaDoc(JavaClass, String)</a></code> with link tag.";
+            "Test of <code><a href='"
+                + JAVADOC_URL
+                + "/org/codehaus/mojo/servicedocgen/JavaDocHelper.html"
+                + "#parseJavaDoc-com.thoughtworks.qdox.model.JavaClass-net.sf.mmm.util.reflect.api.GenericType-java.lang.String-'>"
+                + "JavaDocHelper.parseJavaDoc(JavaClass, GenericType, String)</a></code> with link tag.";
+        assertThat( parsedJavaDoc ).isEqualTo( expected );
+    }
+
+    /**
+     * Test of {@link UriInfo link tag to JEE class}.
+     */
+    public void testLinkJeeClass()
+    {
+        String parsedJavaDoc = parseMethodJavaDoc( "testLinkJeeClass" );
+        String expected =
+            "Test of <code><a href='" + JavaDocHelper.JAVADOC_JAVAEE_URL + "/javax/ws/rs/core/UriInfo.html'>"
+                + "link tag to JEE class</a></code>.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
     }
 
