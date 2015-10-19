@@ -48,6 +48,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import net.sf.mmm.util.math.api.NumberType;
 import net.sf.mmm.util.math.base.MathUtilImpl;
@@ -581,6 +583,17 @@ public class GenerateMojo
                 CookieParam cookieParam = (CookieParam) annotation;
                 location = Descriptor.LOCATION_COOKIE;
                 parameterDescriptor.setName( cookieParam.value() );
+            }
+            else if ( annotation instanceof Context )
+            {
+                if ( UriInfo.class.isAssignableFrom( genericParameterType.getAssignmentClass() ) )
+                {
+                    location = "query/path";
+                }
+                else
+                {
+                    return null;
+                }
             }
             else if ( annotation instanceof NotNull )
             {
