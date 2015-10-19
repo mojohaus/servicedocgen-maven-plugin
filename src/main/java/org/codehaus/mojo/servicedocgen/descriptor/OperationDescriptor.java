@@ -18,20 +18,22 @@
  */
 package org.codehaus.mojo.servicedocgen.descriptor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.qdox.model.JavaMethod;
+import org.codehaus.mojo.servicedocgen.introspection.JMethod;
 
 /**
+ * {@link Descriptor} of an operation of a {@link ServiceDescriptor service}.
+ *
+ * @see ServiceDescriptor#getOperations()
  * @author hohwille
  */
-public class PathDescriptor
+public class OperationDescriptor
     extends AbstractDescriptor
-    implements Comparable<PathDescriptor>
+    implements Comparable<OperationDescriptor>
 {
 
     private String id;
@@ -52,9 +54,7 @@ public class PathDescriptor
 
     private List<ResponseDescriptor> responses;
 
-    private Method javaByteMethod;
-
-    private JavaMethod javaSourceMethod;
+    private JMethod javaMethod;
 
     /**
      * @return the id
@@ -224,41 +224,25 @@ public class PathDescriptor
     }
 
     /**
-     * @return the method
+     * @return the javaMethod
      */
-    public Method getJavaByteMethod()
+    public JMethod getJavaMethod()
     {
-        return this.javaByteMethod;
+        return this.javaMethod;
     }
 
     /**
-     * @param method is the method to set
+     * @param javaMethod is the javaMethod to set
      */
-    public void setJavaByteMethod( Method method )
+    public void setJavaMethod( JMethod javaMethod )
     {
-        this.javaByteMethod = method;
-    }
-
-    /**
-     * @return the javaSourceMethod
-     */
-    public JavaMethod getJavaSourceMethod()
-    {
-        return this.javaSourceMethod;
-    }
-
-    /**
-     * @param javaSourceMethod is the javaSourceMethod to set
-     */
-    public void setJavaSourceMethod( JavaMethod javaSourceMethod )
-    {
-        this.javaSourceMethod = javaSourceMethod;
+        this.javaMethod = javaMethod;
     }
 
     /**
      * {@inheritDoc}
      */
-    public int compareTo( PathDescriptor o )
+    public int compareTo( OperationDescriptor o )
     {
         if ( o == null )
         {

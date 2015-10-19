@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -71,27 +70,41 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.servicedocgen.descriptor.ContactDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.Descriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.InfoDescriptor;
-import org.codehaus.mojo.servicedocgen.descriptor.InfoDescriptor.ContactDescriptor;
-import org.codehaus.mojo.servicedocgen.descriptor.InfoDescriptor.LicenseDescriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.LicenseDescriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ParameterDescriptor;
-import org.codehaus.mojo.servicedocgen.descriptor.PathDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ResponseDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServiceDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGenerator;
+import org.codehaus.mojo.servicedocgen.introspection.JElement;
+import org.codehaus.mojo.servicedocgen.introspection.JException;
+import org.codehaus.mojo.servicedocgen.introspection.JMethod;
+import org.codehaus.mojo.servicedocgen.introspection.JParameter;
+import org.codehaus.mojo.servicedocgen.introspection.JType;
+import org.codehaus.mojo.servicedocgen.introspection.JavaDocHelper;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaAnnotation;
 import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaMethod;
-import com.thoughtworks.qdox.model.JavaParameter;
 import com.thoughtworks.qdox.model.JavaSource;
 
 /**
+ * {@link AbstractMojo Maven Plugin} to automatically generate documentation for services of the current project.
+ * <ol>
+ * <li>Scans the current projects source code for (JAX-RS annotated) services that match the RegEx configured by
+ * <code>classnameRegex</code>.</li>
+ * <li>Analyzes the services from source-code (extract JavaDoc, etc.) and byte-code (resolve generic parameters, etc.)
+ * and create intermediate meta-data as {@link ServicesDescriptor}.</li>
+ * <li>Generates documentation from the collected meta-data (by default as HTML from a velocity template shipped with
+ * this plugin but can be overridden via configuration parameters).</li>
+ * </ol>
+ * scan and analyze services from the current project via source-code and byte-code analysis. Creates
+ *
  * @author hohwille
  */
 @Mojo( name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
@@ -171,7 +184,7 @@ public class GenerateMojo
         this.classnamePattern = Pattern.compile( this.classnameRegex );
 
         JavaProjectBuilder builder = new JavaProjectBuilder();
-        if ( !isEmpty( this.sourceEncoding ) )
+        if ( !Util.isEmpty( this.sourceEncoding ) )
         {
             builder.setEncoding( this.sourceEncoding );
         }
@@ -184,7 +197,7 @@ public class GenerateMojo
 
             getLog().info( "Generating output..." );
             ServicesGenerator generator =
-                new VelocityServicesGenerator( appendPath( this.templatePath, this.templateName ) );
+                new VelocityServicesGenerator( Util.appendPath( this.templatePath, this.templateName ) );
             if ( !this.outputDirectory.isDirectory() )
             {
                 boolean ok = this.outputDirectory.mkdirs();
@@ -275,15 +288,15 @@ public class GenerateMojo
             }
             else
             {
-                String url = getTrimmed( this.project.getUrl() );
+                String url = Util.getTrimmed( this.project.getUrl() );
                 if ( !url.isEmpty() )
                 {
                     contact = new ContactDescriptor();
                     contact.setUrl( url );
-                    String name = getTrimmed( this.project.getName() );
+                    String name = Util.getTrimmed( this.project.getName() );
                     if ( name.isEmpty() )
                     {
-                        name = getTrimmed( this.project.getArtifactId() );
+                        name = Util.getTrimmed( this.project.getArtifactId() );
                     }
                     contact.setName( name );
                     info.setContact( contact );
@@ -295,9 +308,9 @@ public class GenerateMojo
                     {
                         contact = new ContactDescriptor();
                         Developer developer = developers.get( 0 );
-                        contact.setUrl( getTrimmed( developer.getUrl() ) );
-                        contact.setEmail( getTrimmed( developer.getEmail() ) );
-                        contact.setName( getTrimmed( developer.getName() ) );
+                        contact.setUrl( Util.getTrimmed( developer.getUrl() ) );
+                        contact.setEmail( Util.getTrimmed( developer.getEmail() ) );
+                        contact.setName( Util.getTrimmed( developer.getName() ) );
                         info.setContact( contact );
                     }
                 }
@@ -319,43 +332,22 @@ public class GenerateMojo
         return info;
     }
 
-    private String getTrimmed( String value )
-    {
-
-        if ( value == null )
-        {
-            return "";
-        }
-        return value.trim();
-    }
-
-    private boolean isEmpty( String value )
-    {
-
-        if ( value == null )
-        {
-            return true;
-        }
-        return value.isEmpty();
-    }
-
-    private ServiceDescriptor createServiceDescriptor( JavaClass sourceClass, ServicesDescriptor servicesDescriptor )
+    private ServiceDescriptor createServiceDescriptor( JavaClass sourceType, ServicesDescriptor servicesDescriptor )
         throws Exception
     {
-        getLog().info( "Analyzing " + sourceClass.getName() );
+        getLog().info( "Analyzing " + sourceType.getName() );
         ServiceDescriptor serviceDescriptor = new ServiceDescriptor();
-        serviceDescriptor.setJavaSourceType( sourceClass );
-        serviceDescriptor.setName( sourceClass.getName() );
-        Class<?> byteClass = getProjectClassloader().loadClass( sourceClass.getFullyQualifiedName() );
+        serviceDescriptor.setName( sourceType.getName() );
+        Class<?> byteClass = getProjectClassloader().loadClass( sourceType.getFullyQualifiedName() );
         Path serviceBasePath = byteClass.getAnnotation( Path.class );
         if ( serviceBasePath != null )
         {
             serviceDescriptor.setBasePath( serviceBasePath.value() );
         }
         GenericType<?> byteType = this.reflectionUtil.createGenericType( byteClass );
-        serviceDescriptor.setJavaByteType( byteType );
-        serviceDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( sourceClass, byteType,
-                                                                           sourceClass.getComment() ) );
+        serviceDescriptor.setJavaType( new JType( byteType, sourceType, this.reflectionUtil, this.javaDocHelper ) );
+        serviceDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( sourceType, byteType,
+                                                                           sourceType.getComment() ) );
         Consumes consumes = this.annotationUtil.getTypeAnnotation( byteClass, Consumes.class );
         addConsumes( serviceDescriptor.getConsumes(), consumes );
         Produces produces = this.annotationUtil.getTypeAnnotation( byteClass, Produces.class );
@@ -363,45 +355,28 @@ public class GenerateMojo
         for ( Method byteMethod : byteClass.getMethods() )
         {
             getLog().debug( "Analyzing method " + byteMethod.toString() );
-            PathDescriptor pathDescriptor = createPathDescriptor( serviceDescriptor, byteMethod );
-            if ( pathDescriptor != null )
+            OperationDescriptor operationDescriptor = createOperationDescriptor( serviceDescriptor, byteMethod );
+            if ( operationDescriptor != null )
             {
                 getLog().debug( "Method has been detected as service operation." );
-                serviceDescriptor.getPaths().add( pathDescriptor );
+                serviceDescriptor.getOperations().add( operationDescriptor );
             }
         }
-        Collections.sort( serviceDescriptor.getPaths() );
+        Collections.sort( serviceDescriptor.getOperations() );
         return serviceDescriptor;
     }
 
-    private String appendPath( String pathPrefix, String path )
+    private OperationDescriptor createOperationDescriptor( ServiceDescriptor serviceDescriptor, Method byteMethod )
     {
-
-        if ( ( pathPrefix == null ) || ( pathPrefix.isEmpty() ) )
-        {
-            return path;
-        }
-        if ( pathPrefix.endsWith( "/" ) )
-        {
-            return pathPrefix + path;
-        }
-        else
-        {
-            return pathPrefix + "/" + path;
-        }
-    }
-
-    private PathDescriptor createPathDescriptor( ServiceDescriptor serviceDescriptor, Method method )
-    {
-        Method byteMethod = method;
+        Method annotatedParentMethod = byteMethod;
         Path methodPath = null;
         do
         {
-            methodPath = byteMethod.getAnnotation( Path.class );
+            methodPath = annotatedParentMethod.getAnnotation( Path.class );
             if ( methodPath == null )
             {
-                byteMethod = this.reflectionUtil.getParentMethod( byteMethod );
-                if ( byteMethod == null )
+                annotatedParentMethod = this.reflectionUtil.getParentMethod( annotatedParentMethod );
+                if ( annotatedParentMethod == null )
                 {
                     return null;
                 }
@@ -409,158 +384,67 @@ public class GenerateMojo
         }
         while ( methodPath == null );
 
-        PathDescriptor pathDescriptor = new PathDescriptor();
-        pathDescriptor.setPath( methodPath.value() );
+        OperationDescriptor operationDescriptor = new OperationDescriptor();
+        operationDescriptor.setPath( methodPath.value() );
 
-        if ( this.annotationUtil.getMethodAnnotation( method, Deprecated.class ) != null )
+        if ( this.annotationUtil.getMethodAnnotation( byteMethod, Deprecated.class ) != null )
         {
-            pathDescriptor.setDeprecated( true );
+            operationDescriptor.setDeprecated( true );
         }
-        pathDescriptor.setJavaByteMethod( method );
-        JavaMethod sourceMethod = findSourceMethod( serviceDescriptor.getJavaSourceType(), byteMethod );
-        pathDescriptor.setJavaSourceMethod( sourceMethod );
-        List<JavaParameter> sourceParameters = null;
-        if ( sourceMethod != null )
-        {
-            pathDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
-                                                                            serviceDescriptor.getJavaByteType(),
-                                                                            sourceMethod.getComment() ) );
-            sourceParameters = sourceMethod.getParameters();
-        }
-        else
-        {
-            getLog().warn( "Could not find source of method " + byteMethod.toGenericString() );
-        }
+        JMethod method = new JMethod( byteMethod, serviceDescriptor.getJavaType(), annotatedParentMethod );
+        operationDescriptor.setJavaMethod( method );
+        operationDescriptor.setDescription( method.getComment() );
 
-        // OperationDescriptor operationDescriptor =
-        // createOperationDescriptor( byteType, sourceClass, serviceDescriptor, method, byteMethod );
-
-        Set<String> consumes = pathDescriptor.getConsumes();
-        addConsumes( consumes, byteMethod.getAnnotation( Consumes.class ) );
+        Set<String> consumes = operationDescriptor.getConsumes();
+        addConsumes( consumes, annotatedParentMethod.getAnnotation( Consumes.class ) );
         if ( consumes.isEmpty() )
         {
             consumes.addAll( serviceDescriptor.getConsumes() );
         }
-        Set<String> produces = pathDescriptor.getProduces();
-        addProduces( produces, byteMethod.getAnnotation( Produces.class ) );
+        Set<String> produces = operationDescriptor.getProduces();
+        addProduces( produces, annotatedParentMethod.getAnnotation( Produces.class ) );
         if ( produces.isEmpty() )
         {
             produces.addAll( serviceDescriptor.getProduces() );
         }
 
-        pathDescriptor.setHttpMethod( createHttpMethodDescriptor( serviceDescriptor.getJavaSourceType(), byteMethod ) );
+        operationDescriptor.setHttpMethod( createHttpMethodDescriptor( method ) );
 
-        createParameters( serviceDescriptor, method, byteMethod, pathDescriptor, sourceParameters );
-
-        createResponses( serviceDescriptor, method, pathDescriptor, sourceMethod );
-
-        return pathDescriptor;
-    }
-
-    private void createParameters( ServiceDescriptor serviceDescriptor, Method method, Method byteMethod,
-                                   PathDescriptor pathDescriptor, List<JavaParameter> sourceParameters )
-    {
-        Type[] byteParameterTypes = method.getGenericParameterTypes();
-        Annotation[][] byteParameterAnnotations = byteMethod.getParameterAnnotations();
-        for ( int i = 0; i < byteParameterTypes.length; i++ )
+        // parameters
+        for ( JParameter parameter : method.getParameters() )
         {
-            JavaParameter sourceParameter = null;
-            if ( sourceParameters != null )
-            {
-                sourceParameter = sourceParameters.get( i );
-            }
             ParameterDescriptor parameterDescriptor =
-                createParameterDescriptor( serviceDescriptor, pathDescriptor, byteMethod, sourceParameter,
-                                           byteParameterAnnotations[i], byteParameterTypes[i] );
+                createParameterDescriptor( serviceDescriptor, operationDescriptor, parameter );
             if ( parameterDescriptor != null )
             {
-                pathDescriptor.getParameters().add( parameterDescriptor );
+                operationDescriptor.getParameters().add( parameterDescriptor );
             }
         }
-    }
 
-    private void createResponses( ServiceDescriptor serviceDescriptor, Method method, PathDescriptor pathDescriptor,
-                                  JavaMethod sourceMethod )
-    {
-        String description = "";
-        JavaClass javaSourceType = null;
-        if ( sourceMethod != null )
-        {
-            javaSourceType = sourceMethod.getReturns();
-            DocletTag returnTag = sourceMethod.getTagByName( "return" );
-            if ( returnTag != null )
-            {
-                description = returnTag.getValue();
-            }
-        }
+        // responses
         ResponseDescriptor responseSuccess =
-            createResponseDescriptor( serviceDescriptor, method.getGenericReturnType(), javaSourceType, "Success",
-                                      description );
-        pathDescriptor.getResponses().add( responseSuccess );
-    }
+            createResponseDescriptor( serviceDescriptor, method.getReturns(), "Success" );
+        operationDescriptor.getResponses().add( responseSuccess );
 
-    private ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor, Type type,
-                                                         JavaClass javaSourceType, String reason, String description )
-    {
-        ResponseDescriptor response = new ResponseDescriptor();
-        GenericType<?> byteReturnType =
-            this.reflectionUtil.createGenericType( type, serviceDescriptor.getJavaByteType() );
-        if ( byteReturnType.getRetrievalClass() == void.class )
+        for ( JException exception : method.getExceptions() )
         {
-            response.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
-            response.setDescription( "No content" );
+            ResponseDescriptor response = createResponseDescriptor( serviceDescriptor, exception, "Error" );
+            operationDescriptor.getResponses().add( response );
         }
-        else
-        {
-            response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
-            response.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
-                                                                      serviceDescriptor.getJavaByteType(), description ) );
-        }
-        response.setReason( reason );
-        response.setJavaByteType( byteReturnType );
-        response.setJavaSourceType( javaSourceType );
-        JavaScriptType javaScriptType = getJavaScriptType( byteReturnType.getAssignmentClass() );
-        response.setJavaScriptType( javaScriptType.getName() );
-        response.setExample( javaScriptType.getExample() );
-        return response;
+
+        return operationDescriptor;
     }
 
     private ParameterDescriptor createParameterDescriptor( ServiceDescriptor serviceDescriptor,
-                                                           PathDescriptor pathDescriptor, Method byteMethod,
-                                                           JavaParameter sourceParameter, Annotation[] byteAnnotations,
-                                                           Type byteParameterType )
+                                                           OperationDescriptor operationDescriptor, JParameter parameter )
     {
         ParameterDescriptor parameterDescriptor = new ParameterDescriptor();
-        GenericType<?> genericParameterType =
-            this.reflectionUtil.createGenericType( byteParameterType, serviceDescriptor.getJavaByteType() );
-        parameterDescriptor.setJavaByteType( genericParameterType );
-        if ( sourceParameter == null )
-        {
-            parameterDescriptor.setName( "undefined" );
-        }
-        else
-        {
-            parameterDescriptor.setName( sourceParameter.getName() );
-            String comment = sourceParameter.getComment();
-            if ( isEmpty( comment ) )
-            {
-                // qdox actually seems to be buggy or awkward here...
-                for ( DocletTag tag : pathDescriptor.getJavaSourceMethod().getTagsByName( "param" ) )
-                {
-                    String prefix = sourceParameter.getName() + " ";
-                    if ( tag.getValue().startsWith( prefix ) )
-                    {
-                        comment = tag.getValue().substring( prefix.length() );
-                    }
-                }
-            }
-            parameterDescriptor.setDescription( this.javaDocHelper.parseJavaDoc( serviceDescriptor.getJavaSourceType(),
-                                                                                 serviceDescriptor.getJavaByteType(),
-                                                                                 comment ) );
-        }
+        parameterDescriptor.setJavaParameter( parameter );
+        parameterDescriptor.setName( parameter.getName() );
+        parameterDescriptor.setDescription( parameter.getComment() );
         String location = Descriptor.LOCATION_BODY;
         boolean required = false;
-        for ( Annotation annotation : byteAnnotations )
+        for ( Annotation annotation : parameter.getByteAnnotations() )
         {
             if ( annotation instanceof QueryParam )
             {
@@ -594,7 +478,7 @@ public class GenerateMojo
             }
             else if ( annotation instanceof Context )
             {
-                if ( UriInfo.class.isAssignableFrom( genericParameterType.getAssignmentClass() ) )
+                if ( UriInfo.class.isAssignableFrom( parameter.getByteType().getAssignmentClass() ) )
                 {
                     location = "query/path";
                 }
@@ -620,10 +504,33 @@ public class GenerateMojo
         }
         parameterDescriptor.setLocation( location );
         parameterDescriptor.setRequired( required );
-        JavaScriptType javaScriptType = getJavaScriptType( genericParameterType.getAssignmentClass() );
+        JavaScriptType javaScriptType = getJavaScriptType( parameter.getByteType().getAssignmentClass() );
         parameterDescriptor.setJavaScriptType( javaScriptType.getName() );
         parameterDescriptor.setExample( javaScriptType.getExample() );
         return parameterDescriptor;
+    }
+
+    private ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor, JElement javaElement,
+                                                         String reason )
+    {
+        ResponseDescriptor response = new ResponseDescriptor();
+        GenericType<?> byteReturnType = javaElement.getByteType();
+        if ( byteReturnType.getRetrievalClass() == void.class )
+        {
+            response.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
+            response.setDescription( "No content" );
+        }
+        else
+        {
+            response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
+            response.setDescription( javaElement.getComment() );
+        }
+        response.setReason( reason );
+        response.setJavaElement( javaElement );
+        JavaScriptType javaScriptType = getJavaScriptType( byteReturnType.getAssignmentClass() );
+        response.setJavaScriptType( javaScriptType.getName() );
+        response.setExample( javaScriptType.getExample() );
+        return response;
     }
 
     private JavaScriptType getJavaScriptType( Class<?> clazz )
@@ -660,8 +567,9 @@ public class GenerateMojo
         return JavaScriptType.OBJECT;
     }
 
-    private String createHttpMethodDescriptor( JavaClass sourceClass, Method byteMethod )
+    private String createHttpMethodDescriptor( JMethod method )
     {
+        Method byteMethod = method.getByteMethod();
         if ( byteMethod.isAnnotationPresent( GET.class ) )
         {
             return Descriptor.HTTP_METHOD_GET;
@@ -688,8 +596,7 @@ public class GenerateMojo
         }
         else
         {
-            getLog().warn( "Service method " + sourceClass.getName() + "." + byteMethod.getName()
-                               + " is missing JAX-RS annotation for HTTP method!" );
+            getLog().warn( "Service method " + method + " is missing JAX-RS annotation for HTTP method!" );
             return null;
         }
     }
@@ -718,32 +625,6 @@ public class GenerateMojo
         {
             set.add( mimeType );
         }
-    }
-
-    private JavaMethod findSourceMethod( JavaClass sourceClass, Method byteMethod )
-    {
-        for ( JavaMethod sourceMethod : sourceClass.getMethods() )
-        {
-            if ( sourceMethod.getName().equals( byteMethod.getName() ) )
-            {
-                List<JavaParameter> sourceParameters = sourceMethod.getParameters();
-                Class<?>[] byteParameters = byteMethod.getParameterTypes();
-                if ( sourceParameters.size() == byteParameters.length )
-                {
-                    for ( int i = 0; i < byteParameters.length; i++ )
-                    {
-                        String byteTypeName = byteParameters[i].getName();
-                        String sourceTypeName = sourceParameters.get( i ).getType().getFullyQualifiedName();
-                        if ( !byteTypeName.equals( sourceTypeName ) )
-                        {
-                            return null;
-                        }
-                    }
-                    return sourceMethod;
-                }
-            }
-        }
-        return null;
     }
 
     private void scanJavaFilesRecursive( File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses )

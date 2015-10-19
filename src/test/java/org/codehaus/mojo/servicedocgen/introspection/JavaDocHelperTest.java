@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.codehaus.mojo.servicedocgen;
+package org.codehaus.mojo.servicedocgen.introspection;
 
 import java.io.File;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ import com.thoughtworks.qdox.model.JavaType;
 public class JavaDocHelperTest
     extends Assertions
 {
-
+    /** Dummy JavaDoc URL for testing. */
     public static final String JAVADOC_URL = "http://localhost/apidocs";
 
     private JavaDocHelper createJavaDocHelper( JavaProjectBuilder builder )
@@ -82,7 +82,7 @@ public class JavaDocHelperTest
         String expected =
             "Test of <code><a href='"
                 + JAVADOC_URL
-                + "/org/codehaus/mojo/servicedocgen/JavaDocHelper.html"
+                + "/org/codehaus/mojo/servicedocgen/introspection/JavaDocHelper.html"
                 + "#parseJavaDoc-com.thoughtworks.qdox.model.JavaClass-net.sf.mmm.util.reflect.api.GenericType-java.lang.String-'>"
                 + "JavaDocHelper.parseJavaDoc(JavaClass, GenericType, String)</a></code> with link tag.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
@@ -108,44 +108,49 @@ public class JavaDocHelperTest
     {
         String parsedJavaDoc = parseMethodJavaDoc( "testLinkNonArg" );
         String expected =
-            "Test of <code><a href='" + JAVADOC_URL + "/org/codehaus/mojo/servicedocgen/JavaDocHelperTest.html"
+            "Test of <code><a href='" + JAVADOC_URL
+                + "/org/codehaus/mojo/servicedocgen/introspection/JavaDocHelperTest.html"
                 + "#testLinkNonArg--'>link tag to non-arg method</a></code>.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
     }
 
     /**
-     * Test of {@linkplain JavaDocHelper#parseJavaDoc(JavaClass, String)} with linkplain tag.
+     * Test of {@linkplain JavaDocHelper#parseJavaDoc(JavaClass, GenericType, String)} with linkplain tag.
      */
     @Test
     public void testLinkplain()
     {
         String parsedJavaDoc = parseMethodJavaDoc( "testLinkplain" );
         String expected =
-            "Test of <a href='" + JAVADOC_URL + "/org/codehaus/mojo/servicedocgen/JavaDocHelper.html"
-                + "#parseJavaDoc-com.thoughtworks.qdox.model.JavaClass-java.lang.String-'>"
-                + "JavaDocHelper.parseJavaDoc(JavaClass, String)</a> with linkplain tag.";
+            "Test of <a href='"
+                + JAVADOC_URL
+                + "/org/codehaus/mojo/servicedocgen/introspection/JavaDocHelper.html"
+                + "#parseJavaDoc-com.thoughtworks.qdox.model.JavaClass-net.sf.mmm.util.reflect.api.GenericType-java.lang.String-'>"
+                + "JavaDocHelper.parseJavaDoc(JavaClass, GenericType, String)</a> with linkplain tag.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
     }
 
     /**
-     * Test of {@code JavaDocHelper.parseJavaDoc(JavaClass, String)} with code tag.
+     * Test of {@code JavaDocHelper.parseJavaDoc(JavaClass, GenericType, String)} with code tag.
      */
     @Test
     public void testCode()
     {
         String parsedJavaDoc = parseMethodJavaDoc( "testCode" );
-        String expected = "Test of <code>JavaDocHelper.parseJavaDoc(JavaClass, String)</code> with code tag.";
+        String expected =
+            "Test of <code>JavaDocHelper.parseJavaDoc(JavaClass, GenericType, String)</code> with code tag.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
     }
 
     /**
-     * Test of {@literal JavaDocHelper.parseJavaDoc<JavaClass, String>} with literal tag.
+     * Test of {@literal JavaDocHelper.parseJavaDoc<JavaClass, GenericType, String>} with literal tag.
      */
     @Test
     public void testLiteral()
     {
         String parsedJavaDoc = parseMethodJavaDoc( "testLiteral" );
-        String expected = "Test of <code>JavaDocHelper.parseJavaDoc&lt;JavaClass, String&gt;</code> with literal tag.";
+        String expected =
+            "Test of <code>JavaDocHelper.parseJavaDoc&lt;JavaClass, GenericType, String&gt;</code> with literal tag.";
         assertThat( parsedJavaDoc ).isEqualTo( expected );
     }
 

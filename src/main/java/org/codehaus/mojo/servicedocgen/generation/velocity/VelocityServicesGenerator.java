@@ -35,6 +35,8 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 
 /**
+ * Implementation of {@link ServicesDescriptor} based on apache velocity.
+ *
  * @author hohwille
  */
 public class VelocityServicesGenerator
@@ -53,6 +55,8 @@ public class VelocityServicesGenerator
 
     /**
      * The constructor.
+     *
+     * @param templatePath the classpath location where to look for velocity templates.
      */
     public VelocityServicesGenerator( String templatePath )
     {
@@ -60,11 +64,9 @@ public class VelocityServicesGenerator
         this.engine = new VelocityEngine();
         this.engine.setProperty( RuntimeConstants.RESOURCE_LOADER, "classpath" );
         this.engine.setProperty( "classpath.resource.loader.class", ClasspathResourceLoader.class.getName() );
-        //
         this.engine.init();
 
         ToolManager manager = new ToolManager();
-        // manager.configure( "/org/apache/velocity/tools/generic/tools.xml" );
         this.context = manager.createContext();
         this.templatePath = templatePath;
         this.template = this.engine.getTemplate( templatePath, ENCODING );

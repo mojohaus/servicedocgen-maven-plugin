@@ -16,30 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.codehaus.mojo.servicedocgen.generation;
+package org.codehaus.mojo.servicedocgen.introspection;
 
-import java.io.File;
-import java.io.IOException;
+import net.sf.mmm.util.reflect.api.GenericType;
 
-import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
+import com.thoughtworks.qdox.model.JavaClass;
 
 /**
- * Interface for a generator that creates documentation for a given {@link ServicesDescriptor}.
+ * An return declaration of a {@link JMethod}.
  *
- * @see #generate(ServicesDescriptor, File)
+ * @see JMethod#getReturns()
  * @author hohwille
  */
-public interface ServicesGenerator
+public class JReturn
+    extends JElement
 {
 
     /**
-     * Generates the documentation as output.
+     * The constructor.
      *
-     * @param descriptor the {@link ServicesDescriptor} with the collected meta-data.
-     * @param outputDirectory the {@link File#isDirectory() directory} where to write the output to.
-     * @throws IOException if something goes wrong.
+     * @param byteType - see {@link #getByteType()}.
+     * @param sourceType - see {@link #getSourceType()}.
+     * @param comment - see {@link #getComment()}.
      */
-    void generate( ServicesDescriptor descriptor, File outputDirectory )
-        throws IOException;
+    public JReturn( GenericType<?> byteType, JavaClass sourceType, String comment )
+    {
+        super( byteType, sourceType, comment );
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return getByteTypeString();
+    }
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.codehaus.mojo.servicedocgen;
+package org.codehaus.mojo.servicedocgen.introspection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,6 +35,7 @@ import net.sf.mmm.util.reflect.api.GenericType;
 import net.sf.mmm.util.scanner.base.CharSequenceScanner;
 
 import org.apache.velocity.tools.generic.EscapeTool;
+import org.codehaus.mojo.servicedocgen.Util;
 import org.codehaus.mojo.servicedocgen.descriptor.JavaDocDescriptor;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
@@ -97,8 +98,10 @@ public class JavaDocHelper
                                             "UnsupportedOperationException", "VerifyError", "VirtualMachineError",
                                             "Void" ) );
 
+    /** JavaDoc URL for Java Standard Edition. */
     public static final String JAVADOC_JAVASE_URL = "http://docs.oracle.com/javase/8/docs/api/";
 
+    /** JavaDoc URL for Java Enterprise Edition. */
     public static final String JAVADOC_JAVAEE_URL = "https://docs.oracle.com/javaee/7/api/";
 
     private static final List<JavaDocDescriptor> JAVADOCS =
@@ -190,15 +193,16 @@ public class JavaDocHelper
 
     private final EscapeTool escapeTool;
 
-    private final JavaProjectBuilder builder;
+    protected final JavaProjectBuilder builder;
 
     private final ClassLoader classloader;
 
     /**
      * The constructor.
      *
-     * @param builder
-     * @param javaDocUrl
+     * @param classloader the {@link ClassLoader} used to load byte-code classes dynamically.
+     * @param builder the {@link JavaProjectBuilder} for source-code analysis.
+     * @param javaDocs the configured {@link List} of {@link JavaDocDescriptor}s.
      */
     public JavaDocHelper( ClassLoader classloader, JavaProjectBuilder builder, List<JavaDocDescriptor> javaDocs )
     {
@@ -238,11 +242,16 @@ public class JavaDocHelper
         this.escapeTool = new EscapeTool();
     }
 
+    /**
+     * @param source the {@link JavaSource}.
+     * @param simpleName the {@link Class#getSimpleName() simple name} of a class.
+     * @return the {@link Class#getName() qualified name} of the class.
+     */
     public String getQualifiedName( JavaSource source, String simpleName )
     {
         for ( String importStatement : source.getImports() )
         {
-            if ( simpleName.equals( getSimpleName( importStatement ) ) )
+            if ( simpleName.equals( Util.getSimpleName( importStatement ) ) )
             {
                 return importStatement;
             }
@@ -260,14 +269,22 @@ public class JavaDocHelper
         return packageName + "." + simpleName;
     }
 
-    public String parseJavaDoc( JavaClass sourceClass, GenericType<?> byteClass, String jdoc )
+    /**
+     * Parses JavaDoc and resolves tags such as @link, @linkplain, @literal, @value, or @code.
+     *
+     * @param sourceType the {@link JavaClass} from source-code analysis.
+     * @param byteType the {@link GenericType} from byte-code analysis.
+     * @param javadoc the JavaDoc comment to parse.
+     * @return the given JavaDoc comment transformed to a pure HTML fragment.
+     */
+    public String parseJavaDoc( JavaClass sourceType, GenericType<?> byteType, String javadoc )
     {
-        if ( ( jdoc == null ) || jdoc.isEmpty() )
+        if ( ( javadoc == null ) || javadoc.isEmpty() )
         {
             return "";
         }
-        String javadoc = jdoc.trim().replace( "\n", " " ).replace( "\r", "" );
-        Matcher matcher = PATTERN_JAVADOC_TAG.matcher( javadoc );
+        String comment = javadoc.trim().replace( "\n", " " ).replace( "\r", "" );
+        Matcher matcher = PATTERN_JAVADOC_TAG.matcher( comment );
         StringBuffer buffer = new StringBuffer();
         while ( matcher.find() )
         {
@@ -276,11 +293,11 @@ public class JavaDocHelper
             String replacement;
             if ( TAG_LINK.equals( tag ) )
             {
-                replacement = parseLink( sourceClass, text, false );
+                replacement = parseLink( sourceType, text, false );
             }
             else if ( TAG_LINKPLAIN.equals( tag ) )
             {
-                replacement = parseLink( sourceClass, text, true );
+                replacement = parseLink( sourceType, text, true );
             }
             else if ( TAG_CODE.equals( tag ) )
             {
@@ -292,7 +309,7 @@ public class JavaDocHelper
             }
             else if ( TAG_VALUE.equals( tag ) )
             {
-                replacement = resolveValue( sourceClass, byteClass, text );
+                replacement = resolveValue( sourceType, byteType, text );
             }
             else
             {
@@ -336,12 +353,13 @@ public class JavaDocHelper
     }
 
     @SuppressWarnings( { "unchecked", "rawtypes" } )
-    private String getFieldValue( Class<?> clazz, String fieldName )
+    private String getFieldValue( Class<?> type, String fieldName )
     {
+        Class<?> clazz = type;
         if ( clazz.isEnum() )
         {
             Enum<?> value = Enum.valueOf( (Class) clazz, fieldName );
-            return toString( value, fieldName );
+            return Util.toString( value, fieldName );
         }
         Field field = null;
         try
@@ -373,7 +391,7 @@ public class JavaDocHelper
             try
             {
                 Object value = field.get( null );
-                return toString( value, fieldName );
+                return Util.toString( value, fieldName );
             }
             catch ( Exception e )
             {
@@ -382,16 +400,6 @@ public class JavaDocHelper
         }
 
         return fieldName;
-    }
-
-    private String toString( Object value, String fallback )
-    {
-
-        if ( value == null )
-        {
-            return fallback;
-        }
-        return value.toString();
     }
 
     private String parseLink( JavaClass sourceClass, String text, boolean plain )
@@ -413,7 +421,7 @@ public class JavaDocHelper
         else if ( className.contains( "." ) )
         {
             qualifiedName = className;
-            simpleName = getSimpleName( className );
+            simpleName = Util.getSimpleName( className );
             title = simpleName;
         }
         else
@@ -460,7 +468,7 @@ public class JavaDocHelper
                         if ( argType.contains( "." ) )
                         {
                             anchorBuffer.append( argType );
-                            titleBuffer.append( getSimpleName( argType ) );
+                            titleBuffer.append( Util.getSimpleName( argType ) );
                         }
                         else
                         {
@@ -525,16 +533,5 @@ public class JavaDocHelper
             }
         }
         return null;
-    }
-
-    private String getSimpleName( String className )
-    {
-
-        int lastDot = className.lastIndexOf( '.' );
-        if ( lastDot > 0 )
-        {
-            return className.substring( lastDot + 1 );
-        }
-        return className;
     }
 }

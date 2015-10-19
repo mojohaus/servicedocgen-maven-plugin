@@ -19,64 +19,40 @@
 package org.codehaus.mojo.servicedocgen.descriptor;
 
 /**
- * {@link Descriptor} for URL mapping configuration to create JavaDoc links.
+ * {@link Descriptor} for license information.
  *
  * @author hohwille
  */
-public class JavaDocDescriptor
+public class LicenseDescriptor
+    extends AbstractDescriptor
 {
 
-    private String packagePrefix;
+    private String name;
 
     private String url;
 
     /**
-     * The constructor.
+     * @return the name
      */
-    public JavaDocDescriptor()
+    public String getName()
     {
-        super();
+        return this.name;
     }
 
     /**
-     * The constructor.
-     *
-     * @param packagePrefix - see {@link #getPackagePrefix()}.
-     * @param url - see {@link #getUrl()}.
+     * @param name is the name to set
      */
-    public JavaDocDescriptor( String packagePrefix, String url )
+    public void setName( String name )
     {
-        super();
-        this.packagePrefix = packagePrefix;
-        this.url = url;
+        this.name = name;
     }
 
     /**
-     * @return the prefix of the {@link Package} mapped to this {@link #getUrl() JavaDoc URL}.
-     */
-    public String getPackagePrefix()
-    {
-        if ( this.packagePrefix == null )
-        {
-            return "";
-        }
-        return this.packagePrefix;
-    }
-
-    /**
-     * @param packagePrefix is the packagePrefix to set
-     */
-    public void setPackagePrefix( String packagePrefix )
-    {
-        this.packagePrefix = packagePrefix;
-    }
-
-    /**
-     * @return the base URL of the JavaDoc for this {@link #getPackagePrefix() package prefix}.
+     * @return the url
      */
     public String getUrl()
     {
-        return this.url;
+        return notNull( this.url );
     }
 
     /**

@@ -18,11 +18,12 @@
  */
 package org.codehaus.mojo.servicedocgen.descriptor;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-
-import com.thoughtworks.qdox.model.JavaClass;
+import org.codehaus.mojo.servicedocgen.introspection.JElement;
 
 /**
+ * {@link Descriptor} of a response to a {@link OperationDescriptor operation}.
+ *
+ * @see OperationDescriptor#getResponses()
  * @author hohwille
  */
 public class ResponseDescriptor
@@ -36,11 +37,9 @@ public class ResponseDescriptor
 
     private String example;
 
-    private GenericType<?> javaByteType;
-
-    private JavaClass javaSourceType;
-
     private String javaScriptType;
+
+    private JElement javaElement;
 
     /**
      * @return the statusCode
@@ -95,7 +94,7 @@ public class ResponseDescriptor
      */
     public String getExample()
     {
-        return notNull( this.example );
+        return this.example;
     }
 
     /**
@@ -104,38 +103,6 @@ public class ResponseDescriptor
     public void setExample( String example )
     {
         this.example = example;
-    }
-
-    /**
-     * @return the javaByteType
-     */
-    public GenericType<?> getJavaByteType()
-    {
-        return this.javaByteType;
-    }
-
-    /**
-     * @param javaByteType is the javaByteType to set
-     */
-    public void setJavaByteType( GenericType<?> javaByteType )
-    {
-        this.javaByteType = javaByteType;
-    }
-
-    /**
-     * @return the javaSourceType
-     */
-    public JavaClass getJavaSourceType()
-    {
-        return this.javaSourceType;
-    }
-
-    /**
-     * @param javaSourceType is the javaSourceType to set
-     */
-    public void setJavaSourceType( JavaClass javaSourceType )
-    {
-        this.javaSourceType = javaSourceType;
     }
 
     /**
@@ -152,6 +119,22 @@ public class ResponseDescriptor
     public void setJavaScriptType( String javaScriptType )
     {
         this.javaScriptType = javaScriptType;
+    }
+
+    /**
+     * @return the javaElement
+     */
+    public JElement getJavaElement()
+    {
+        return this.javaElement;
+    }
+
+    /**
+     * @param javaElement is the javaElement to set
+     */
+    public void setJavaElement( JElement javaElement )
+    {
+        this.javaElement = javaElement;
     }
 
 }

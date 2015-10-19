@@ -18,9 +18,12 @@
  */
 package org.codehaus.mojo.servicedocgen.descriptor;
 
-import net.sf.mmm.util.reflect.api.GenericType;
+import org.codehaus.mojo.servicedocgen.introspection.JParameter;
 
 /**
+ * {@link Descriptor} of a parameter of an {@link OperationDescriptor operation}.
+ *
+ * @see OperationDescriptor#getParameters()
  * @author hohwille
  */
 public class ParameterDescriptor
@@ -41,7 +44,7 @@ public class ParameterDescriptor
 
     private String javaScriptType;
 
-    private GenericType<?> javaByteType;
+    private JParameter javaParameter;
 
     /**
      * @return the name
@@ -122,7 +125,7 @@ public class ParameterDescriptor
      */
     public String getDefaultValue()
     {
-        return this.defaultValue;
+        return notNull( this.defaultValue );
     }
 
     /**
@@ -166,19 +169,19 @@ public class ParameterDescriptor
     }
 
     /**
-     * @return the javaType
+     * @return the javaParameter
      */
-    public GenericType<?> getJavaByteType()
+    public JParameter getJavaParameter()
     {
-        return this.javaByteType;
+        return this.javaParameter;
     }
 
     /**
-     * @param javaType is the javaType to set
+     * @param javaParameter is the javaParameter to set
      */
-    public void setJavaByteType( GenericType<?> javaType )
+    public void setJavaParameter( JParameter javaParameter )
     {
-        this.javaByteType = javaType;
+        this.javaParameter = javaParameter;
     }
 
 }

@@ -62,4 +62,14 @@ public interface DemoRestService
     @Path( "/longs" )
     List<DemoTo<Long>> saveLongs( List<DemoTo<Long>> objects );
 
+    /**
+     * Test operation that always throws an error.
+     *
+     * @throws java.lang.IllegalStateException in every case.
+     */
+    @GET
+    @Path( "/error" )
+    void testError()
+        throws IllegalStateException;
+
 }

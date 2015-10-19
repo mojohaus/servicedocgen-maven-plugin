@@ -219,6 +219,9 @@ li.operation {
   margin: 5px 5px 10px;
   padding: 0;
 }
+.deprecated {
+  text-decoration: line-through;
+}
 ul.endpoints {
   padding-top: 2px;
 }
@@ -421,12 +424,12 @@ h3 {
       <div class="info_version">
         Version: <span class="version">$services.info.version</span>
       </div>
-      #if ($services.info.contact)
+      #if ($services.info.contact.name)
       <div class="info_email">
-        Contact: <span class="contact"><a href="mailto:$services.info.contact.email">$services.info.contact.name</a></span>
+        Contact: <span class="contact"><a href="$services.info.contact.href">$services.info.contact.name</a></span>
       </div>
       #end
-      #if ($services.info.license)
+      #if ($services.info.license.name)
       <div class="info_license">
         License: <span class="license"><a href="$services.info.license.url">$services.info.license.name</a></span>
       </div>
@@ -446,22 +449,26 @@ h3 {
         <div id="$service.id">
           <div class="content">
             <p>$service.description</p>
-            $service.javaByteType.retrievalClass.name
+            $service.javaType
           </div>
           <ul class="endpoints">
             <li class="endpoint">
               <ul class="operations">
-                #foreach ($path in $service.paths)
-                <li class="$path.httpMethod operation">
+                #foreach ($operation in $service.operations)
+                #set ($deprecated="")
+                #if ($operation.deprecated)
+                #set ($deprecated=" deprecated")
+                #end
+                <li class="$operation.httpMethod operation$deprecated">
                   <div class="heading">
                     <h3>
-                      <span class="http_method"><a class="toggleOperation" onclick="toggle_visibility('$path.id')">$path.httpMethod</a></span>
-                      <span class="path"><a class="toggleOperation" onclick="toggle_visibility('$path.id')">$service.basePath$path.path</a></span>
+                      <span class="http_method"><a class="toggleOperation" onclick="toggle_visibility('$operation.id')">$operation.httpMethod</a></span>
+                      <span class="path"><a class="toggleOperation" onclick="toggle_visibility('$operation.id')">$service.basePath$operation.path</a></span>
                     </h3>
-                    <div class="code_method">$path.javaByteMethod.name</div>
+                    <div class="code_method">$operation.javaMethod.name</div>
                   </div>
-                  <div id="$path.id" class="content" style="display: none">
-                    $path.description
+                  <div id="$operation.id" class="content" style="display: none">
+                    $operation.description
                     <h4>Parameters</h4>
                     <span>Content-Type:</span> $display.list($service.consumes)
                     <table>
@@ -471,13 +478,15 @@ h3 {
                           <th>Location</th>
                           <th>JavaType</th>
                           <th>JavaScriptType</th>
+                          <th>Default</th>
                           <th>Example</th>
                           <th>Description</th>
                         </tr>
                       </thead>
                       <tbody>
-                        #if ($path.parameters.isEmpty())
+                        #if ($operation.parameters.isEmpty())
                         <tr>
+                          <td>-</td>
                           <td>-</td>
                           <td>-</td>
                           <td>-</td>
@@ -486,17 +495,20 @@ h3 {
                           <td>No parameters</td>
                         </tr>
                         #else
-                        #foreach ($parameter in $path.parameters)
+                        #foreach ($parameter in $operation.parameters)
                         <tr>
                           <td>$parameter.name</td>
                           <td>$parameter.location</td>
-                          <td>$esc.html($parameter.javaByteType.toString())</td>
+                          <td>$esc.html($parameter.javaParameter.byteTypeString)</td>
                           <td>$parameter.javaScriptType</td>
                           <td>
+                            #if ($parameter.example)
                             <div class="snippet">
                               <pre><code class="json">$parameter.example</code></pre>
                             </div>
+                            #end
                           </td>
+                          <td>$parameter.defaultValue</td>
                           <td>$parameter.description</td>
                         </tr>
                         #end
@@ -517,16 +529,18 @@ h3 {
                         </tr>
                       </thead>
                       <tbody>
-                        #foreach ($response in $path.responses)
+                        #foreach ($response in $operation.responses)
                         <tr>
                           <td>$response.statusCode</td>
                           <td>$response.reason</td>
-                          <td>$esc.html($response.javaByteType.toString())</td>
+                          <td>$esc.html($response.javaElement.byteTypeString)</td>
                           <td>$response.javaScriptType</td>
                           <td>
+                            #if ($response.example)
                             <div class="snippet">
                               <pre><code class="json">$response.example</code></pre>
                             </div>
+                            #end
                           </td>
                           <td>$response.description</td>
                         </tr>

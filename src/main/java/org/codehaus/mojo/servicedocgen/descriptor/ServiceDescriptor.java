@@ -25,11 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-
-import com.thoughtworks.qdox.model.JavaClass;
+import org.codehaus.mojo.servicedocgen.introspection.JType;
 
 /**
+ * {@link Descriptor} of a service.
+ *
+ * @see ServicesDescriptor#getServices()
  * @author hohwille
  */
 public class ServiceDescriptor
@@ -44,15 +45,13 @@ public class ServiceDescriptor
 
     private String basePath;
 
-    private List<PathDescriptor> paths;
+    private List<OperationDescriptor> operations;
 
     private Set<String> consumes;
 
     private Set<String> produces;
 
-    private GenericType<?> javaByteType;
-
-    private JavaClass javaSourceType;
+    private JType javaType;
 
     /**
      * @return the id
@@ -61,9 +60,9 @@ public class ServiceDescriptor
     {
         if ( this.id == null )
         {
-            if ( this.javaByteType != null )
+            if ( this.javaType != null )
             {
-                return this.javaByteType.getRetrievalClass().getName().replaceAll( "[.$]", "_" );
+                return this.javaType.getByteType().getRetrievalClass().getName().replaceAll( "[.$]", "_" );
             }
         }
         return this.id;
@@ -128,25 +127,29 @@ public class ServiceDescriptor
     /**
      * @return the paths
      */
-    public List<PathDescriptor> getPaths()
+    public List<OperationDescriptor> getOperations()
     {
-        if ( this.paths == null )
+        if ( this.operations == null )
         {
-            this.paths = new ArrayList<PathDescriptor>();
+            this.operations = new ArrayList<OperationDescriptor>();
         }
-        return this.paths;
+        return this.operations;
     }
 
-    public Map<String, List<PathDescriptor>> getPathsGroupedByHttpMethod()
+    /**
+     * @return a {@link Map} {@link Map#get(Object) mapping} from {@link OperationDescriptor#getHttpMethod()
+     *         HTTP-method} to {@link OperationDescriptor}.
+     */
+    public Map<String, List<OperationDescriptor>> getOperationsGroupedByHttpMethod()
     {
 
-        Map<String, List<PathDescriptor>> map = new HashMap<String, List<PathDescriptor>>();
-        for ( PathDescriptor path : getPaths() )
+        Map<String, List<OperationDescriptor>> map = new HashMap<String, List<OperationDescriptor>>();
+        for ( OperationDescriptor path : getOperations() )
         {
-            List<PathDescriptor> pathList = map.get( path.getHttpMethod() );
+            List<OperationDescriptor> pathList = map.get( path.getHttpMethod() );
             if ( pathList == null )
             {
-                pathList = new ArrayList<PathDescriptor>();
+                pathList = new ArrayList<OperationDescriptor>();
                 map.put( path.getHttpMethod(), pathList );
             }
             pathList.add( path );
@@ -157,9 +160,9 @@ public class ServiceDescriptor
     /**
      * @param paths is the paths to set
      */
-    public void setPaths( List<PathDescriptor> paths )
+    public void setOperations( List<OperationDescriptor> paths )
     {
-        this.paths = paths;
+        this.operations = paths;
     }
 
     /**
@@ -203,35 +206,19 @@ public class ServiceDescriptor
     }
 
     /**
-     * @return the javaByteClass
+     * @return the javaType
      */
-    public GenericType<?> getJavaByteType()
+    public JType getJavaType()
     {
-        return this.javaByteType;
+        return this.javaType;
     }
 
     /**
-     * @param javaByteClass is the javaByteClass to set
+     * @param javaType is the javaType to set
      */
-    public void setJavaByteType( GenericType<?> javaByteClass )
+    public void setJavaType( JType javaType )
     {
-        this.javaByteType = javaByteClass;
-    }
-
-    /**
-     * @return the javaSourceClass
-     */
-    public JavaClass getJavaSourceType()
-    {
-        return this.javaSourceType;
-    }
-
-    /**
-     * @param javaSourceClass is the javaSourceClass to set
-     */
-    public void setJavaSourceType( JavaClass javaSourceClass )
-    {
-        this.javaSourceType = javaSourceClass;
+        this.javaType = javaType;
     }
 
 }

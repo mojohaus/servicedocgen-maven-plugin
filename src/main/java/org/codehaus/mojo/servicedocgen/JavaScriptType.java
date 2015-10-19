@@ -19,23 +19,32 @@
 package org.codehaus.mojo.servicedocgen;
 
 /**
+ * {@link Enum} with types available in JavaScript.
+ *
  * @author hohwille
  */
 public enum JavaScriptType
 {
 
+    /** A decimal {@link Number}. */
     NUMBER( "number", "1.0" ),
 
+    /** A non-decimal {@link Number} ({@link Byte}, {@link Short}, {@link Integer}, or {@link Long}). */
     INTEGER( "integer", "1" ),
 
+    /** A {@link Boolean} flag. */
     BOOLEAN( "boolean", "true" ),
 
+    /** An {@link Class#isArray() array}. */
     ARRAY( "array", "[...]" ),
 
+    /** A {@link String}. */
     STRING( "string", "'foo'" ),
 
-    VOID( "-", "" ),
+    /** The {@link Void} type. */
+    VOID( "-", null ),
 
+    /** Any other data {@link Object}. */
     OBJECT( "object", "{...}" );
 
     private final String name;

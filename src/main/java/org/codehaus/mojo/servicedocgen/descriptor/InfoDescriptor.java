@@ -19,6 +19,8 @@
 package org.codehaus.mojo.servicedocgen.descriptor;
 
 /**
+ * {@link Descriptor} for generic information and configuration.
+ *
  * @author hohwille
  */
 public class InfoDescriptor
@@ -131,108 +133,6 @@ public class InfoDescriptor
     public void setVersion( String version )
     {
         this.version = version;
-    }
-
-    public static class ContactDescriptor
-        extends AbstractDescriptor
-    {
-
-        private String name;
-
-        private String url;
-
-        private String email;
-
-        /**
-         * @return the name
-         */
-        public String getName()
-        {
-            return this.name;
-        }
-
-        /**
-         * @param name is the name to set
-         */
-        public void setName( String name )
-        {
-            this.name = name;
-        }
-
-        /**
-         * @return the url
-         */
-        public String getUrl()
-        {
-            return this.url;
-        }
-
-        /**
-         * @param url is the url to set
-         */
-        public void setUrl( String url )
-        {
-            this.url = url;
-        }
-
-        /**
-         * @return the email
-         */
-        public String getEmail()
-        {
-            return this.email;
-        }
-
-        /**
-         * @param email is the email to set
-         */
-        public void setEmail( String email )
-        {
-            this.email = email;
-        }
-
-    }
-
-    public static class LicenseDescriptor
-        extends AbstractDescriptor
-    {
-
-        private String name;
-
-        private String url;
-
-        /**
-         * @return the name
-         */
-        public String getName()
-        {
-            return this.name;
-        }
-
-        /**
-         * @param name is the name to set
-         */
-        public void setName( String name )
-        {
-            this.name = name;
-        }
-
-        /**
-         * @return the url
-         */
-        public String getUrl()
-        {
-            return this.url;
-        }
-
-        /**
-         * @param url is the url to set
-         */
-        public void setUrl( String url )
-        {
-            this.url = url;
-        }
-
     }
 
 }
