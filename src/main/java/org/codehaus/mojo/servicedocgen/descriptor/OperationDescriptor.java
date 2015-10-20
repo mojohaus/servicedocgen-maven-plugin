@@ -150,7 +150,7 @@ public class OperationDescriptor
     {
         if ( this.consumes == null )
         {
-            return new HashSet<String>();
+            this.consumes = new HashSet<String>();
         }
         return this.consumes;
     }

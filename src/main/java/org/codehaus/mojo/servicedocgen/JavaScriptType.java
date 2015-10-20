@@ -39,7 +39,13 @@ public enum JavaScriptType
     ARRAY( "array", "[...]" ),
 
     /** A {@link String}. */
-    STRING( "string", "'foo'" ),
+    STRING( "string", "\"text\"" ),
+
+    /** A {@link String}. */
+    DATE( "string", "\"1999-12-31T23:59:59.999Z\"" ),
+
+    /** A type as {@link String}. */
+    TYPE( "string", "\"package.Class\"" ),
 
     /** The {@link Void} type. */
     VOID( "-", null ),

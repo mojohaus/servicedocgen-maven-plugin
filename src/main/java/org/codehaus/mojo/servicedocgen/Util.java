@@ -18,7 +18,6 @@
  */
 package org.codehaus.mojo.servicedocgen;
 
-
 /**
  * Utility class with static helper methods.
  *
@@ -35,6 +34,10 @@ public final class Util
         super();
     }
 
+    /**
+     * @param className a {@link Class#getName() class name}.
+     * @return the {@link Class#getSimpleName() simple name}.
+     */
     public static String getSimpleName( String className )
     {
 
@@ -46,6 +49,12 @@ public final class Util
         return className;
     }
 
+    /**
+     * @param value the value to get as {@link String}. May be <code>null</code>.
+     * @param fallback the fallback value.
+     * @return {@link Object#toString()} of <code>value</code> or <code>fallback</code> if <code>value</code> is
+     *         <code>null</code>.
+     */
     public static String toString( Object value, String fallback )
     {
 
@@ -56,6 +65,11 @@ public final class Util
         return value.toString();
     }
 
+    /**
+     * @param value the {@link String} to check. May be <code>null</code>.
+     * @return <code>true</code> if the given {@link String} is {@link String#isEmpty() empty} or <code>null</code>,
+     *         <code>false</code> otherwise.
+     */
     public static boolean isEmpty( String value )
     {
 
@@ -66,6 +80,11 @@ public final class Util
         return value.isEmpty();
     }
 
+    /**
+     * @param pathPrefix the base-bath.
+     * @param path the path to append.
+     * @return the concatenation of both paths with an intermediate slash ("/") if needed.
+     */
     public static String appendPath( String pathPrefix, String path )
     {
 
@@ -83,6 +102,10 @@ public final class Util
         }
     }
 
+    /**
+     * @param value the {@link String} to trim.
+     * @return the {@link String#trim() trimmed} {@link String} or <code>null</code> if <code>null</code> was given.
+     */
     public static String getTrimmed( String value )
     {
 
