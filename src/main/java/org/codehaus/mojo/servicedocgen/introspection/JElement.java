@@ -18,7 +18,9 @@
  */
 package org.codehaus.mojo.servicedocgen.introspection;
 
+import net.sf.mmm.util.lang.api.Visitor;
 import net.sf.mmm.util.reflect.api.GenericType;
+import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
 
 import com.thoughtworks.qdox.model.JavaClass;
 
@@ -62,16 +64,16 @@ public abstract class JElement
      */
     public String getByteTypeString()
     {
-        // final StringBuilder appendable = new StringBuilder();
-        // Visitor<Class<?>> classFormatter = new Visitor<Class<?>>()
-        // {
-        // public void visit( Class<?> value )
-        // {
-        // appendable.append( value.getSimpleName() );
-        // }
-        // };
-        // this.reflectionUtil.toString( getByteType(), appendable, classFormatter );
-        return getByteType().toString();
+        final StringBuilder appendable = new StringBuilder();
+        Visitor<Class<?>> classFormatter = new Visitor<Class<?>>()
+        {
+            public void visit( Class<?> value )
+            {
+                appendable.append( value.getSimpleName() );
+            }
+        };
+        ReflectionUtilImpl.getInstance().toString( getByteType(), appendable, classFormatter );
+        return appendable.toString();
     }
 
     /**
