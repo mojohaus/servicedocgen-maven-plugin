@@ -36,6 +36,9 @@ body {
   white-space: nowrap;
   overflow: hidden;
 }
+.vHide {
+  display: none;
+}
 pre code {
   display: block;
   padding: 0.5em;
@@ -91,7 +94,7 @@ ol,ul {
 h1 a,h2 a,h3 a,h4 a,h5 a,h6 a {
   text-decoration: none;
 }
-h1 a:hover,h2 a:hover,h3 a:hover,h4 a:hover,h5 a:hover,h6 a:hover {
+a:hover {
   text-decoration: underline;
 }
 a {
@@ -222,9 +225,6 @@ li.operation {
 .deprecated {
   text-decoration: line-through;
 }
-ul.endpoints {
-  padding-top: 2px;
-}
 li.operation div.heading {
   float: none;
   clear: both;
@@ -279,7 +279,7 @@ li.access {
 div.content {
   border-top: none;
   padding: 10px;
-  margin: 0 0 20px;
+  margin: 0;
 }
 li.operation div.content h4 {
   font-size: 1.1em;
@@ -407,12 +407,56 @@ h3 {
 <body>
   <script type="text/javascript">
   <!--
-    function toggle_visibility(id) {
-      var e = document.getElementById(id);
-      if (e.style.display != 'none') {
-        e.style.display = 'none';
+    function toggleVisibilityById(id) {
+      toggleVisibilityByElement(document.getElementById(id));
+    }
+    function toggleVisibilityByElement(e) {
+      setVisibilityByElement(e, isVisible(e));
+    }
+    function isVisible(e) {
+      return !e.className.contains('vHide');
+    }
+    function setVisibilityByElement(e, show) {
+      if (show) {
+        replaceClass(e, 'vShow', 'vHide');
       } else {
-        e.style.display = 'block';
+        replaceClass(e, 'vHide', 'vShow');
+      }
+    }
+    function replaceClass(e, oldClass, newClass) {
+      if (e.className.contains(oldClass)) {
+        e.className = e.className.replace(oldClass, newClass);
+      } else {
+        if (e.className.contains(newClass)) {
+          return;
+        }
+        if (e.className) {
+          e.className = newClass;
+        } else {
+          e.className += ' ' + newClass;
+        }
+      }
+    }
+    function toggleVisibilities(id, className) {
+      var container = document.getElementById(id);
+      var children = container.childNodes;
+      var show = false;
+      var showUnset = true;
+      for (var i = 0; i < children.length; i++) {
+        var node = children.item(i);
+        if (node.nodeType === 1) {
+          var childNodes = node.childNodes;
+          for (var j = 0; j < childNodes.length; j++) {
+            var subNode = childNodes.item(j);
+            if ((subNode.nodeType === 1) && (subNode.classList.contains(className))) {
+              if (showUnset) {
+                show = isVisible(subNode);
+                showUnset = false;
+              }
+              setVisibilityByElement(subNode, show);
+            }
+          }
+        }
       }
     }
   //-->
@@ -434,6 +478,11 @@ h3 {
         License: <span class="license"><a href="$services.info.license.url">$services.info.license.name</a></span>
       </div>
       #end
+      <ul class="options">
+        <li>
+          <a onclick="toggleVisibilities('resources', 'content')">Expand/Collapse</a>
+        </li>
+      </ul>
     </div>
   </div>
   <div id="resources_container" class="container">
@@ -442,116 +491,121 @@ h3 {
       <li class="resource active">
         <div class="heading">
           <h2 class="ellipsis">
-            <span class="service_name"><a onClick="toggle_visibility('$service.id')">$service.name</a></span>:
-            <span class="service_description"><a onClick="toggle_visibility('$service.id')">$service.description</a></span>
+            <span class="service_name"><a onClick="toggleVisibilityById('$service.id')">$service.name</a></span>:
+            <span class="service_description"><a onClick="toggleVisibilityById('$service.id')">$service.description</a></span>
           </h2>
         </div>
-        <div id="$service.id">
-          <div class="content">
+        <div id="$service.id" class="content vShow">
+          <div>
             <p>$service.description</p>
             $service.javaType
+            <ul class="options">
+              <li>
+                <a onclick="toggleVisibilities('content_$service.id', 'content')">Expand/Collapse</a>
+              </li>
+            </ul>
           </div>
-          <ul class="endpoints">
-            <li class="endpoint">
-              <ul class="operations">
-                #foreach ($operation in $service.operations)
-                #set ($deprecated="")
-                #if ($operation.deprecated)
-                #set ($deprecated=" deprecated")
-                #end
-                <li class="$operation.httpMethod operation$deprecated">
-                  <div class="heading">
-                    <h3>
-                      <span class="http_method"><a class="toggleOperation" onclick="toggle_visibility('$operation.id')">$operation.httpMethod</a></span>
-                      <span class="path"><a class="toggleOperation" onclick="toggle_visibility('$operation.id')">$service.basePath$operation.path</a></span>
-                    </h3>
-                    <div class="code_method">$operation.javaMethod.name</div>
-                  </div>
-                  <div id="$operation.id" class="content" style="display: none">
-                    $operation.description
-                    <h4>Parameters</h4>
-                    <span>Content-Type:</span> $display.list($service.consumes)
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Location</th>
-                          <th>JavaType</th>
-                          <th>JavaScriptType</th>
-                          <th>Default</th>
-                          <th>Example</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        #if ($operation.parameters.isEmpty())
-                        <tr>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
-                          <td>No parameters</td>
-                        </tr>
-                        #else
-                        #foreach ($parameter in $operation.parameters)
-                        <tr>
-                          <td>$parameter.name</td>
-                          <td>$parameter.location</td>
-                          <td>$esc.html($parameter.javaParameter.byteTypeString)</td>
-                          <td>$parameter.javaScriptType</td>
-                          <td>
-                            #if ($parameter.example)
-                            <div class="snippet">
-                              <pre><code class="json">$parameter.example</code></pre>
-                            </div>
-                            #end
-                          </td>
-                          <td>$parameter.defaultValue</td>
-                          <td>$parameter.description</td>
-                        </tr>
+          <ul id="content_$service.id" class="operations">
+            #foreach ($operation in $service.operations)
+            #set ($deprecated="")
+            #if ($operation.deprecated)
+            #set ($deprecated=" deprecated")
+            #end
+            #set ($httpMethodClass=$operation.httpMethod)
+            #if (($httpMethodClass=="post") && ($operation.javaMethod.name.startsWith("delete")))
+            #set ($httpMethodClass="delete")
+            #end
+            <li class="$httpMethodClass operation$deprecated">
+              <div class="heading">
+                <h3>
+                  <span class="http_method"><a class="toggleOperation" onclick="toggleVisibilityById('$operation.id')">$operation.httpMethod</a></span>
+                  <span class="path"><a class="toggleOperation" onclick="toggleVisibilityById('$operation.id')">$service.basePath$operation.path</a></span>
+                </h3>
+                <div class="code_method">$operation.javaMethod.name</div>
+              </div>
+              <div id="$operation.id" class="content vHide">
+                $operation.description
+                <h4>Parameters</h4>
+                <span>Content-Type:</span> $display.list($service.consumes)
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Location</th>
+                      <th>JavaType</th>
+                      <th>JavaScriptType</th>
+                      <th>Default</th>
+                      <th>Example</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    #if ($operation.parameters.isEmpty())
+                    <tr>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>No parameters</td>
+                    </tr>
+                    #else
+                    #foreach ($parameter in $operation.parameters)
+                    <tr>
+                      <td>$parameter.name</td>
+                      <td>$parameter.location</td>
+                      <td>$esc.html($parameter.javaParameter.byteTypeString)</td>
+                      <td>$parameter.javaScriptType</td>
+                      <td>
+                        #if ($parameter.example)
+                        <div class="snippet">
+                          <pre><code class="json">$parameter.example</code></pre>
+                        </div>
                         #end
+                      </td>
+                      <td>$parameter.defaultValue</td>
+                      <td>$parameter.description</td>
+                    </tr>
+                    #end
+                    #end
+                  </tbody>
+                </table>
+                <h4>Response</h4>
+                <span>Content-Type:</span> $display.list($service.produces)
+                <table>
+                  <thead>
+                    <tr>
+                      <th>HTTP Staus Code</th>
+                      <th>Reason</th>
+                      <th>JavaType</th>
+                      <th>JavaScriptType</th>
+                      <th>Example</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    #foreach ($response in $operation.responses)
+                    <tr>
+                      <td>$response.statusCode</td>
+                      <td>$response.reason</td>
+                      <td>$esc.html($response.javaElement.byteTypeString)</td>
+                      <td>$response.javaScriptType</td>
+                      <td>
+                        #if ($response.example)
+                        <div class="snippet">
+                          <pre><code class="json">$response.example</code></pre>
+                        </div>
                         #end
-                      </tbody>
-                    </table>
-                    <h4>Response</h4>
-                    <span>Content-Type:</span> $display.list($service.produces)
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>HTTP Staus Code</th>
-                          <th>Reason</th>
-                          <th>JavaType</th>
-                          <th>JavaScriptType</th>
-                          <th>Example</th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        #foreach ($response in $operation.responses)
-                        <tr>
-                          <td>$response.statusCode</td>
-                          <td>$response.reason</td>
-                          <td>$esc.html($response.javaElement.byteTypeString)</td>
-                          <td>$response.javaScriptType</td>
-                          <td>
-                            #if ($response.example)
-                            <div class="snippet">
-                              <pre><code class="json">$response.example</code></pre>
-                            </div>
-                            #end
-                          </td>
-                          <td>$response.description</td>
-                        </tr>
-                        #end
-                      </tbody>
-                    </table>
-                  </div>
-                </li>
-                #end
-              </ul>
+                      </td>
+                      <td>$response.description</td>
+                    </tr>
+                    #end
+                  </tbody>
+                </table>
+              </div>
             </li>
+            #end
           </ul>
         </div>
       </li>
