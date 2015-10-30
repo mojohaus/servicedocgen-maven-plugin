@@ -152,7 +152,7 @@ h1 {
   color: black;
   font-size: 1.5em;
   line-height: 1.3em;
-  padding: 10px 0 10px 0;
+  padding: 10px 0 0 0;
   font-family: "Droid Sans", sans-serif;
   font-weight: bold;
 }
@@ -278,7 +278,7 @@ li.access {
 }
 div.content {
   border-top: none;
-  padding: 10px;
+  padding: 10px 0 0 10px;
   margin: 0;
 }
 li.operation div.content h4 {
