@@ -387,13 +387,12 @@ public class Analyzer
         }
 
         // responses
-        ResponseDescriptor responseSuccess =
-            createResponseDescriptor( serviceDescriptor, method.getReturns(), "Success" );
+        ResponseDescriptor responseSuccess = createResponseDescriptor( serviceDescriptor, method.getReturns(), false );
         operationDescriptor.getResponses().add( responseSuccess );
 
         for ( JException exception : method.getExceptions() )
         {
-            ResponseDescriptor response = createResponseDescriptor( serviceDescriptor, exception, "Error" );
+            ResponseDescriptor response = createResponseDescriptor( serviceDescriptor, exception, true );
             operationDescriptor.getResponses().add( response );
         }
 
@@ -476,8 +475,9 @@ public class Analyzer
     }
 
     protected ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor, JElement javaElement,
-                                                           String reason )
+                                                           boolean error )
     {
+        String reason = error ? "Error" : "Success";
         ResponseDescriptor response = new ResponseDescriptor();
         GenericType<?> byteReturnType = javaElement.getByteType();
         if ( byteReturnType.getRetrievalClass() == void.class )
@@ -487,7 +487,14 @@ public class Analyzer
         }
         else
         {
-            response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
+            if ( error )
+            {
+                response.setStatusCode( Descriptor.STATUS_CODE_INTERNAL_SERVER_ERROR );
+            }
+            else
+            {
+                response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
+            }
             response.setDescription( javaElement.getComment() );
         }
         response.setReason( reason );
@@ -601,12 +608,6 @@ public class Analyzer
         return JavaScriptType.OBJECT;
     }
 
-    /**
-     * TODO: javadoc
-     *
-     * @param byteClass
-     * @return
-     */
     private boolean isDate( Class<?> byteClass )
     {
         if ( Date.class.isAssignableFrom( byteClass ) )
