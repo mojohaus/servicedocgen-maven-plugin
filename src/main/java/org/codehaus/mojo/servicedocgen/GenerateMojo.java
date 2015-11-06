@@ -131,6 +131,11 @@ public class GenerateMojo
         try
         {
             List<JavaClass> serviceClasses = scanServices( builder );
+            if ( serviceClasses.isEmpty() )
+            {
+                getLog().info( "No services found - omitting service documentation generation." );
+                return;
+            }
             Analyzer analyzer =
                 new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
                               this.introspectFields );
