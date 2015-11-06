@@ -196,14 +196,21 @@ public class GenerateMojo
             }
             else if ( file.getName().endsWith( ".java" ) )
             {
-                JavaSource source = builder.addSource( file );
-                for ( JavaClass type : source.getClasses() )
+                try
                 {
-                    boolean isService = isServiceClass( type );
-                    if ( isService )
+                    JavaSource source = builder.addSource( file );
+                    for ( JavaClass type : source.getClasses() )
                     {
-                        serviceClasses.add( type );
+                        boolean isService = isServiceClass( type );
+                        if ( isService )
+                        {
+                            serviceClasses.add( type );
+                        }
                     }
+                }
+                catch ( Exception e )
+                {
+                    getLog().debug( "Error parsing file: " + file, e );
                 }
             }
         }
