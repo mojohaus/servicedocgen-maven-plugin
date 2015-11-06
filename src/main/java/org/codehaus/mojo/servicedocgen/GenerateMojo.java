@@ -194,7 +194,7 @@ public class GenerateMojo
             {
                 scanJavaFilesRecursive( file, builder, serviceClasses );
             }
-            else
+            else if ( file.getName().endsWith( ".java" ) )
             {
                 JavaSource source = builder.addSource( file );
                 for ( JavaClass type : source.getClasses() )
