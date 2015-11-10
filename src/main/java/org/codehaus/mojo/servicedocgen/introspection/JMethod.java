@@ -146,8 +146,9 @@ public class JMethod
             if ( exceptionMap != null )
             {
                 exceptionComment =
-                    javaDocHelper.parseJavaDoc( sourceType, byteType,
-                                                exceptionMap.get( byteType.getAssignmentClass().getSimpleName() ) );
+                    javaDocHelper.parseJavaDoc( sourceType,
+                                                byteType,
+                                                exceptionMap.get( exceptionByteType.getAssignmentClass().getSimpleName() ) );
             }
             this.exceptions.add( new JException( exceptionByteType, exceptionSourceType, exceptionComment ) );
         }
