@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Maven Service Documentation Generator Plugin - Checkstyle report</title>
+    <link>http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin</link>
+    <description>Maven Service Documentation Generator Plugin - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2015 MojoHaus</copyright>
+    <item>
+      <title>File: 28,
+             Errors: 35,
+             Warnings: 9,
+             Infos: 1
+      </title>
+            <link>http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.Util.java">org/codehaus/mojo/servicedocgen/Util.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/OperationDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ServiceDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ServiceDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ContactDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ContactDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JException.java">org/codehaus/mojo/servicedocgen/introspection/JException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.GenerateMojo.java">org/codehaus/mojo/servicedocgen/GenerateMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.HeaderDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/HeaderDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ExternalDocumentationDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ExternalDocumentationDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JMethod.java">org/codehaus/mojo/servicedocgen/introspection/JMethod.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.LicenseDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/LicenseDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ServicesDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.Analyzer.java">org/codehaus/mojo/servicedocgen/Analyzer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.JavaDocDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/JavaDocDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ErrorDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ErrorDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JavaDocHelper.java">org/codehaus/mojo/servicedocgen/introspection/JavaDocHelper.java</a>
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ResponseDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ResponseDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.generation.ServicesGenerator.java">org/codehaus/mojo/servicedocgen/generation/ServicesGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.JavaScriptType.java">org/codehaus/mojo/servicedocgen/JavaScriptType.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JType.java">org/codehaus/mojo/servicedocgen/introspection/JType.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.InfoDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/InfoDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JReturn.java">org/codehaus/mojo/servicedocgen/introspection/JReturn.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.HelpMojo.java">org/codehaus/mojo/servicedocgen/HelpMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ParameterDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ParameterDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.Descriptor.java">org/codehaus/mojo/servicedocgen/descriptor/Descriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGenerator.java">org/codehaus/mojo/servicedocgen/generation/velocity/VelocityServicesGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.AbstractDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/AbstractDescriptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JElement.java">org/codehaus/mojo/servicedocgen/introspection/JElement.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JParameter.java">org/codehaus/mojo/servicedocgen/introspection/JParameter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
