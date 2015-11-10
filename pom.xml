@@ -17,8 +17,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -28,7 +27,7 @@
     <version>38</version>
   </parent>
   <artifactId>servicedocgen-maven-plugin</artifactId>
-  <version>1.0.0-alpha-1-SNAPSHOT</version>
+  <version>1.0.0-alpha-1</version>
   <packaging>maven-plugin</packaging>
   <name>Maven Service Documentation Generator Plugin</name>
   <description>Plugin to generate documentation for services (JAX-RS).</description>
@@ -209,7 +208,7 @@
                 <mockRepo>
                   <source>src/it/mrm/repository</source>
                 </mockRepo>
-                <proxyRepo/>
+                <proxyRepo />
               </repositories>
             </configuration>
           </plugin>
@@ -221,12 +220,13 @@
     <license>
       <name>Apache Software Licenese</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <comments/>
+      <comments />
     </license>
   </licenses>
   <scm>
     <connection>scm:git:https://github.com/mojohaus/servicedocgen-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/servicedocgen-maven-plugin.git</developerConnection>
     <url>https://github.com/mojohaus/servicedocgen-maven-plugin</url>
+    <tag>servicedocgen-maven-plugin-1.0.0-alpha-1</tag>
   </scm>
 </project>
