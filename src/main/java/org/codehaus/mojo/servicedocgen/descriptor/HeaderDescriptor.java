@@ -19,6 +19,8 @@
 package org.codehaus.mojo.servicedocgen.descriptor;
 
 /**
+ * {@link Descriptor} for header information.
+ *
  * @author hohwille
  */
 public class HeaderDescriptor

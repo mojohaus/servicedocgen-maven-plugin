@@ -19,6 +19,8 @@
 package org.codehaus.mojo.servicedocgen.descriptor;
 
 /**
+ * {@link Descriptor} for external documentation sources.
+ *
  * @author hohwille
  */
 public class ExternalDocumentationDescriptor

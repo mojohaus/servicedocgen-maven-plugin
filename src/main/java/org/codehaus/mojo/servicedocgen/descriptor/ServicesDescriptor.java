@@ -51,6 +51,8 @@ public class ServicesDescriptor
 
     private List<ServiceDescriptor> services;
 
+    private List<ErrorDescriptor> errors;
+
     private ExternalDocumentationDescriptor externalDocs;
 
     /**
@@ -227,6 +229,26 @@ public class ServicesDescriptor
     public void setServices( List<ServiceDescriptor> services )
     {
         this.services = services;
+    }
+
+    /**
+     * @return the errors
+     */
+    public List<ErrorDescriptor> getErrors()
+    {
+        if ( this.errors == null )
+        {
+            this.errors = new ArrayList<ErrorDescriptor>();
+        }
+        return this.errors;
+    }
+
+    /**
+     * @param errors is the errors to set
+     */
+    public void setErrors( List<ErrorDescriptor> errors )
+    {
+        this.errors = errors;
     }
 
     /**

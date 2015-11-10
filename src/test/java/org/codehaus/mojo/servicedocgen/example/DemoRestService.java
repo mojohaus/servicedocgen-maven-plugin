@@ -66,10 +66,11 @@ public interface DemoRestService
      * Test operation that always throws an error.
      *
      * @throws java.lang.IllegalStateException in every case.
+     * @throws UnsupportedOperationException never.
      */
     @GET
     @Path( "/error" )
     void testError()
-        throws IllegalStateException;
+        throws IllegalStateException, UnsupportedOperationException;
 
 }

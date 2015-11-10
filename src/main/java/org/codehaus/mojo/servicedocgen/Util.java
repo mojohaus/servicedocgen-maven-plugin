@@ -18,6 +18,8 @@
  */
 package org.codehaus.mojo.servicedocgen;
 
+import java.util.Set;
+
 /**
  * Utility class with static helper methods.
  *
@@ -114,6 +116,29 @@ public final class Util
             return "";
         }
         return value.trim();
+    }
+
+    /**
+     * @param set a {@link Set} of {@link String}s.
+     * @param substring the substring to look for.
+     * @return <code>true</code> if the given {@link Set} contains a {@link String} that
+     *         {@link String#contains(CharSequence) contains} the given <code>substring</code>, <code>false</code>
+     *         otherwise.
+     */
+    public static boolean containsSubstring( Set<String> set, String substring )
+    {
+        if ( set == null )
+        {
+            return false;
+        }
+        for ( String s : set )
+        {
+            if ( s.contains( substring ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

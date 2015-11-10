@@ -137,4 +137,13 @@ public class ResponseDescriptor
         this.javaElement = javaElement;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString()
+    {
+        return this.reason + "/" + this.statusCode + "(" + getJavaElement().getByteTypeString() + ")";
+    }
+
 }

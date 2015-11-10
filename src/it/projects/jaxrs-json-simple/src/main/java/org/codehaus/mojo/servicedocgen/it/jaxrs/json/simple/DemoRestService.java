@@ -4,6 +4,7 @@ package org.codehaus.mojo.servicedocgen.it.jaxrs.json.simple;
 
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,10 +39,12 @@ public interface DemoRestService
      *
      * @param object the object to save.
      * @return the updated object with id and version from database.
+     * @throws ConstraintViolationException in case of a validation error.
      */
     @POST
     @Path( "/string" )
-    DemoTo<String> saveString( DemoTo<String> object );
+    DemoTo<String> saveString( DemoTo<String> object )
+        throws ConstraintViolationException;
 
     /**
      * Deletes the {@link DemoTo} with the given <code>id</code>.

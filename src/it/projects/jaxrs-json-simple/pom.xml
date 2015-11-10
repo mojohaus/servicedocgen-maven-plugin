@@ -37,6 +37,40 @@
                 <url>https://mojohaus.github.io/apidocs</url>
               </javadoc>
             </javadocs>
+            <errors>
+              <error>
+                <errorName>javax.validation.ConstraintViolationException</errorName>
+                <match>assignable</match>
+                <statusCode>400</statusCode>
+                <comment>Validation error</comment>
+                <jsonExample>{"message": "text",
+  "code": "text",
+  "uuid": "text",
+  "errors": {
+    "bean.property.path": [
+      "ValidationErrorMessage1",
+      "ValidationErrorMessage2"
+    ]
+  }}</jsonExample>
+              </error>
+              <error>
+                <errorName>IllegalArgumentException</errorName>
+                <match>regex</match>
+                <statusCode>400</statusCode>
+                <jsonExample>{"message": "text",
+  "code": "text",
+  "uuid": "text"}</jsonExample>
+              </error>
+              <error>
+                <errorName>.*</errorName>
+                <match>regex</match>
+                <statusCode>500</statusCode>
+                <comment>Generic error</comment>
+                <jsonExample>{"message": "text",
+  "code": "text",
+  "uuid": "text"}</jsonExample>
+              </error>
+            </errors>
           </descriptor>
         </configuration>
       </plugin>
@@ -64,6 +98,11 @@
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
       <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.1.0.Final</version>
     </dependency>
   </dependencies>
 </project>

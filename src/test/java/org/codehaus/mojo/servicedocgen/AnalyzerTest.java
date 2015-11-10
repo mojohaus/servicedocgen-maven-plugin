@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.assertj.core.api.Assertions;
 import org.codehaus.mojo.servicedocgen.descriptor.Descriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.ErrorDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ParameterDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ResponseDescriptor;
@@ -45,12 +46,24 @@ public class AnalyzerTest
     extends Assertions
 {
 
+    private static final String ERROR_STATUS_CODE = "501";
+
+    private static final String JSON_ERROR_EXAMPLE = "{\"message\": \"text\",\n" + //
+        "  \"code\": \"text\",\"" + //
+        "  \"uuid\": \"text\"}";
+
     protected Analyzer getAnalyzer( JavaProjectBuilder builder )
     {
 
+        ServicesDescriptor descriptor = new ServicesDescriptor();
+        ErrorDescriptor errorDescriptor = new ErrorDescriptor();
+        errorDescriptor.setErrorName( "IllegalStateException" );
+        errorDescriptor.setJsonExample( JSON_ERROR_EXAMPLE );
+        errorDescriptor.setStatusCode( ERROR_STATUS_CODE );
+        descriptor.getErrors().add( errorDescriptor );
         Analyzer analyzer =
             new Analyzer( new SystemStreamLog(), null, Thread.currentThread().getContextClassLoader(), builder,
-                          new ServicesDescriptor(), false );
+                          descriptor, false );
         return analyzer;
     }
 
@@ -79,6 +92,7 @@ public class AnalyzerTest
         List<OperationDescriptor> operations = serviceDescriptor.getOperations();
         assertThat( operations ).hasSize( 5 );
         // operations are ordered by HTTP method and path
+
         // check first operation
         OperationDescriptor operation0 = operations.get( 0 );
         assertThat( operation0 ).isNotNull();
@@ -87,6 +101,7 @@ public class AnalyzerTest
         assertThat( operation0.getConsumes() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation0.getProduces() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation0.getDescription() ).isEqualTo( "Deletes the <code>DemoTo</code> with the given <code>id</code>." );
+        assertThat( operation0.getJavaMethod().getName() ).isEqualTo( "deleteString" );
         // check parameters
         List<ParameterDescriptor> parameters = operation0.getParameters();
         assertThat( parameters ).hasSize( 1 );
@@ -104,9 +119,48 @@ public class AnalyzerTest
         ResponseDescriptor response = responses.get( 0 );
         assertThat( response ).isNotNull();
         assertThat( response.getStatusCode() ).isEqualTo( Descriptor.STATUS_CODE_NO_CONTENT );
-        assertThat( response.getReason() ).isEqualTo( "Success" );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_SUCCESS );
         assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.VOID.getName() );
         assertThat( response.getExample() ).isNull();
+
+        // check second operation
+        OperationDescriptor operation1 = operations.get( 1 );
+        assertThat( operation1 ).isNotNull();
+        assertThat( operation1.getHttpMethod() ).isEqualTo( Descriptor.HTTP_METHOD_GET );
+        assertThat( operation1.getPath() ).isEqualTo( "/error" );
+        assertThat( operation1.getConsumes() ).containsOnly( MediaType.APPLICATION_JSON );
+        assertThat( operation1.getProduces() ).containsOnly( MediaType.APPLICATION_JSON );
+        assertThat( operation1.getDescription() ).isEqualTo( "Test operation that always throws an error." );
+        assertThat( operation1.getJavaMethod().getName() ).isEqualTo( "testError" );
+        // check parameters
+        parameters = operation1.getParameters();
+        assertThat( parameters ).hasSize( 0 );
+        // check responses
+        responses = operation1.getResponses();
+        assertThat( responses ).hasSize( 3 );
+        response = responses.get( 0 );
+        assertThat( response ).isNotNull();
+        assertThat( response.getStatusCode() ).isEqualTo( Descriptor.STATUS_CODE_NO_CONTENT );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_SUCCESS );
+        assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.VOID.getName() );
+        assertThat( response.getJavaElement().getByteTypeString() ).isEqualTo( "void" );
+        assertThat( response.getExample() ).isEqualTo( JavaScriptType.VOID.getExample() );
+        assertThat( response.getDescription() ).isEqualTo( Analyzer.DESCRIPTION_VOID );
+        response = responses.get( 1 );
+        assertThat( response ).isNotNull();
+        assertThat( response.getStatusCode() ).isEqualTo( ERROR_STATUS_CODE );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_ERROR );
+        assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.OBJECT.getName() );
+        assertThat( response.getExample() ).isEqualTo( JSON_ERROR_EXAMPLE );
+        assertThat( response.getDescription() ).isEqualTo( "in every case." );
+        response = responses.get( 2 );
+        assertThat( response ).isNotNull();
+        assertThat( response.getStatusCode() ).isEqualTo( Descriptor.STATUS_CODE_INTERNAL_SERVER_ERROR );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_ERROR );
+        assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.OBJECT.getName() );
+        assertThat( response.getExample() ).isEqualTo( ErrorDescriptor.DEFAULT_JSON_EXAMPLE );
+        assertThat( response.getDescription() ).isEqualTo( "never." );
+
         // check third operation
         OperationDescriptor operation2 = operations.get( 2 );
         assertThat( operation2 ).isNotNull();
@@ -115,6 +169,7 @@ public class AnalyzerTest
         assertThat( operation2.getConsumes() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation2.getProduces() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation2.getDescription() ).isEqualTo( "Finds the <code>DemoTo</code> with the given <code>id</code>." );
+        assertThat( operation2.getJavaMethod().getName() ).isEqualTo( "findString" );
         // check parameters
         parameters = operation2.getParameters();
         assertThat( parameters ).hasSize( 1 );
@@ -132,7 +187,7 @@ public class AnalyzerTest
         response = responses.get( 0 );
         assertThat( response ).isNotNull();
         assertThat( response.getStatusCode() ).isEqualTo( Descriptor.STATUS_CODE_SUCCESS );
-        assertThat( response.getReason() ).isEqualTo( "Success" );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_SUCCESS );
         assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.OBJECT.getName() );
         assertThat( response.getExample() ).isEqualTo( "{\n" + //
             "  \"id\" = 1,\n" + //
@@ -150,6 +205,7 @@ public class AnalyzerTest
         assertThat( operation3.getConsumes() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation3.getProduces() ).containsOnly( MediaType.APPLICATION_JSON );
         assertThat( operation3.getDescription() ).isEqualTo( "Saves the given <code>DemoTo</code>s." );
+        assertThat( operation3.getJavaMethod().getName() ).isEqualTo( "saveLongs" );
         // check parameters
         parameters = operation3.getParameters();
         assertThat( parameters ).hasSize( 1 );
@@ -174,9 +230,13 @@ public class AnalyzerTest
         response = responses.get( 0 );
         assertThat( response ).isNotNull();
         assertThat( response.getStatusCode() ).isEqualTo( Descriptor.STATUS_CODE_SUCCESS );
-        assertThat( response.getReason() ).isEqualTo( "Success" );
+        assertThat( response.getReason() ).isEqualTo( Analyzer.RESPONSE_REASON_SUCCESS );
         assertThat( response.getJavaScriptType() ).isEqualTo( JavaScriptType.ARRAY.getName() );
         assertThat( response.getExample() ).isEqualTo( example );
+
+        // check fifth operation
+        OperationDescriptor operation4 = operations.get( 4 );
+        assertThat( operation4.getJavaMethod().getName() ).isEqualTo( "saveString" );
     }
 
     private ServicesDescriptor analyze( String className )

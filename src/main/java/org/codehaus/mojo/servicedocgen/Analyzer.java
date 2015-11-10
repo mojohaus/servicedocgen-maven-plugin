@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -51,6 +52,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+import net.sf.mmm.util.exception.api.IllegalCaseException;
 import net.sf.mmm.util.lang.api.Datatype;
 import net.sf.mmm.util.lang.api.SimpleDatatype;
 import net.sf.mmm.util.math.api.NumberType;
@@ -75,6 +77,8 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.servicedocgen.descriptor.ContactDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.Descriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.ErrorDescriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.ErrorDescriptor.Match;
 import org.codehaus.mojo.servicedocgen.descriptor.InfoDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.LicenseDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor;
@@ -102,6 +106,15 @@ import com.thoughtworks.qdox.model.JavaClass;
  */
 public class Analyzer
 {
+    /** {@link ResponseDescriptor#getReason() Reason} for a valid success result. */
+    public static final String RESPONSE_REASON_SUCCESS = "Success";
+
+    /** {@link ResponseDescriptor#getReason() Reason} for an error (exception). */
+    public static final String RESPONSE_REASON_ERROR = "Error";
+
+    /** {@link ResponseDescriptor#getDescription() Description} for void results. */
+    public static final String DESCRIPTION_VOID = "No content";
+
     private final ClassLoader projectClassloader;
 
     private final ReflectionUtil reflectionUtil;
@@ -116,11 +129,11 @@ public class Analyzer
 
     private final JavaProjectBuilder builder;
 
-    private final ServicesDescriptor descriptor;
-
     private final Log log;
 
     private final MavenProject project;
+
+    private ServicesDescriptor descriptor;
 
     /**
      * The constructor.
@@ -153,6 +166,42 @@ public class Analyzer
             this.pojoDescriptorBuilder = this.pojoDescriptorBuilderFactory.createPublicMethodDescriptorBuilder();
         }
         this.javaDocHelper = new JavaDocHelper( this.projectClassloader, this.builder, this.descriptor.getJavadocs() );
+        if ( descriptor != null )
+        {
+            boolean hasFallback = false;
+            for ( ErrorDescriptor errorDescriptor : descriptor.getErrors() )
+            {
+                if ( errorDescriptor.getMatch() == Match.assignable )
+                {
+                    String errorName = errorDescriptor.getErrorName();
+                    Class<?> errorClass;
+                    try
+                    {
+                        errorClass = projectClassloader.loadClass( errorName );
+                    }
+                    catch ( Exception e )
+                    {
+                        log.warn( "Failed to load error class '" + errorName + "':" + e.getMessage(), e );
+                        errorClass = UnknownError.class;
+                    }
+                    errorDescriptor.setErrorClass( errorClass );
+                }
+                else if ( errorDescriptor.getMatch() == Match.regex )
+                {
+                    String errorName = errorDescriptor.getErrorName();
+                    if ( errorName.isEmpty() || errorName.equals( "." ) || errorName.equals( ".*" ) )
+                    {
+                        hasFallback = true;
+                    }
+                }
+            }
+            if ( !hasFallback )
+            {
+                ErrorDescriptor errorDescriptor = new ErrorDescriptor();
+                errorDescriptor.setErrorName( "" );
+                descriptor.getErrors().add( errorDescriptor );
+            }
+        }
     }
 
     protected Log getLog()
@@ -171,32 +220,31 @@ public class Analyzer
     public ServicesDescriptor createServicesDescriptor( List<JavaClass> serviceClasses )
         throws Exception
     {
-        ServicesDescriptor servicesDescriptor = this.descriptor;
-        if ( servicesDescriptor == null )
+        if ( this.descriptor == null )
         {
-            servicesDescriptor = new ServicesDescriptor();
+            this.descriptor = new ServicesDescriptor();
         }
-        InfoDescriptor info = servicesDescriptor.getInfo();
+        InfoDescriptor info = this.descriptor.getInfo();
         if ( info == null )
         {
             info = new InfoDescriptor();
-            servicesDescriptor.setInfo( info );
+            this.descriptor.setInfo( info );
         }
         createInfoDescriptor( info );
-        Set<String> descriptorSchemes = servicesDescriptor.getSchemes();
+        Set<String> descriptorSchemes = this.descriptor.getSchemes();
         if ( descriptorSchemes.isEmpty() )
         {
             descriptorSchemes.add( Descriptor.SCHEME_HTTPS );
         }
         for ( JavaClass type : serviceClasses )
         {
-            ServiceDescriptor service = createServiceDescriptor( type, servicesDescriptor );
-            servicesDescriptor.getServices().add( service );
+            ServiceDescriptor service = createServiceDescriptor( type );
+            this.descriptor.getServices().add( service );
         }
-        return servicesDescriptor;
+        return this.descriptor;
     }
 
-    protected ServiceDescriptor createServiceDescriptor( JavaClass sourceType, ServicesDescriptor servicesDescriptor )
+    protected ServiceDescriptor createServiceDescriptor( JavaClass sourceType )
         throws Exception
     {
         getLog().info( "Analyzing " + sourceType.getName() );
@@ -387,13 +435,28 @@ public class Analyzer
         }
 
         // responses
-        ResponseDescriptor responseSuccess = createResponseDescriptor( serviceDescriptor, method.getReturns(), false );
+        ResponseDescriptor responseSuccess =
+            createResponseDescriptor( serviceDescriptor, operationDescriptor, method.getReturns(), false );
         operationDescriptor.getResponses().add( responseSuccess );
 
         for ( JException exception : method.getExceptions() )
         {
-            ResponseDescriptor response = createResponseDescriptor( serviceDescriptor, exception, true );
+            ResponseDescriptor response =
+                createResponseDescriptor( serviceDescriptor, operationDescriptor, exception, true );
             operationDescriptor.getResponses().add( response );
+        }
+
+        for ( ErrorDescriptor errorDescriptor : this.descriptor.getErrors() )
+        {
+            if ( errorDescriptor.getMatch() == Match.always )
+            {
+                JElement exception =
+                    new JException( this.reflectionUtil.createGenericType( Throwable.class ), null,
+                                    errorDescriptor.getComment() );
+                ResponseDescriptor response =
+                    createResponseDescriptor( serviceDescriptor, operationDescriptor, exception, true );
+                operationDescriptor.getResponses().add( response );
+            }
         }
 
         return operationDescriptor;
@@ -470,39 +533,88 @@ public class Analyzer
         parameterDescriptor.setRequired( required );
         JavaScriptType javaScriptType = getJavaScriptType( parameter.getByteType(), false );
         parameterDescriptor.setJavaScriptType( javaScriptType.getName() );
-        parameterDescriptor.setExample( createExample( javaScriptType, parameter ) );
+        parameterDescriptor.setExample( createExample( operationDescriptor, javaScriptType, parameter ) );
         return parameterDescriptor;
     }
 
-    protected ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor, JElement javaElement,
-                                                           boolean error )
+    protected ResponseDescriptor createResponseDescriptor( ServiceDescriptor serviceDescriptor,
+                                                           OperationDescriptor operationDescriptor,
+                                                           JElement javaElement, boolean error )
     {
-        String reason = error ? "Error" : "Success";
+        String reason = error ? RESPONSE_REASON_ERROR : RESPONSE_REASON_SUCCESS;
+        String example = null;
         ResponseDescriptor response = new ResponseDescriptor();
         GenericType<?> byteReturnType = javaElement.getByteType();
-        if ( byteReturnType.getRetrievalClass() == void.class )
+        String description = javaElement.getComment();
+        if ( error )
         {
-            response.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
-            response.setDescription( "No content" );
+            String statusCode = Descriptor.STATUS_CODE_INTERNAL_SERVER_ERROR;
+            for ( ErrorDescriptor errorDescriptor : this.descriptor.getErrors() )
+            {
+                boolean matches = isMatchingError( byteReturnType, errorDescriptor );
+                if ( matches )
+                {
+                    statusCode = errorDescriptor.getStatusCode();
+                    boolean isXml = Util.containsSubstring( operationDescriptor.getProduces(), "xml" );
+                    if ( isXml )
+                    {
+                        example = errorDescriptor.getXmlExample();
+                    }
+                    else
+                    {
+                        example = errorDescriptor.getJsonExample();
+                    }
+                    break;
+                }
+            }
+            response.setStatusCode( statusCode );
         }
         else
         {
-            if ( error )
+            if ( byteReturnType.getRetrievalClass() == void.class )
             {
-                response.setStatusCode( Descriptor.STATUS_CODE_INTERNAL_SERVER_ERROR );
+                response.setStatusCode( Descriptor.STATUS_CODE_NO_CONTENT );
+                if ( Util.isEmpty( description ) )
+                {
+                    description = DESCRIPTION_VOID;
+                }
             }
             else
             {
                 response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
             }
-            response.setDescription( javaElement.getComment() );
         }
+        response.setDescription( description );
         response.setReason( reason );
         response.setJavaElement( javaElement );
         JavaScriptType javaScriptType = getJavaScriptType( byteReturnType, true );
         response.setJavaScriptType( javaScriptType.getName() );
-        response.setExample( createExample( javaScriptType, javaElement ) );
+        if ( example == null )
+        {
+            example = createExample( operationDescriptor, javaScriptType, javaElement );
+        }
+        response.setExample( example );
         return response;
+    }
+
+    private boolean isMatchingError( GenericType<?> byteReturnType, ErrorDescriptor errorDescriptor )
+    {
+        Class<?> byteClass = byteReturnType.getRetrievalClass();
+        Match match = errorDescriptor.getMatch();
+        switch ( match )
+        {
+            case regex:
+                Matcher matcher = errorDescriptor.getErrorNamePattern().matcher( byteClass.getName() );
+                return matcher.matches();
+            case assignable:
+                return errorDescriptor.getErrorClass().isAssignableFrom( byteClass );
+            case always:
+                // yes, this is not a bug.
+                // always means it will always produce an error result but independent of a specific exception
+                return ( byteClass == Throwable.class );
+            default:
+                throw new IllegalCaseException( Match.class, match );
+        }
     }
 
     private String createHttpMethodDescriptor( JMethod method )
@@ -645,13 +757,13 @@ public class Analyzer
         return false;
     }
 
-    protected String createExample( JavaScriptType javaScriptType, JElement element )
+    protected String createExample( OperationDescriptor operationDescriptor, JavaScriptType javaScriptType,
+                                    JElement element )
     {
         if ( javaScriptType == JavaScriptType.VOID )
         {
             return null;
         }
-        StringBuilder buffer = new StringBuilder();
         boolean retrieval = ( element instanceof JReturn );
         GenericType<?> byteType = element.getByteType();
         Class<?> byteClass;
@@ -663,6 +775,7 @@ public class Analyzer
         {
             byteClass = byteType.getAssignmentClass();
         }
+        StringBuilder buffer = new StringBuilder();
         createExample( javaScriptType, byteType, byteClass, "", buffer, new HashSet<Class<?>>(), retrieval );
         return buffer.toString();
     }

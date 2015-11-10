@@ -84,6 +84,9 @@ public interface Descriptor
     /** HTTP status code for success without content. */
     String STATUS_CODE_NO_CONTENT = "204";
 
+    /** HTTP status code for bad request. */
+    String STATUS_CODE_BAD_REQUEST = "400";
+
     /** HTTP status code for unauthorized (authentication required). */
     String STATUS_CODE_UNAUTHORIZED = "401";
 
