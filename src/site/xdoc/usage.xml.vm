@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Usage</title>
+  </properties>
+
+  <body>
+    <section name="Usage">
+      Simply add the plugin to the build section of your POM for the module containing services as following.
+      <source><![CDATA[
+  <build>
+    <plugins>
+      ...
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>servicedocgen-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptor>
+            <info>
+              <title>Service Documentation</title>
+              <description>This is ...</description>
+            </info>
+            <host>my.service.com</host>
+            <port>8443</port>
+            <basePath>myapp/services/rest</basePath>
+            <schemes>
+              <scheme>https</scheme>
+            </schemes>
+            <javadocUrl>https://my.service.com/apidocs</javadocUrl>
+          </descriptor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+      ]]></source>
+      <subsection name="Result">
+        After you called <code>mvn package</code> you will find the generated documentation in <code>target/servicedoc/</code>.
+      </subsection>
+    </section>
+  </body>
+</document>
