@@ -229,4 +229,12 @@
     <url>https://github.com/mojohaus/servicedocgen-maven-plugin</url>
     <tag>HEAD</tag>
   </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/mojohaus/servicedocgen-maven-plugin/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>travis</system>
+    <url>https://travis-ci.org/mojohaus/servicedocgen-maven-plugin</url>
+  </ciManagement>
 </project>
