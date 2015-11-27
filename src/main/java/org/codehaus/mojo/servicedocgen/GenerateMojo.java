@@ -167,10 +167,13 @@ public class GenerateMojo
         for ( String sourceDir : this.project.getCompileSourceRoots() )
         {
             File sourceFolder = new File( sourceDir );
-            builder.addSourceFolder( sourceFolder );
-            if ( this.serviceClassName == null )
+            if ( sourceFolder.isDirectory() )
             {
-                scanJavaFilesRecursive( sourceFolder, builder, serviceClasses );
+                builder.addSourceFolder( sourceFolder );
+                if ( this.serviceClassName == null )
+                {
+                    scanJavaFilesRecursive( sourceFolder, builder, serviceClasses );
+                }
             }
         }
         if ( this.serviceClassName != null )
@@ -188,7 +191,13 @@ public class GenerateMojo
     private void scanJavaFilesRecursive( File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses )
         throws IOException
     {
-        for ( File file : sourceDir.listFiles() )
+        File[] children = sourceDir.listFiles();
+        if ( children == null )
+        {
+            getLog().debug( "Directory does not exist: " + sourceDir );
+            return;
+        }
+        for ( File file : children )
         {
             if ( file.isDirectory() )
             {
