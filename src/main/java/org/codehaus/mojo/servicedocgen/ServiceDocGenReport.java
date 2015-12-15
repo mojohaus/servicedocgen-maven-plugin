@@ -63,7 +63,7 @@ import com.thoughtworks.qdox.model.JavaSource;
  * @author hohwille
  */
 @Mojo( name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
-public class GenerateMojo
+public class ServiceDocGenReport
     extends AbstractMavenReport
 {
 
