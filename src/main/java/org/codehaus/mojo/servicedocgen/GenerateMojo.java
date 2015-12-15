@@ -25,18 +25,20 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.Path;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.AbstractMavenReport;
+import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGenerator;
@@ -62,14 +64,14 @@ import com.thoughtworks.qdox.model.JavaSource;
  */
 @Mojo( name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
 public class GenerateMojo
-    extends AbstractMojo
+    extends AbstractMavenReport
 {
 
     /**
      * The directory where the generated service documentation will be written to.
      */
-    @Parameter( defaultValue = "${project.build.directory}/servicedoc" )
-    private File outputDirectory;
+    @Parameter( defaultValue = "servicedoc" )
+    private String reportFolder;
 
     /**
      * The fully qualified classname of the service to generate. Empty for auto-discovery (default).
@@ -84,12 +86,6 @@ public class GenerateMojo
     private String classnameRegex;
 
     private Pattern classnamePattern;
-
-    /**
-     * The Maven Project.
-     */
-    @Parameter( defaultValue = "${project}", readonly = true, required = true )
-    private MavenProject project;
 
     @Parameter( required = false )
     private ServicesDescriptor descriptor;
@@ -117,8 +113,51 @@ public class GenerateMojo
     /**
      * {@inheritDoc}
      */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
+    @Override
+    public String getOutputName()
+    {
+        return "servicedoc/index";
+    }
+
+    protected ResourceBundle getBundle( Locale locale )
+    {
+
+        return ResourceBundle.getBundle( "servicedocgen-report", locale, getClass().getClassLoader() );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName( Locale locale )
+    {
+        return getBundle( locale ).getString( "report.servicedocgen.name" );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription( Locale locale )
+    {
+        return getBundle( locale ).getString( "report.servicedocgen.description" );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExternalReport()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void executeReport( Locale locale )
+        throws MavenReportException
     {
         this.classnamePattern = Pattern.compile( this.classnameRegex );
 
@@ -136,27 +175,28 @@ public class GenerateMojo
                 getLog().info( "No services found - omitting service documentation generation." );
                 return;
             }
-            Analyzer analyzer =
-                new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
-                              this.introspectFields );
+            Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
+                                              this.introspectFields );
             ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
 
             getLog().info( "Generating output..." );
             ServicesGenerator generator =
                 new VelocityServicesGenerator( Util.appendPath( this.templatePath, this.templateName ) );
-            if ( !this.outputDirectory.isDirectory() )
+
+            File reportDirectory = new File( this.outputDirectory, this.reportFolder );
+            if ( !reportDirectory.isDirectory() )
             {
-                boolean ok = this.outputDirectory.mkdirs();
+                boolean ok = reportDirectory.mkdirs();
                 if ( !ok )
                 {
-                    throw new MojoExecutionException( "Could not create directory " + this.outputDirectory );
+                    throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                 }
             }
-            generator.generate( services, this.outputDirectory );
+            generator.generate( services, reportDirectory );
         }
         catch ( Exception e )
         {
-            throw new MojoExecutionException( "Unexpected Error!", e );
+            throw new MavenReportException( "Unexpected Error!", e );
         }
     }
 

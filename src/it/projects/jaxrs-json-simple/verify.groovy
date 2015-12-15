@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-File doc = new File( basedir, 'target/servicedoc/Service-Documentation.html' )
+File doc = new File( basedir, 'target/site/servicedoc/index.html' )
 assert doc.exists()
 
 def html = new XmlSlurper().parse( doc )

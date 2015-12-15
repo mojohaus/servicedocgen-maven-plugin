@@ -79,7 +79,7 @@ public class VelocityServicesGenerator
         throws IOException
     {
         this.context.put( "services", descriptor );
-        String filename = this.templatePath.replaceFirst( ".*/", "" ).replaceFirst( "[.]vm$", "" );
+        String filename = "index.html";
         File outputFile = new File( outputDirectory, filename );
         OutputStream out = new FileOutputStream( outputFile );
         try

@@ -8,18 +8,11 @@
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
 
-  <build>
+  <reporting>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>servicedocgen-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <descriptor>
             <info>
@@ -75,7 +68,7 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>
+  </reporting>  
 
   <licenses>
     <license>
