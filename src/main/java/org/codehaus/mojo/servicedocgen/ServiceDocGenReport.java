@@ -301,7 +301,9 @@ public class ServiceDocGenReport
         {
             try
             {
-                urls.add( new File( element ).toURI().toURL() );
+                URL url = new File( element ).toURI().toURL();
+                urls.add( url );
+                getLog().debug( "Adding to classloader: " + url.toString() );
             }
             catch ( MalformedURLException e )
             {
