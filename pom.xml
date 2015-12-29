@@ -176,6 +176,7 @@
             </executions>
             <configuration>
               <debug>true</debug>
+              <showErrors>true</showErrors>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <settingsFile>src/it/mrm/settings.xml</settingsFile>
