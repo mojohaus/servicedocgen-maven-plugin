@@ -194,6 +194,10 @@ public class ServiceDocGenReport
             }
             generator.generate( services, reportDirectory );
         }
+        catch ( MavenReportException e )
+        {
+            throw e;
+        }
         catch ( Exception e )
         {
             throw new MavenReportException( "Unexpected Error!", e );

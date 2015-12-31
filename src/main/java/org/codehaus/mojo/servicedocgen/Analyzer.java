@@ -52,29 +52,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import net.sf.mmm.util.exception.api.IllegalCaseException;
-import net.sf.mmm.util.lang.api.Datatype;
-import net.sf.mmm.util.lang.api.SimpleDatatype;
-import net.sf.mmm.util.math.api.NumberType;
-import net.sf.mmm.util.math.base.MathUtilImpl;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptor;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilder;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilderFactory;
-import net.sf.mmm.util.pojo.descriptor.api.PojoPropertyDescriptor;
-import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArg;
-import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArgMode;
-import net.sf.mmm.util.pojo.descriptor.impl.PojoDescriptorBuilderFactoryImpl;
-import net.sf.mmm.util.reflect.api.AnnotationUtil;
-import net.sf.mmm.util.reflect.api.GenericType;
-import net.sf.mmm.util.reflect.api.ReflectionUtil;
-import net.sf.mmm.util.reflect.base.AnnotationUtilImpl;
-import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
-import net.sf.mmm.util.validation.base.Mandatory;
-
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.Organization;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.mojo.servicedocgen.descriptor.ContactDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.Descriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ErrorDescriptor;
@@ -96,6 +78,25 @@ import org.codehaus.mojo.servicedocgen.introspection.JavaDocHelper;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
+
+import net.sf.mmm.util.exception.api.IllegalCaseException;
+import net.sf.mmm.util.lang.api.Datatype;
+import net.sf.mmm.util.lang.api.SimpleDatatype;
+import net.sf.mmm.util.math.api.NumberType;
+import net.sf.mmm.util.math.base.MathUtilImpl;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptor;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilder;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilderFactory;
+import net.sf.mmm.util.pojo.descriptor.api.PojoPropertyDescriptor;
+import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArg;
+import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArgMode;
+import net.sf.mmm.util.pojo.descriptor.impl.PojoDescriptorBuilderFactoryImpl;
+import net.sf.mmm.util.reflect.api.AnnotationUtil;
+import net.sf.mmm.util.reflect.api.GenericType;
+import net.sf.mmm.util.reflect.api.ReflectionUtil;
+import net.sf.mmm.util.reflect.base.AnnotationUtilImpl;
+import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
+import net.sf.mmm.util.validation.base.Mandatory;
 
 /**
  * {@link Analyzer} contains the logic to analyze the services on byte-code and source-code level and create the
@@ -250,7 +251,16 @@ public class Analyzer
         getLog().info( "Analyzing " + sourceType.getName() );
         ServiceDescriptor serviceDescriptor = new ServiceDescriptor();
         serviceDescriptor.setName( sourceType.getName() );
-        Class<?> byteClass = this.projectClassloader.loadClass( sourceType.getFullyQualifiedName() );
+        Class<?> byteClass;
+        try
+        {
+            byteClass = this.projectClassloader.loadClass( sourceType.getFullyQualifiedName() );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            throw new MavenReportException( "Failed to load class " + sourceType.getName()
+                + " - did you forget to invoke compile (e.g. mvn verify site)?", e );
+        }
         Path serviceBasePath = byteClass.getAnnotation( Path.class );
         if ( serviceBasePath != null )
         {
@@ -450,9 +460,8 @@ public class Analyzer
         {
             if ( errorDescriptor.getMatch() == Match.always )
             {
-                JElement exception =
-                    new JException( this.reflectionUtil.createGenericType( Throwable.class ), null,
-                                    errorDescriptor.getComment() );
+                JElement exception = new JException( this.reflectionUtil.createGenericType( Throwable.class ), null,
+                                                     errorDescriptor.getComment() );
                 ResponseDescriptor response =
                     createResponseDescriptor( serviceDescriptor, operationDescriptor, exception, true );
                 operationDescriptor.getResponses().add( response );
@@ -863,7 +872,8 @@ public class Analyzer
         {
             if ( !propertyDescriptor.getName().equals( "class" ) )
             {
-                PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor( PojoPropertyAccessorNonArgMode.GET );
+                PojoPropertyAccessorNonArg getter =
+                    propertyDescriptor.getAccessor( PojoPropertyAccessorNonArgMode.GET );
                 if ( getter != null )
                 {
                     if ( repeating )
