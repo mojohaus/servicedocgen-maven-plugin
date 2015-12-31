@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2015 MojoHaus</copyright>
     <item>
-      <title>File: 28,
+      <title>File: 30,
              Errors: 35,
-             Warnings: 9,
+             Warnings: 10,
              Infos: 1
       </title>
             <link>http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html</link>
@@ -88,6 +88,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#servicedocgen-report.properties">servicedocgen-report.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.descriptor.ContactDescriptor.java">org/codehaus/mojo/servicedocgen/descriptor/ContactDescriptor.java</a>
                 </td>
                 <td>
@@ -112,20 +126,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.GenerateMojo.java">org/codehaus/mojo/servicedocgen/GenerateMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
                 </td>
               </tr>
                           <tr>
@@ -209,7 +209,7 @@ under the License.
                   8
                 </td>
                 <td>
-                  2
+                  1
                 </td>
               </tr>
                           <tr>
@@ -280,6 +280,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.ServiceDocGenReport.java">org/codehaus/mojo/servicedocgen/ServiceDocGenReport.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  3
                 </td>
               </tr>
                           <tr>
@@ -392,6 +406,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#servicedocgen-report_de.properties">servicedocgen-report_de.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
               </tr>
                           <tr>
