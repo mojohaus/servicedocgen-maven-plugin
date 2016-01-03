@@ -413,8 +413,11 @@ h3 {
     function toggleVisibilityByElement(e) {
       setVisibilityByElement(e, isVisible(e));
     }
+    function classNameContains(e, needle) {
+        return e.className.indexOf(needle) != -1;
+    }
     function isVisible(e) {
-      return !e.className.contains('vHide');
+      return !classNameContains(e, 'vHide');
     }
     function setVisibilityByElement(e, show) {
       if (show) {
@@ -424,10 +427,10 @@ h3 {
       }
     }
     function replaceClass(e, oldClass, newClass) {
-      if (e.className.contains(oldClass)) {
+      if (classNameContains(e, oldClass)) {
         e.className = e.className.replace(oldClass, newClass);
       } else {
-        if (e.className.contains(newClass)) {
+        if (classNameContains(e, newClass)) {
           return;
         }
         if (e.className) {
