@@ -23,10 +23,10 @@ under the License.
     <link>http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin</link>
     <description>Maven Service Documentation Generator Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2015 MojoHaus</copyright>
+    <copyright>&#169;2015 - 2016 MojoHaus</copyright>
     <item>
-      <title>File: 30,
-             Errors: 35,
+      <title>File: 29,
+             Errors: 34,
              Warnings: 10,
              Infos: 1
       </title>
@@ -341,20 +341,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.introspection.JReturn.java">org/codehaus/mojo/servicedocgen/introspection/JReturn.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.HelpMojo.java">org/codehaus/mojo/servicedocgen/HelpMojo.java</a>
                 </td>
                 <td>
                   0
