@@ -1,0 +1,267 @@
+{
+  "head": {
+    "title": "$services.info.title",
+    "meta": [
+      {
+        "charset": "utf-8"
+      }
+    ],
+    "link": [],
+    "script": []
+  },
+  "headers": [
+    {
+      "tagName": "h1",
+      "textContent": "$services.info.title",
+      "attributes": []
+    },
+    {
+      "tagName": "h2",
+      "textContent": "$service.name:\n            $service.description",
+      "attributes": {
+        "class": "ellipsis"
+      }
+    },
+    {
+      "tagName": "h3",
+      "textContent": "$operation.httpMethod\n                  $service.basePath$operation.path",
+      "attributes": []
+    }
+  ],
+  "jsonLd": [],
+  "forms": [],
+  "tables": [
+    {
+      "attr": [],
+      "rows": [
+        {
+          "attr": [],
+          "cols": [
+            {
+              "attr": [],
+              "nodeValue": "Name"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Location"
+            },
+            {
+              "attr": [],
+              "nodeValue": "JavaType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "JavaScriptType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Default"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Example"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Description"
+            }
+          ]
+        },
+        {
+          "attr": [],
+          "cols": [
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "-"
+            },
+            {
+              "attr": [],
+              "nodeValue": "No parameters"
+            }
+          ]
+        },
+        {
+          "attr": [],
+          "cols": [
+            {
+              "attr": [],
+              "nodeValue": "$parameter.name"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$parameter.location"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$esc.html($parameter.javaParameter.byteTypeString)"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$parameter.javaScriptType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "#if ($parameter.example)\n                        \n                          $parameter.example\n                        \n                        #end"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$parameter.defaultValue"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$parameter.description"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "attr": [],
+      "rows": [
+        {
+          "attr": [],
+          "cols": [
+            {
+              "attr": [],
+              "nodeValue": "HTTP Staus Code"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Reason"
+            },
+            {
+              "attr": [],
+              "nodeValue": "JavaType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "JavaScriptType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Example"
+            },
+            {
+              "attr": [],
+              "nodeValue": "Description"
+            }
+          ]
+        },
+        {
+          "attr": [],
+          "cols": [
+            {
+              "attr": [],
+              "nodeValue": "$response.statusCode"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$response.reason"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$esc.html($response.javaElement.byteTypeString)"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$response.javaScriptType"
+            },
+            {
+              "attr": [],
+              "nodeValue": "#if ($response.example)\n                        \n                          $response.example\n                        \n                        #end"
+            },
+            {
+              "attr": [],
+              "nodeValue": "$response.description"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "iframes": [],
+  "embeds": [],
+  "imgs": [],
+  "links": [
+    {
+      "text": "$services.info.contact.name",
+      "href": "$services.info.contact.href",
+      "attr": {
+        "href": "$services.info.contact.href"
+      }
+    },
+    {
+      "text": "$services.info.license.name",
+      "href": "$services.info.license.url",
+      "attr": {
+        "href": "$services.info.license.url"
+      }
+    },
+    {
+      "text": "Expand/Collapse",
+      "href": null,
+      "attr": {
+        "onclick": "toggleVisibilities('resources', 'content')"
+      }
+    },
+    {
+      "text": "$service.name",
+      "href": null,
+      "attr": {
+        "onclick": "toggleVisibilityById('$service.id')"
+      }
+    },
+    {
+      "text": "$service.description",
+      "href": null,
+      "attr": {
+        "onclick": "toggleVisibilityById('$service.id')"
+      }
+    },
+    {
+      "text": "Expand/Collapse",
+      "href": null,
+      "attr": {
+        "onclick": "toggleVisibilities('content_$service.id', 'content')"
+      }
+    },
+    {
+      "text": "$operation.httpMethod",
+      "href": null,
+      "attr": {
+        "class": "toggleOperation",
+        "onclick": "toggleVisibilityById('$operation.id')"
+      }
+    },
+    {
+      "text": "$service.basePath$operation.path",
+      "href": null,
+      "attr": {
+        "class": "toggleOperation",
+        "onclick": "toggleVisibilityById('$operation.id')"
+      }
+    }
+  ],
+  "content": "$services.info.title\n$services.info.description\nVersion: $services.info.version\n#if ($services.info.contact.name)\nContact: $services.info.contact.name\n#end\n#if ($services.info.license.name)\nLicense: $services.info.license.name\n#end\nExpand/Collapse\n#foreach ($service in $services.services)\n$service.name:\n$service.description\n$service.description\n$service.javaType\nExpand/Collapse\n#foreach ($operation in $service.operations)\n#set ($deprecated=\"\")\n#if ($operation.deprecated)\n#set ($deprecated=\" deprecated\")\n#end\n#set ($httpMethodClass=$operation.httpMethod)\n#if (($httpMethodClass==\"post\") && ($operation.javaMethod.name.startsWith(\"delete\")))\n#set ($httpMethodClass=\"delete\")\n#end\n$operation.httpMethod\n$service.basePath$operation.path\n$operation.javaMethod.name\n$operation.description\nParameters\nContent-Type: $display.list($service.consumes)\nName\nLocation\nJavaType\nJavaScriptType\nDefault\nExample\nDescription\n#if ($operation.parameters.isEmpty())\n-\n-\n-\n-\n-\n-\nNo parameters\n#else\n#foreach ($parameter in $operation.parameters)\n$parameter.name\n$parameter.location\n$esc.html($parameter.javaParameter.byteTypeString)\n$parameter.javaScriptType\n#if ($parameter.example)\n$parameter.example\n#end\n$parameter.defaultValue\n$parameter.description\n#end\n#end\nResponse\nContent-Type: $display.list($service.produces)\nHTTP Staus Code\nReason\nJavaType\nJavaScriptType\nExample\nDescription\n#foreach ($response in $operation.responses)\n$response.statusCode\n$response.reason\n$esc.html($response.javaElement.byteTypeString)\n$response.javaScriptType\n#if ($response.example)\n$response.example\n#end\n$response.description\n#end\n#end\n#end",
+  "datetime": null
+}
