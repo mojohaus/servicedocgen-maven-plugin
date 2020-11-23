@@ -2,7 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.mojo.servicedocgen.its</groupId>
+  <parent>
+    <groupId>org.codehaus.mojo.servicedocgen.its</groupId>
+    <artifactId>parent</artifactId>
+    <version>1</version>
+  </parent>
   <artifactId>jaxrs-json-simple</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -69,22 +73,6 @@
       </plugin>
     </plugins>
   </reporting>  
-
-  <licenses>
-    <license>
-      <name>Apache Software Licenese</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <comments/>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <email>joerg.hohwiller@googlemail.com</email>
-      <name>Jörg Hohwiller</name>
-      <url>https://github.com/hohwille</url>
-    </developer>
-  </developers>
 
   <dependencies>
     <dependency>
