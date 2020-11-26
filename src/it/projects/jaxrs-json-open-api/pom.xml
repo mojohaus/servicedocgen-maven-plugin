@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mojo.servicedocgen.its</groupId>
-  <artifactId>jaxrs-json-simple</artifactId>
+  <artifactId>jaxrs-json-open-api</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
@@ -13,6 +13,14 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>servicedocgen-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <id>openapi</id>
+            <reports>
+              <report>openapi</report>
+            </reports>
+          </reportSet>
+        </reportSets>
         <configuration>
           <descriptor>
             <info>
@@ -69,7 +77,7 @@
       </plugin>
     </plugins>
   </reporting>
-  <!-- <build>
+ <!--  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
