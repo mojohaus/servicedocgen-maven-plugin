@@ -37,22 +37,22 @@
                 <statusCode>400</statusCode>
                 <comment>Validation error</comment>
                 <jsonExample>{"message": "text",
-  "code": "text",
-  "uuid": "text",
-  "errors": {
-    "bean.property.path": [
-      "ValidationErrorMessage1",
-      "ValidationErrorMessage2"
-    ]
-  }}</jsonExample>
+                  "code": "text",
+                  "uuid": "text",
+                  "errors": {
+                  "bean.property.path": [
+                  "ValidationErrorMessage1",
+                  "ValidationErrorMessage2"
+                  ]
+                  }}</jsonExample>
               </error>
               <error>
                 <errorName>IllegalArgumentException</errorName>
                 <match>regex</match>
                 <statusCode>400</statusCode>
                 <jsonExample>{"message": "text",
-  "code": "text",
-  "uuid": "text"}</jsonExample>
+                  "code": "text",
+                  "uuid": "text"}</jsonExample>
               </error>
               <error>
                 <errorName>.*</errorName>
@@ -60,15 +60,28 @@
                 <statusCode>500</statusCode>
                 <comment>Generic error</comment>
                 <jsonExample>{"message": "text",
-  "code": "text",
-  "uuid": "text"}</jsonExample>
+                  "code": "text",
+                  "uuid": "text"}</jsonExample>
               </error>
             </errors>
           </descriptor>
         </configuration>
       </plugin>
     </plugins>
-  </reporting>  
+  </reporting>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>6</source>
+          <target>6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <licenses>
     <license>

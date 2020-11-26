@@ -47,11 +47,16 @@ public class ServiceDocGenReport extends ReportGen {
   /**
    * The constructor.
    *
-   * @param templateName
    */
-  public ServiceDocGenReport(String templateName) {
+  public ServiceDocGenReport() {
 
-    super(templateName);
+    super();
+  }
+
+  @Override
+  public String getTemplateName() {
+
+    return this.templateName;
   }
 
 }

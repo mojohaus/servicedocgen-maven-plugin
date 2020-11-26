@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.Path;
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.reporting.AbstractMavenReport;
@@ -27,6 +28,12 @@ import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaSource;
 
 /**
+ * {@link AbstractMojo Maven Plugin} to automatically generate documentation for services of the current project. Scans
+ * the current projects source code for (JAX-RS annotated) services that match the RegEx configured by Analyzes the
+ * services from source-code (extract JavaDoc, etc.) and byte-code (resolve generic parameters, etc.) and create
+ * intermediate meta-data as {@link ServicesDescriptor}. Generates documentation from the collected meta-data. scan and
+ * analyze services from the current project via source-code and byte-code analysis
+ *
  * @author suvmanda
  *
  */
@@ -35,11 +42,14 @@ public abstract class ReportGen extends AbstractMavenReport {
   /**
    * The constructor.
    */
-  public ReportGen(String templateName) {
-
-    this.templateName = templateName;
+  public ReportGen() {
 
   }
+
+  /**
+   * @return string.
+   */
+  public abstract String getTemplateName();
 
   /**
    * The directory where the generated service documentation will be written to.
@@ -69,9 +79,6 @@ public abstract class ReportGen extends AbstractMavenReport {
 
   @Parameter(defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity")
   private String templatePath;
-
-  @Parameter(defaultValue = "Service-Documentation.html.vm")
-  private String templateName;
 
   @Parameter(defaultValue = "${project.build.sourceEncoding}")
   private String sourceEncoding;
@@ -150,7 +157,7 @@ public abstract class ReportGen extends AbstractMavenReport {
 
       getLog().info("Generating output...");
       ServicesGenerator generator = new VelocityServicesGenerator(
-          Util.appendPath(this.templatePath, this.templateName));
+          Util.appendPath(this.templatePath, getTemplateName()));
 
       File reportDirectory = new File(this.outputDirectory, this.reportFolder);
       if (!reportDirectory.isDirectory()) {
