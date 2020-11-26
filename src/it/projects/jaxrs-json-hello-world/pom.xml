@@ -54,7 +54,7 @@
           </descriptor>
         </configuration>
       </plugin>
-      <plugin>
+     <!--  <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -62,7 +62,7 @@
           <source>6</source>
           <target>6</target>
         </configuration>
-      </plugin>
+      </plugin> -->
     </plugins>
   </build>
 
