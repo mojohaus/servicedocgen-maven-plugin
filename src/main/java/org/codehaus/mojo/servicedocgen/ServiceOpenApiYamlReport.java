@@ -26,30 +26,30 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 
 /**
- * {@link AbstractMojo Maven Plugin} to automatically generate a HTML based documentation for services of the current project.
+ * {@link AbstractMojo Maven Plugin} to automatically generate OpenAPI specification documentation for services of the current project.
  * <ol>
  * <li>Scans the current projects source code for (JAX-RS annotated) services that match the RegEx configured by
  * <code>classnameRegex</code>.</li>
  * <li>Analyzes the services from source-code (extract JavaDoc, etc.) and byte-code (resolve generic parameters, etc.)
  * and create intermediate meta-data as {@link ServicesDescriptor}.</li>
- * <li>Generates documentation from the collected meta-data as HTML file from a velocity template.</li>
+ * <li>Generates the OpenAPI specification from the collected meta-data as YAML file from a velocity template.</li>
  * </ol>
  *
- * @author hohwille
+ * @author jguenther
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceDocGenReport extends AbstractReportGen {
-  @Parameter(defaultValue = "Service-Documentation.html.vm")
+@Mojo(name = "openapi_yaml", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+public class ServiceOpenApiYamlReport extends AbstractReportGen {
+  @Parameter(defaultValue = "OpenApi.yaml.vm")
   private String templateName;
 
-  @Parameter(defaultValue = "index.html")
+  @Parameter(defaultValue = "openapi.yaml")
   private String outputName;
 
   /**
    * The constructor.
    *
    */
-  public ServiceDocGenReport() {
+  public ServiceOpenApiYamlReport() {
 
   }
 
@@ -67,7 +67,7 @@ public class ServiceDocGenReport extends AbstractReportGen {
 
   @Override
   protected ReportType getReportType() {
-    return ReportType.HTML;
+    return ReportType.OPENAPI_YAML;
   }
 
 }

@@ -1,0 +1,55 @@
+{
+  'openapi': '3.0.0',
+  'info': {
+    'title': '$services.info.title',
+    'version': '$services.info.version',
+    'description': '$services.info.description',
+    'contact': {
+      'name': '$services.info.contact.name',
+      'url': '$services.info.contact.url',
+      'email': '$services.info.contact.email',
+    },
+    'license': {
+      'name': '$services.info.license.name',
+      'url': '$services.info.license.url'
+    }
+  },
+  'paths': {
+    #foreach ($service in $services.services)
+      #foreach ($operation in $service.operations)
+      #set( $nextIndex = $foreach.index + 1)
+      #set( $previousIndex = $foreach.index - 1)
+      #set( $listLength = $service.operations.size())
+      #if($foreach.index == 0 || $service.operations.get($foreach.index).path != $service.operations.get($previousIndex).path)
+      '$service.basePath$operation.path': {
+      #end
+        '$operation.httpMethod': {
+          'description': '$operation.description',
+          'operationId': '$operation.id',
+          #if($operation.parameters.size() > 0 )
+          'parameters': [
+          #foreach ($parameter in $operation.parameters)
+          {
+            'name': '$parameter.name',
+            'in': '$parameter.location',
+            'description': '$parameter.description',
+            'required': $parameter.required
+          },
+          #end
+          ],
+          #end
+          'responses': {
+            #foreach ($response in $operation.responses)
+            '$response.statusCode': {
+              'description': '$response.description'
+            },
+            #end
+          }
+        },
+      #if($foreach.index == $listLength - 1 || $service.operations.get($foreach.index).path != $service.operations.get($nextIndex).path)
+      },
+      #end
+      #end
+    #end
+  }
+}

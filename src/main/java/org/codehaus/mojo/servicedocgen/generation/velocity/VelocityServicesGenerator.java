@@ -75,11 +75,11 @@ public class VelocityServicesGenerator
     /**
      * {@inheritDoc}
      */
-    public void generate( ServicesDescriptor descriptor, File outputDirectory )
+    @Override
+    public void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
         throws IOException
     {
         this.context.put( "services", descriptor );
-        String filename = "index.html";
         File outputFile = new File( outputDirectory, filename );
         OutputStream out = new FileOutputStream( outputFile );
         try
