@@ -37,37 +37,39 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
  *
  * @author jguenther
  */
-@Mojo(name = "openapi_yaml", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceOpenApiYamlReport extends AbstractReportGen {
-  @Parameter(defaultValue = "OpenApi.yaml.vm")
-  private String templateName;
+@Mojo( name = "openapi_yaml", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
+public class ServiceOpenApiYamlReport extends AbstractReportGen
+{
 
-  @Parameter(defaultValue = "openapi.yaml")
-  private String outputName;
+    @Parameter( defaultValue = "OpenApi.yaml.vm" )
+    private String templateName;
 
-  /**
-   * The constructor.
-   *
-   */
-  public ServiceOpenApiYamlReport() {
+    @Parameter( defaultValue = "openapi.yaml" )
+    private String outputName;
 
-  }
+    /**
+     * The constructor.
+     *
+     */
+    public ServiceOpenApiYamlReport()
+    {
 
-  @Override
-  public String getTemplateName() {
+    }
 
-    return this.templateName;
-  }
+    @Override
+    public String getTemplateName()
+    {
+        return this.templateName;
+    }
 
-  @Override
-  public String getOutputName() {
+    @Override
+    public String getOutputName()
+    {
+        return this.outputName;
+    }
 
-    return this.outputName;
-  }
-
-  @Override
-  protected ReportType getReportType() {
-    return ReportType.OPENAPI_YAML;
-  }
-
+    @Override
+    protected ReportType getReportType() {
+      return ReportType.OPENAPI_YAML;
+    }
 }

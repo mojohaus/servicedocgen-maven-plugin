@@ -37,37 +37,39 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
  *
  * @author jguenther
  */
-@Mojo(name = "openapi_json", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceOpenApiJsonReport extends AbstractReportGen {
-  @Parameter(defaultValue = "OpenApi.json.vm")
-  private String templateName;
+@Mojo( name = "openapi_json", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
+public class ServiceOpenApiJsonReport extends AbstractReportGen
+{
+    @Parameter( defaultValue = "OpenApi.json.vm" )
+    private String templateName;
 
-  @Parameter(defaultValue = "openapi.json")
-  private String outputName;
+    @Parameter( defaultValue = "openapi.json" )
+    private String outputName;
 
-  /**
-   * The constructor.
-   *
-   */
-  public ServiceOpenApiJsonReport() {
+    /**
+     * The constructor.
+     *
+     */
+    public ServiceOpenApiJsonReport()
+    {
 
-  }
+    }
 
-  @Override
-  public String getTemplateName() {
+    @Override
+    public String getTemplateName()
+    {
+        return this.templateName;
+    }
 
-    return this.templateName;
-  }
+    @Override
+    public String getOutputName()
+    {
+        return this.outputName;
+    }
 
-  @Override
-  public String getOutputName() {
-
-    return this.outputName;
-  }
-
-  @Override
-  protected ReportType getReportType() {
-    return ReportType.OPENAPI_JSON;
-  }
-
+    @Override
+    protected ReportType getReportType()
+    {
+        return ReportType.OPENAPI_JSON;
+    }
 }

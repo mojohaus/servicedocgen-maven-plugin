@@ -23,6 +23,7 @@ package org.codehaus.mojo.servicedocgen;
  *
  * @author jguenther
  */
-public enum ReportType {
-  HTML, OPENAPI_JSON, OPENAPI_YAML
+public enum ReportType
+{
+    HTML, OPENAPI_JSON, OPENAPI_YAML
 }

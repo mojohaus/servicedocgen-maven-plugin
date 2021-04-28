@@ -37,37 +37,40 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
  *
  * @author hohwille
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceDocGenReport extends AbstractReportGen {
-  @Parameter(defaultValue = "Service-Documentation.html.vm")
-  private String templateName;
+@Mojo( name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME )
+public class ServiceDocGenReport extends AbstractReportGen
+{
 
-  @Parameter(defaultValue = "index.html")
-  private String outputName;
+    @Parameter( defaultValue = "Service-Documentation.html.vm" )
+    private String templateName;
 
-  /**
-   * The constructor.
-   *
-   */
-  public ServiceDocGenReport() {
+    @Parameter( defaultValue = "index.html" )
+    private String outputName;
 
-  }
+    /**
+     * The constructor.
+     *
+     */
+    public ServiceDocGenReport()
+    {
 
-  @Override
-  public String getTemplateName() {
+    }
 
-    return this.templateName;
-  }
+    @Override
+    public String getTemplateName()
+    {
+        return this.templateName;
+    }
 
-  @Override
-  public String getOutputName() {
+    @Override
+    public String getOutputName()
+    {
+        return this.outputName;
+    }
 
-    return this.outputName;
-  }
-
-  @Override
-  protected ReportType getReportType() {
-    return ReportType.HTML;
-  }
-
+    @Override
+    protected ReportType getReportType()
+    {
+        return ReportType.HTML;
+    }
 }

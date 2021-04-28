@@ -23,7 +23,13 @@ paths:
     $operation.httpMethod:
       description: $operation.description
       operationId: $operation.id
-#if($operation.parameters.size() > 0 )
+#if($operation.httpMethod == "post" && $operation.parameters.size() == 1)
+      requestBody:
+        content:
+          $display.list($operation.produces):
+            schema:
+              $ref: '#/components/schemas/$operation.getParameters().get(0).javaParameter.byteTypeString'
+#elseif($operation.parameters.size() > 0 )
       parameters:
 #foreach ($parameter in $operation.parameters)
         - name: $parameter.name
@@ -35,8 +41,16 @@ paths:
 #foreach ($response in $operation.responses)
         '$response.statusCode':
           description: $response.description
+#if($response.javaElement.byteTypeString != "void")
+          content:
+            $display.list($operation.produces):
+              schema:
+                $ref: '#/components/schemas/$response.javaElement.byteTypeString'
 #end
 #end
 #end
 #end
 #end
+#end
+components:
+  schema:
