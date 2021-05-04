@@ -949,19 +949,19 @@ public class Analyzer
                 {
                     if( reportType == ReportType.OPENAPI_JSON )
                     {
-                        createSchemaAsJsonForObject( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "      ", schemasCreated );
+                        createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "      ", schemasCreated );
                     } else if ( reportType == ReportType.OPENAPI_YAML ) 
                     {
-                        createSchemaAsYamlForObject( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "    ", schemasCreated );
+                        createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "    ", schemasCreated );
                     }
                 } else
                 {
                     if( reportType == ReportType.OPENAPI_JSON )
                     {
-                        createSchemaAsJsonForObject( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "      ", schemasCreated );
+                        createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "      ", schemasCreated );
                     } else if ( reportType == ReportType.OPENAPI_YAML ) 
                     {
-                        createSchemaAsYamlForObject( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "    ", schemasCreated );
+                        createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "    ", schemasCreated );
                     }
                 }
             }
@@ -969,7 +969,7 @@ public class Analyzer
         return buffer.toString();
     }
     
-    private void createSchemaAsJsonForObject( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
+    private void createSchemaAsJsonForType( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
     {
         PojoDescriptor<?> pojoDescriptor = pojoDescriptorBuilder.getDescriptor( byteType );
         List<? extends PojoPropertyDescriptor> propertyDescriptors = new ArrayList<PojoPropertyDescriptor>( pojoDescriptor.getPropertyDescriptors() );
@@ -1039,7 +1039,7 @@ public class Analyzer
             {
                 if( !schemasCreated.contains( entry.getKey() ) )
                 {
-                    createSchemaAsJsonForObject( pojoDescriptorBuilder, entry.getValue(), buffer, indentation, schemasCreated );
+                    createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue(), buffer, indentation, schemasCreated );
                 }
             }
         }
@@ -1047,7 +1047,7 @@ public class Analyzer
         return;
     }
     
-    private void createSchemaAsYamlForObject( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
+    private void createSchemaAsYamlForType( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
     {
         PojoDescriptor<?> pojoDescriptor = pojoDescriptorBuilder.getDescriptor( byteType );
         List<? extends PojoPropertyDescriptor> propertyDescriptors = new ArrayList<PojoPropertyDescriptor>( pojoDescriptor.getPropertyDescriptors() );
@@ -1114,7 +1114,7 @@ public class Analyzer
         {
             if ( !schemasCreated.contains( entry.getKey() ) )
             {
-                createSchemaAsYamlForObject( pojoDescriptorBuilder, entry.getValue(), buffer, indentation, schemasCreated );
+                createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue(), buffer, indentation, schemasCreated );
             }
         }
         
