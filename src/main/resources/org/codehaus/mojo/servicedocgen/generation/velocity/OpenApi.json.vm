@@ -144,9 +144,11 @@
 #end
 #end
   },
+#if($services.getSchemaDefinitionJson() != "")  
   "components": {
     "schemas": {
 $services.getSchemaDefinitionJson()
     }
   }
+#end
 }

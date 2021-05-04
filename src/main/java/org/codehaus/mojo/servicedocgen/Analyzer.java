@@ -943,7 +943,7 @@ public class Analyzer
         {
             Entry<String, JElement> entry = it.next();
             JElement javaElement = entry.getValue();
-            if( !javaElement.getSourceType().isPrimitive() ) 
+            if( !javaElement.getSourceType().isPrimitive() && !javaElement.getSourceType().getName().equals( "String" ) ) 
             {
                 if( entry.getValue().getByteType().getComponentType() == null )
                 {
@@ -999,13 +999,15 @@ public class Analyzer
                         buffer.append( indentation.concat( "      'type': 'integer'\n" ) );
                     } else if( type.equals( "double" ) || type.equals( "float") ) {
                         buffer.append( indentation.concat( "      'type': 'number'\n" ) );
-                    } else if( type.equals( "boolean" ) ) {
+                    } else if( type.equals( "boolean" ) )
+                    {
                         buffer.append( indentation.concat( "      'type': 'boolean'\n" ) );
                     } else if( type.equals( "java.lang.String" ) )
                     {
                         buffer.append( indentation.concat( "      'type': 'string'\n" ) );
                     } else
                     {
+                        boolean addSchema = true;
                         GenericType<?> byteTypeToCreate;
                         if( getter.getReturnType().getComponentType() == null )
                         {
@@ -1014,13 +1016,33 @@ public class Analyzer
                         } else
                         {
                             byteTypeToCreate = getter.getReturnType().getComponentType();
+                            String typeName = byteTypeToCreate.getTypeName();
+                            
                             buffer.append( indentation.concat( "      'type': 'array',\n") );
                             buffer.append( indentation.concat( "      'items': {\n") );
-                            buffer.append( indentation.concat( "        $ref: '#/components/schemas/" + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n") );
+                            if( typeName.equals( "int" ) || typeName.equals( "long" ) || typeName.equals( "byte" ) )
+                            {
+                                buffer.append( indentation.concat( "        'type': 'integer'\n") );
+                                addSchema = false;
+                            } else if( typeName.equals( "double" ) || typeName.equals( "float") )
+                            {
+                                buffer.append( indentation.concat( "        'type': 'number'\n") );
+                                addSchema = false;
+                            } else if( typeName.equals( "boolean" ) ) {
+                                buffer.append( indentation.concat( "        'type': 'boolean'\n") );
+                                addSchema = false;
+                            } else if( typeName.equals( "java.lang.String" ) )
+                            {
+                                buffer.append( indentation.concat( "        'type': 'string'\n") );
+                                addSchema = false;
+                            } else
+                            {
+                                buffer.append( indentation.concat( "        $ref: '#/components/schemas/" + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n") );
+                            }
                             buffer.append( indentation.concat( "      }\n" ) );
                         }
                         
-                        if( !schemasToCreate.containsKey( byteTypeToCreate.getAssignmentClass().getSimpleName() ) )
+                        if( !schemasToCreate.containsKey( byteTypeToCreate.getAssignmentClass().getSimpleName() ) && addSchema )
                         {
                             schemasToCreate.put( byteTypeToCreate.getAssignmentClass().getSimpleName(), byteTypeToCreate );
                         }
@@ -1086,6 +1108,7 @@ public class Analyzer
                         buffer.append( indentation.concat( "      type: string\n" ) );
                     } else
                     {
+                        boolean addSchema = true;
                         GenericType<?> byteTypeToCreate;
                         if (getter.getReturnType().getComponentType() == null )
                         {
@@ -1094,12 +1117,32 @@ public class Analyzer
                         } else
                         {
                             byteTypeToCreate = getter.getReturnType().getComponentType();
+                            String typeName = byteTypeToCreate.getTypeName();
+                            
                             buffer.append( indentation.concat( "      type: array\n" ) );
                             buffer.append( indentation.concat( "      items:\n" ) );
-                            buffer.append( indentation.concat( "        $ref: '#/components/schemas/" + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n" ) );
+                            if( typeName.equals( "int" ) || typeName.equals( "long" ) || typeName.equals( "byte" ) )
+                            {
+                                buffer.append( indentation.concat( "        type: integer\n" ) );
+                                addSchema = false;
+                            } else if( typeName.equals( "double" ) || typeName.equals( "float") )
+                            {
+                                buffer.append( indentation.concat( "        type: number\n" ) );
+                                addSchema = false;
+                            } else if( typeName.equals( "boolean" ) ) {
+                                buffer.append( indentation.concat( "        type: boolean\n" ) );
+                                addSchema = false;
+                            } else if( typeName.equals( "java.lang.String" ) )
+                            {
+                                buffer.append( indentation.concat( "        type: string\n" ) );
+                                addSchema = false;
+                            } else
+                            {
+                                buffer.append( indentation.concat( "        $ref: '#/components/schemas/" + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n" ) );
+                            }
                         }
                         
-                        if ( !schemasToCreate.containsKey(byteTypeToCreate.getAssignmentClass().getSimpleName() ) )
+                        if ( !schemasToCreate.containsKey(byteTypeToCreate.getAssignmentClass().getSimpleName() ) && addSchema )
                         {
                             schemasToCreate.put( byteTypeToCreate.getAssignmentClass().getSimpleName(), byteTypeToCreate );
                         }

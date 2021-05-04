@@ -119,6 +119,8 @@ paths:
 
 #end
 #end
+#if($services.getSchemaDefinitionYaml() != "")
 components:
   schemas:
 $services.getSchemaDefinitionYaml()
+#end
