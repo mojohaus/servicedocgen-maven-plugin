@@ -31,7 +31,29 @@
           'content': {
             '$display.list($operation.produces)': {
               'schema': {
-                '$ref': '#/components/schemas/$operation.getParameters().get(0).javaParameter.byteTypeString'
+#if($operation.getParameters().get(0).javaParameter.getSourceType().isPrimitive())
+#set($type = $operation.getParameters().get(0).javaParameter.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+                'type': 'integer'
+#elseif($type == "float" || $type == "double")
+                'type': 'number'
+#elseif($type == "boolean")
+                'type': 'boolean'
+#end                  
+#else
+#if($operation.getParameters().get(0).javaParameter.byteTypeString == "String")
+                'type': 'string'
+#else
+#if(!$operation.getParameters().get(0).javaParameter.getByteType().getComponentType())
+                '$ref': '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#else
+                'type': 'array',
+                'items': {
+                  $ref: '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                },
+#end
+#end
+#end      
               }
             }
           }
@@ -43,7 +65,36 @@
           'name': '$parameter.name',
           'in': '$parameter.location',
           'description': '$parameter.description',
-          'required': $parameter.required
+#if($parameter.location == "path")
+          'required': true,
+#else
+          'required': $parameter.required,
+#end
+          'schema': {
+#if($parameter.javaParameter.getSourceType().isPrimitive())
+#set($type = $parameter.javaParameter.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+            'type': 'integer'
+#elseif($type == "float" || $type == "double")
+            'type': 'number'
+#elseif($type == "boolean")
+            'type': 'boolean'
+#end                  
+#else
+#if($parameter.javaParameter.byteTypeString == "String")
+            'type': 'string'
+#else
+#if(!$parameter.javaParameter.getByteType().getComponentType())
+            '$ref': '#/components/schemas/$parameter.javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#else
+            'type': 'array',
+            'items': {
+              $ref: '#/components/schemas/$parameter.javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+            },
+#end
+#end
+#end
+          }
         },
 #end
         ],
@@ -52,11 +103,33 @@
 #foreach ($response in $operation.responses)
           '$response.statusCode': {
             'description': '$response.description',
-#if($response.javaElement.byteTypeString != "void")
+#if($response.javaElement.byteTypeString != "void" && $response.statusCode == 200)
             'content': {
               '$display.list($operation.produces)': {
                 'schema': {
-                  '$ref': '#/components/schemas/$response.javaElement.byteTypeString'
+#if($response.javaElement.getSourceType().isPrimitive())
+#set($type = $response.javaElement.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+                  'type': 'integer'
+#elseif($type == "float" || $type == "double")
+                  'type': 'number'
+#elseif($type == "boolean")
+                  'type': 'boolean'
+#end                  
+#else
+#if($response.javaElement.byteTypeString == "String")
+                  'type': 'string'
+#else
+#if(!$response.javaElement.getByteType().getComponentType())
+                  '$ref': '#/components/schemas/$response.javaElement.getByteType().getAssignmentClass().getSimpleName()'
+#else
+                  'type': 'array',
+                  'items': {
+                    $ref: '#/components/schemas/$response.javaElement.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                  },
+#end
+#end
+#end
                 }
               }
             }
@@ -73,6 +146,7 @@
   },
   "components": {
     "schemas": {
+$services.getSchemaDefinitionJson()
     }
   }
 }
