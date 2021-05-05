@@ -26,8 +26,8 @@ paths:
         content:
           $display.list($operation.produces):
             schema:
-#if($operation.getParameters().get(0).javaParameter.getSourceType().isPrimitive())
-#set($type = $operation.getParameters().get(0).javaParameter.byteTypeString)
+#if($operation.parameters.get(0).javaParameter.sourceType.primitive)
+#set($type = $operation.parameters.get(0).javaParameter.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
               type: integer
 #elseif($type == "float" || $type == "double")
@@ -36,15 +36,15 @@ paths:
               type: boolean
 #end                  
 #else
-#if($operation.getParameters().get(0).javaParameter.byteTypeString == "String")
+#if($operation.parameters.get(0).javaParameter.byteTypeString == "String")
               type: string
 #else
-#if(!$operation.getParameters().get(0).javaParameter.getByteType().getComponentType())
-              $ref: '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$operation.parameters.get(0).javaParameter.byteType.componentType)
+              $ref: '#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.assignmentClass.simpleName'
 #else
               type: array
               items:
-                $ref: '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                $ref: '#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.componentType.assignmentClass.simpleName'
 #end
 #end
 #end      
@@ -60,7 +60,7 @@ paths:
           required: $parameter.required
 #end
           schema:
-#if($parameter.javaParameter.getSourceType().isPrimitive())
+#if($parameter.javaParameter.sourceType.primitive)
 #set($type = $parameter.javaParameter.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
             type: integer
@@ -73,12 +73,12 @@ paths:
 #if($parameter.javaParameter.byteTypeString == "String")
             type: string
 #else
-#if(!$parameter.javaParameter.getByteType().getComponentType())
-            $ref: '#/components/schemas/$parameter.javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$parameter.javaParameter.byteType.componentType)
+            $ref: '#/components/schemas/$parameter.javaParameter.byteType.assignmentClass.simpleName'
 #else
             type: array
             items:
-              $ref: '#/components/schemas/$parameter.javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+              $ref: '#/components/schemas/$parameter.javaParameter.byteType.componentType.assignmentClass.simpleName'
 #end
 #end
 #end
@@ -92,7 +92,7 @@ paths:
           content:
             $display.list($operation.produces): 
               schema: 
-#if($response.javaElement.getSourceType().isPrimitive())
+#if($response.javaElement.sourceType.primitive)
 #set($type = $response.javaElement.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
                 type: integer
@@ -105,12 +105,12 @@ paths:
 #if($response.javaElement.byteTypeString == "String")
                 type: string
 #else
-#if(!$response.javaElement.getByteType().getComponentType())
-                $ref: '#/components/schemas/$response.javaElement.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$response.javaElement.byteType.componentType)
+                $ref: '#/components/schemas/$response.javaElement.byteType.assignmentClass.simpleName'
 #else
                 type: array
                 items:
-                  $ref: '#/components/schemas/$response.javaElement.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                  $ref: '#/components/schemas/$response.javaElement.byteType.componentType.assignmentClass.simpleName'
 #end
 #end
 #end
@@ -119,8 +119,8 @@ paths:
 
 #end
 #end
-#if($services.getSchemaDefinitionYaml() != "")
+#if($services.schemaDefinitionYaml != "")
 components:
   schemas:
-$services.getSchemaDefinitionYaml()
+$services.schemaDefinitionYaml
 #end

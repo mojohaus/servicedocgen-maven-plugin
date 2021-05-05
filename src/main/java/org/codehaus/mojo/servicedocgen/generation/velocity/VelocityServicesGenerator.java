@@ -31,6 +31,7 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.ToolManager;
+import org.codehaus.mojo.servicedocgen.EscapeHelper;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 
@@ -80,6 +81,7 @@ public class VelocityServicesGenerator
         throws IOException
     {
         this.context.put( "services", descriptor );
+        this.context.put( "EscapeHelper", EscapeHelper.class );
         File outputFile = new File( outputDirectory, filename );
         OutputStream out = new FileOutputStream( outputFile );
         try

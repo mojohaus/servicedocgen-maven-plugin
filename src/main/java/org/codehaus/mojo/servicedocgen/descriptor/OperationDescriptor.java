@@ -116,7 +116,7 @@ public class OperationDescriptor
      */
     public String getDescription()
     {
-        return this.description.replace("'", "\"");
+        return this.description;
     }
 
     /**

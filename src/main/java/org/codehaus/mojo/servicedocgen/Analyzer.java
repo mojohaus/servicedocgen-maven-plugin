@@ -248,8 +248,8 @@ public class Analyzer
             this.descriptor.getServices().add( service );
         }
         
-        String schemaJson = getSchemaAsString(ReportType.OPENAPI_JSON);
-        String schemaYaml = getSchemaAsString(ReportType.OPENAPI_YAML);
+        String schemaJson = getSchemaAsString("json");
+        String schemaYaml = getSchemaAsString("yaml");
         this.descriptor.setSchemaDefinitionJson(schemaJson);
         this.descriptor.setSchemaDefinitionYaml(schemaYaml);
         return this.descriptor;
@@ -931,7 +931,7 @@ public class Analyzer
         }
     }
     
-    private String getSchemaAsString( ReportType reportType )
+    private String getSchemaAsString( String type )
     {
         PojoDescriptorBuilderFactory pojoDescriptorBuilderFactory = PojoDescriptorBuilderFactoryImpl.getInstance();
         PojoDescriptorBuilder pojoDescriptorBuilder = pojoDescriptorBuilderFactory.createPrivateFieldDescriptorBuilder();
@@ -947,19 +947,19 @@ public class Analyzer
             {
                 if( entry.getValue().getByteType().getComponentType() == null )
                 {
-                    if( reportType == ReportType.OPENAPI_JSON )
+                    if( type.equals( "json" ) )
                     {
                         createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "      ", schemasCreated );
-                    } else if ( reportType == ReportType.OPENAPI_YAML ) 
+                    } else if ( type.equals( "yaml" ) ) 
                     {
                         createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "    ", schemasCreated );
                     }
                 } else
                 {
-                    if( reportType == ReportType.OPENAPI_JSON )
+                    if( type.equals( "json" ) )
                     {
                         createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "      ", schemasCreated );
-                    } else if ( reportType == ReportType.OPENAPI_YAML ) 
+                    } else if ( type.equals( "yaml" ) ) 
                     {
                         createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "    ", schemasCreated );
                     }

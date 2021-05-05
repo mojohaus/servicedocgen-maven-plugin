@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.Path;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -100,8 +101,8 @@ public class ServiceDocGenReport
     @Parameter( defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity" )
     private String templatePath;
 
-    @Parameter( defaultValue = "Service-Documentation.html.vm, OpenApi.yaml.vm" )
-    private String templateName;
+    @Parameter( required = false )
+    private List<ServiceDocGenTemplate> templates;
 
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     private String sourceEncoding;
@@ -111,12 +112,6 @@ public class ServiceDocGenReport
      */
     @Parameter( defaultValue = "false" )
     private boolean introspectFields;
-
-    @Parameter( defaultValue = "index.html, openapi.yaml" )
-    private String outputName;
-
-    @Parameter( defaultValue = "html, openapi_yaml" )
-    private String reportType;
 
     private ClassLoader projectClassloader;
 
@@ -161,6 +156,17 @@ public class ServiceDocGenReport
     {
         return true;
     }
+    
+    private List<ServiceDocGenTemplate> getTemplates()
+    {
+        if( CollectionUtils.isEmpty( this.templates ) )
+        {
+            this.templates = new ArrayList<ServiceDocGenTemplate>();
+            this.templates.add(new ServiceDocGenTemplate("Service-Documentation.html.vm", "index.html"));
+            this.templates.add(new ServiceDocGenTemplate("OpenApi.yaml.vm", "openapi.yaml"));
+        }
+        return this.templates;
+    }
 
     /**
      * {@inheritDoc}
@@ -188,21 +194,13 @@ public class ServiceDocGenReport
             Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
                 this.introspectFields );
             ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
+            sortServiceOperationsByPath(services);
 
-            String[] reportTypes = this.reportType.split(",");
-            String[] templateNames = this.templateName.split(",");
-            String[] outputNames = this.outputName.split(",");
-            for( int i = 0; i < reportTypes.length; i++ )
+            for( ServiceDocGenTemplate template : getTemplates() )
             {
-
-                if ( reportTypes[i].trim().equals(ReportType.OPENAPI_JSON.toString()) || reportTypes[i].trim().equals(ReportType.OPENAPI_YAML.toString()) )
-                {
-                    sortServiceOperationsByPath(services);
-                }
-
                 getLog().info( "Generating output..." );
                 ServicesGenerator generator =
-                    new VelocityServicesGenerator( Util.appendPath( this.templatePath, templateNames[i].trim() ) );
+                    new VelocityServicesGenerator( Util.appendPath( this.templatePath, template.getTemplateName() ) );
 
                 File reportDirectory = new File( this.outputDirectory, this.reportFolder );
                 if ( !reportDirectory.isDirectory() )
@@ -213,7 +211,7 @@ public class ServiceDocGenReport
                         throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                     }
                 }
-                generator.generate( services, reportDirectory, outputNames[i].trim() );
+                generator.generate( services, reportDirectory, template.getOutputName() );
             }
         }
         catch ( MavenReportException e )

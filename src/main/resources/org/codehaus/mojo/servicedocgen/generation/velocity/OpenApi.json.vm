@@ -1,55 +1,55 @@
 {
-  'openapi': '3.0.0',
-  'info': {
-    'title': '$services.info.title',
-    'version': '$services.info.version',
-    'description': '$services.info.description',
-    'contact': {
-      'name': '$services.info.contact.name',
-      'url': '$services.info.contact.url',
-      'email': '$services.info.contact.email',
+  "openapi": "3.0.0",
+  "info": {
+    "title": "$services.info.title",
+    "version": "$services.info.version",
+    "description": "$services.info.description",
+    "contact": {
+      "name": "$services.info.contact.name",
+      "url": "$services.info.contact.url",
+      "email": "$services.info.contact.email",
     },
-    'license': {
-      'name': '$services.info.license.name',
-      'url': '$services.info.license.url'
+    "license": {
+      "name": "$services.info.license.name",
+      "url": "$services.info.license.url"
     }
   },
-  'paths': {
+  "paths": {
 #foreach ($service in $services.services)
 #foreach ($operation in $service.operations)
 #set( $nextIndex = $foreach.index + 1)
 #set( $previousIndex = $foreach.index - 1)
 #set( $listLength = $service.operations.size())
 #if($foreach.index == 0 || $service.operations.get($foreach.index).path != $service.operations.get($previousIndex).path)
-    '$service.basePath$operation.path': {
+    "$service.basePath$operation.path": {
 #end
-      '$operation.httpMethod': {
-        'description': '$operation.description',
-        'operationId': '$operation.id',
+      "$operation.httpMethod": {
+        "description": "$EscapeHelper.escapeJson($operation.description)",
+        "operationId": "$operation.id",
 #if($operation.httpMethod == "post" && $operation.parameters.size() == 1)
-        'requestBody': {
-          'content': {
-            '$display.list($operation.produces)': {
-              'schema': {
-#if($operation.getParameters().get(0).javaParameter.getSourceType().isPrimitive())
-#set($type = $operation.getParameters().get(0).javaParameter.byteTypeString)
+        "requestBody": {
+          "content": {
+            "$display.list($operation.produces)": {
+              "schema": {
+#if($operation.parameters.get(0).javaParameter.sourceType.primitive)
+#set($type = $operation.parameters.get(0).javaParameter.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
-                'type': 'integer'
+                "type": "integer"
 #elseif($type == "float" || $type == "double")
-                'type': 'number'
+                "type": "number"
 #elseif($type == "boolean")
-                'type': 'boolean'
+                "type": "boolean"
 #end                  
 #else
-#if($operation.getParameters().get(0).javaParameter.byteTypeString == "String")
-                'type': 'string'
+#if($operation.parameters.get(0).javaParameter.byteTypeString == "String")
+                "type": "string"
 #else
-#if(!$operation.getParameters().get(0).javaParameter.getByteType().getComponentType())
-                '$ref': '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$operation.parameters.get(0).javaParameter.byteType.componentType)
+                "$ref": "#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.assignmentClass.simpleName"
 #else
-                'type': 'array',
-                'items': {
-                  $ref: '#/components/schemas/$operation.getParameters().get(0).javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                "type": "array",
+                "items": {
+                  $ref: "#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.componentType.assignmentClass.simpleName"
                 },
 #end
 #end
@@ -59,37 +59,37 @@
           }
         },
 #elseif($operation.parameters.size() > 0 )
-        'parameters': [
+        "parameters": [
 #foreach ($parameter in $operation.parameters)
         {
-          'name': '$parameter.name',
-          'in': '$parameter.location',
-          'description': '$parameter.description',
+          "name": "$parameter.name",
+          "in": "$parameter.location",
+          "description": "$EscapeHelper.escapeJson($parameter.description)",
 #if($parameter.location == "path")
-          'required': true,
+          "required": true,
 #else
-          'required': $parameter.required,
+          "required": $parameter.required,
 #end
-          'schema': {
-#if($parameter.javaParameter.getSourceType().isPrimitive())
+          "schema": {
+#if($parameter.javaParameter.sourceType.primitive)
 #set($type = $parameter.javaParameter.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
-            'type': 'integer'
+            "type": "integer"
 #elseif($type == "float" || $type == "double")
-            'type': 'number'
+            "type": "number"
 #elseif($type == "boolean")
-            'type': 'boolean'
+            "type": "boolean"
 #end                  
 #else
 #if($parameter.javaParameter.byteTypeString == "String")
-            'type': 'string'
+            "type": "string"
 #else
-#if(!$parameter.javaParameter.getByteType().getComponentType())
-            '$ref': '#/components/schemas/$parameter.javaParameter.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$parameter.javaParameter.byteType.componentType)
+            "$ref": "#/components/schemas/$parameter.javaParameter.byteType.assignmentClass.simpleName"
 #else
-            'type': 'array',
-            'items': {
-              $ref: '#/components/schemas/$parameter.javaParameter.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+            "type": "array",
+            "items": {
+              $ref: "#/components/schemas/$parameter.javaParameter.byteType.componentType.assignmentClass.simpleName"
             },
 #end
 #end
@@ -99,33 +99,33 @@
 #end
         ],
 #end
-        'responses': {
+        "responses": {
 #foreach ($response in $operation.responses)
-          '$response.statusCode': {
-            'description': '$response.description',
+          "$response.statusCode": {
+            "description": "$EscapeHelper.escapeJson($response.description)",
 #if($response.javaElement.byteTypeString != "void" && $response.statusCode == 200)
-            'content': {
-              '$display.list($operation.produces)': {
-                'schema': {
-#if($response.javaElement.getSourceType().isPrimitive())
+            "content": {
+              "$display.list($operation.produces)": {
+                "schema": {
+#if($response.javaElement.sourceType.primitive)
 #set($type = $response.javaElement.byteTypeString)
 #if($type == "int" || $type == "long" || $type == "byte")
-                  'type': 'integer'
+                  "type": "integer"
 #elseif($type == "float" || $type == "double")
-                  'type': 'number'
+                  "type": "number"
 #elseif($type == "boolean")
-                  'type': 'boolean'
+                  "type": "boolean"
 #end                  
 #else
 #if($response.javaElement.byteTypeString == "String")
-                  'type': 'string'
+                  "type": "string"
 #else
-#if(!$response.javaElement.getByteType().getComponentType())
-                  '$ref': '#/components/schemas/$response.javaElement.getByteType().getAssignmentClass().getSimpleName()'
+#if(!$response.javaElement.byteType.componentType)
+                  "$ref": "#/components/schemas/$response.javaElement.byteType.assignmentClass.simpleName"
 #else
-                  'type': 'array',
-                  'items': {
-                    $ref: '#/components/schemas/$response.javaElement.getByteType().getComponentType().getAssignmentClass().getSimpleName()'
+                  "type": "array",
+                  "items": {
+                    $ref: "#/components/schemas/$response.javaElement.byteType.componentType.assignmentClass.simpleName"
                   },
 #end
 #end
@@ -144,10 +144,10 @@
 #end
 #end
   },
-#if($services.getSchemaDefinitionJson() != "")  
+#if($services.schemaDefinitionJson != "")  
   "components": {
     "schemas": {
-$services.getSchemaDefinitionJson()
+$services.schemaDefinitionJson
     }
   }
 #end
