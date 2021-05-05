@@ -274,29 +274,33 @@ public class ServicesDescriptor
     /**
      * @return the schema definition as json
      */
-	public String getSchemaDefinitionJson() {
-		return this.schemaDefinitionJson;
-	}
+    public String getSchemaDefinitionJson()
+    {
+        return this.schemaDefinitionJson;
+    }
 
-	/**
+    /**
      * @param schemaDefinitionJson is the schema definition as json to set
      */
-	public void setSchemaDefinitionJson(String schemaDefinitionJson) {
-		this.schemaDefinitionJson = schemaDefinitionJson;
-	}
+    public void setSchemaDefinitionJson( String schemaDefinitionJson )
+    {
+        this.schemaDefinitionJson = schemaDefinitionJson;
+    }
 
-	/**
+    /**
      * @return the schema definition as yaml
      */
-	public String getSchemaDefinitionYaml() {
-		return this.schemaDefinitionYaml;
-	}
+    public String getSchemaDefinitionYaml()
+    {
+        return this.schemaDefinitionYaml;
+    }
 
-	/**
+    /**
      * @param schemaDefinitionYaml is the schema definition as yaml to set
      */
-	public void setSchemaDefinitionYaml(String schemaDefinitionYaml) {
-		this.schemaDefinitionYaml = schemaDefinitionYaml;
-	}
+    public void setSchemaDefinitionYaml( String schemaDefinitionYaml )
+    {
+        this.schemaDefinitionYaml = schemaDefinitionYaml;
+    }
 
 }

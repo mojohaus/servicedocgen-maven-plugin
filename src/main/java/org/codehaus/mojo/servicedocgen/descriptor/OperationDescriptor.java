@@ -242,7 +242,6 @@ public class OperationDescriptor
     /**
      * {@inheritDoc}
      */
-    @Override
     public int compareTo( OperationDescriptor o )
     {
         if ( o == null )

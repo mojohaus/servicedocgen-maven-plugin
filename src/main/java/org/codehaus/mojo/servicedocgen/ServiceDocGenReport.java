@@ -162,8 +162,8 @@ public class ServiceDocGenReport
         if( CollectionUtils.isEmpty( this.templates ) )
         {
             this.templates = new ArrayList<ServiceDocGenTemplate>();
-            this.templates.add(new ServiceDocGenTemplate("Service-Documentation.html.vm", "index.html"));
-            this.templates.add(new ServiceDocGenTemplate("OpenApi.yaml.vm", "openapi.yaml"));
+            this.templates.add( new ServiceDocGenTemplate( "Service-Documentation.html.vm", "index.html" ) );
+            this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm", "openapi.yaml" ) );
         }
         return this.templates;
     }
@@ -194,7 +194,7 @@ public class ServiceDocGenReport
             Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
                 this.introspectFields );
             ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
-            sortServiceOperationsByPath(services);
+            sortServiceOperationsByPath( services );
 
             for( ServiceDocGenTemplate template : getTemplates() )
             {
