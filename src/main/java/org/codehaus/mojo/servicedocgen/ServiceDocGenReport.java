@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,6 +33,7 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.Path;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -39,6 +42,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
+import org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor;
+import org.codehaus.mojo.servicedocgen.descriptor.ServiceDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGenerator;
@@ -96,8 +101,8 @@ public class ServiceDocGenReport
     @Parameter( defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity" )
     private String templatePath;
 
-    @Parameter( defaultValue = "Service-Documentation.html.vm" )
-    private String templateName;
+    @Parameter( required = false )
+    private List<ServiceDocGenTemplate> templates;
 
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     private String sourceEncoding;
@@ -151,6 +156,17 @@ public class ServiceDocGenReport
     {
         return true;
     }
+    
+    private List<ServiceDocGenTemplate> getTemplates()
+    {
+        if( CollectionUtils.isEmpty( this.templates ) )
+        {
+            this.templates = new ArrayList<ServiceDocGenTemplate>();
+            this.templates.add( new ServiceDocGenTemplate( "Service-Documentation.html.vm", "index.html" ) );
+            this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm", "openapi.yaml" ) );
+        }
+        return this.templates;
+    }
 
     /**
      * {@inheritDoc}
@@ -176,23 +192,27 @@ public class ServiceDocGenReport
                 return;
             }
             Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
-                                              this.introspectFields );
+                this.introspectFields );
             ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
+            sortServiceOperationsByPath( services );
 
-            getLog().info( "Generating output..." );
-            ServicesGenerator generator =
-                new VelocityServicesGenerator( Util.appendPath( this.templatePath, this.templateName ) );
-
-            File reportDirectory = new File( this.outputDirectory, this.reportFolder );
-            if ( !reportDirectory.isDirectory() )
+            for( ServiceDocGenTemplate template : getTemplates() )
             {
-                boolean ok = reportDirectory.mkdirs();
-                if ( !ok )
+                getLog().info( "Generating output..." );
+                ServicesGenerator generator =
+                    new VelocityServicesGenerator( Util.appendPath( this.templatePath, template.getTemplateName() ) );
+
+                File reportDirectory = new File( this.outputDirectory, this.reportFolder );
+                if ( !reportDirectory.isDirectory() )
                 {
-                    throw new MojoExecutionException( "Could not create directory " + reportDirectory );
+                    boolean ok = reportDirectory.mkdirs();
+                    if ( !ok )
+                    {
+                        throw new MojoExecutionException( "Could not create directory " + reportDirectory );
+                    }
                 }
+                generator.generate( services, reportDirectory, template.getOutputName() );
             }
-            generator.generate( services, reportDirectory );
         }
         catch ( MavenReportException e )
         {
@@ -315,6 +335,24 @@ public class ServiceDocGenReport
             }
         }
         return urls.toArray( new URL[urls.size()] );
+    }
+
+    private void sortServiceOperationsByPath( ServicesDescriptor services )
+    {
+        for ( ServiceDescriptor service : services.getServices() )
+        {
+            List<OperationDescriptor> operations = service.getOperations();
+            Collections.sort( operations, new Comparator<OperationDescriptor>()
+            {
+
+                @Override
+                public int compare( OperationDescriptor o1, OperationDescriptor o2 )
+                {
+                    return o1.getPath().compareTo( o2.getPath() );
+                }
+
+            } );
+        }
     }
 
 }

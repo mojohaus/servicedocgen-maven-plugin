@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  title: $services.info.title
+  version: $services.info.version
+  description: $services.info.description
+  contact:
+    name: $services.info.contact.name
+    url: $services.info.contact.url
+    email: $services.info.contact.email
+  license:
+    name: $services.info.license.name
+    url: $services.info.license.url
+    
+paths:
+#foreach ($service in $services.services)
+#foreach ($operation in $service.operations)
+#set( $previousIndex = $foreach.index - 1)
+#if($foreach.index == 0 || $service.operations.get($foreach.index).path != $service.operations.get($previousIndex).path)
+  $service.basePath$operation.path:
+#end
+    $operation.httpMethod:
+      description: $operation.description
+      operationId: $operation.id
+#if($operation.httpMethod == "post" && $operation.parameters.size() == 1)
+      requestBody:
+        content:
+          $display.list($operation.produces):
+            schema:
+#if($operation.parameters.get(0).javaParameter.sourceType.primitive)
+#set($type = $operation.parameters.get(0).javaParameter.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+              type: integer
+#elseif($type == "float" || $type == "double")
+              type: number
+#elseif($type == "boolean")
+              type: boolean
+#end                  
+#else
+#if($operation.parameters.get(0).javaParameter.byteTypeString == "String")
+              type: string
+#else
+#if(!$operation.parameters.get(0).javaParameter.byteType.componentType)
+              $ref: '#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.assignmentClass.simpleName'
+#else
+              type: array
+              items:
+                $ref: '#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.componentType.assignmentClass.simpleName'
+#end
+#end
+#end      
+#elseif($operation.parameters.size() > 0 )
+      parameters:
+#foreach ($parameter in $operation.parameters)
+        - name: $parameter.name
+          in: $parameter.location
+          description: $parameter.description
+#if($parameter.location == "path")
+          required: true
+#else
+          required: $parameter.required
+#end
+          schema:
+#if($parameter.javaParameter.sourceType.primitive)
+#set($type = $parameter.javaParameter.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+            type: integer
+#elseif($type == "float" || $type == "double")
+            type: number
+#elseif($type == "boolean")
+            type: boolean
+#end                  
+#else
+#if($parameter.javaParameter.byteTypeString == "String")
+            type: string
+#else
+#if(!$parameter.javaParameter.byteType.componentType)
+            $ref: '#/components/schemas/$parameter.javaParameter.byteType.assignmentClass.simpleName'
+#else
+            type: array
+            items:
+              $ref: '#/components/schemas/$parameter.javaParameter.byteType.componentType.assignmentClass.simpleName'
+#end
+#end
+#end
+#end
+#end
+      responses:
+#foreach ($response in $operation.responses)
+        '$response.statusCode':
+          description: $response.description
+#if($response.javaElement.byteTypeString != "void" && $response.statusCode == 200)
+          content:
+            $display.list($operation.produces): 
+              schema: 
+#if($response.javaElement.sourceType.primitive)
+#set($type = $response.javaElement.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+                type: integer
+#elseif($type == "float" || $type == "double")
+                type: number
+#elseif($type == "boolean")
+                type: boolean
+#end                  
+#else
+#if($response.javaElement.byteTypeString == "String")
+                type: string
+#else
+#if(!$response.javaElement.byteType.componentType)
+                $ref: '#/components/schemas/$response.javaElement.byteType.assignmentClass.simpleName'
+#else
+                type: array
+                items:
+                  $ref: '#/components/schemas/$response.javaElement.byteType.componentType.assignmentClass.simpleName'
+#end
+#end
+#end
+#end
+#end
+
+#end
+#end
+#if($services.schemaDefinitionYaml != "")
+components:
+  schemas:
+$services.schemaDefinitionYaml
+#end

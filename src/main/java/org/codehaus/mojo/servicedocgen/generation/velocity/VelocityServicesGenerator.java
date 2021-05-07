@@ -31,6 +31,7 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.ToolManager;
+import org.codehaus.mojo.servicedocgen.EscapeHelper;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 
@@ -75,11 +76,12 @@ public class VelocityServicesGenerator
     /**
      * {@inheritDoc}
      */
-    public void generate( ServicesDescriptor descriptor, File outputDirectory )
+    @Override
+    public void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
         throws IOException
     {
         this.context.put( "services", descriptor );
-        String filename = "index.html";
+        this.context.put( "EscapeHelper", EscapeHelper.class );
         File outputFile = new File( outputDirectory, filename );
         OutputStream out = new FileOutputStream( outputFile );
         try

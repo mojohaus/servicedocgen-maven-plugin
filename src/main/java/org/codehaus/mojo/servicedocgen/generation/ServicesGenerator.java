@@ -37,9 +37,10 @@ public interface ServicesGenerator
      *
      * @param descriptor the {@link ServicesDescriptor} with the collected meta-data.
      * @param outputDirectory the {@link File#isDirectory() directory} where to write the output to.
+     * @param filename the name of the file to write the output to.
      * @throws IOException if something goes wrong.
      */
-    void generate( ServicesDescriptor descriptor, File outputDirectory )
+    void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
         throws IOException;
 
 }
