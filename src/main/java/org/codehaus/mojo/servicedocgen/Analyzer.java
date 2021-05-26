@@ -403,6 +403,7 @@ public class Analyzer
     {
         Method annotatedParentMethod = byteMethod;
         Path methodPath = null;
+        boolean exit = false;
         do
         {
             methodPath = annotatedParentMethod.getAnnotation( Path.class );
@@ -411,14 +412,32 @@ public class Analyzer
                 annotatedParentMethod = this.reflectionUtil.getParentMethod( annotatedParentMethod );
                 if ( annotatedParentMethod == null )
                 {
-                    return null;
+                    exit = true;
                 }
             }
         }
-        while ( methodPath == null );
+        while ( !exit && methodPath == null );
 
         OperationDescriptor operationDescriptor = new OperationDescriptor();
-        operationDescriptor.setPath( methodPath.value() );
+        if( methodPath == null )
+        {
+            methodPath = byteMethod.getDeclaringClass().getAnnotation( Path.class );
+            if( methodPath == null )
+            {
+                return null;
+            }
+            annotatedParentMethod = byteMethod;
+            operationDescriptor.setPath( "/" );
+        } else
+        {
+            if( !methodPath.value().startsWith( "/" ) )
+            {
+                operationDescriptor.setPath( "/" + methodPath.value() );
+            } else
+            {
+                operationDescriptor.setPath( methodPath.value() );
+            }
+        }
 
         if ( this.annotationUtil.getMethodAnnotation( byteMethod, Deprecated.class ) != null )
         {

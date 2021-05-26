@@ -106,6 +106,9 @@ public class ServiceDocGenReport
 
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     private String sourceEncoding;
+    
+    @Parameter( defaultValue = "${project.reporting.outputDirectory}", readonly = true, required = true )
+    protected File outputDirectory;
 
     /**
      * Set to <code>true</code> if you want to introspect fields of Java beans and <code>false</code> for getters.
@@ -157,6 +160,11 @@ public class ServiceDocGenReport
         return true;
     }
     
+    protected String getOutputDirectory()
+    {
+        return this.outputDirectory.getAbsolutePath();
+    }
+    
     private List<ServiceDocGenTemplate> getTemplates()
     {
         if( CollectionUtils.isEmpty( this.templates ) )
@@ -164,6 +172,7 @@ public class ServiceDocGenReport
             this.templates = new ArrayList<ServiceDocGenTemplate>();
             this.templates.add( new ServiceDocGenTemplate( "Service-Documentation.html.vm", "index.html" ) );
             this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm", "openapi.yaml" ) );
+            this.templates.add( new ServiceDocGenTemplate( "SwaggerUI.html.vm", "swagger.html" ) );
         }
         return this.templates;
     }
@@ -195,6 +204,22 @@ public class ServiceDocGenReport
                 this.introspectFields );
             ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
             sortServiceOperationsByPath( services );
+            
+            String openApiUrl = "";
+            for( ServiceDocGenTemplate template : this.getTemplates() )
+            {
+                if( template.getTemplateName().equals( "OpenApi.yaml.vm" ) )
+                {
+                    openApiUrl = "openapi.yaml";
+                    break;
+                }
+                
+                if( template.getTemplateName().equals( "OpenApi.json.vm" ) )
+                {
+                    openApiUrl = "openapi.json";
+                    break;
+                }
+            }
 
             for( ServiceDocGenTemplate template : getTemplates() )
             {
@@ -202,7 +227,7 @@ public class ServiceDocGenReport
                 ServicesGenerator generator =
                     new VelocityServicesGenerator( Util.appendPath( this.templatePath, template.getTemplateName() ) );
 
-                File reportDirectory = new File( this.outputDirectory, this.reportFolder );
+                File reportDirectory = new File( this.getOutputDirectory(), this.reportFolder );
                 if ( !reportDirectory.isDirectory() )
                 {
                     boolean ok = reportDirectory.mkdirs();
@@ -211,7 +236,7 @@ public class ServiceDocGenReport
                         throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                     }
                 }
-                generator.generate( services, reportDirectory, template.getOutputName() );
+                generator.generate( services, reportDirectory, template.getOutputName(), openApiUrl );
             }
         }
         catch ( MavenReportException e )

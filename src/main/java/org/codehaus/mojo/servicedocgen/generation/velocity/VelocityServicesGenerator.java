@@ -77,11 +77,12 @@ public class VelocityServicesGenerator
      * {@inheritDoc}
      */
     @Override
-    public void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
+    public void generate( ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl )
         throws IOException
     {
         this.context.put( "services", descriptor );
         this.context.put( "EscapeHelper", EscapeHelper.class );
+        this.context.put("openApiUrl", openApiUrl);
         File outputFile = new File( outputDirectory, filename );
         OutputStream out = new FileOutputStream( outputFile );
         try

@@ -40,7 +40,7 @@ public interface ServicesGenerator
      * @param filename the name of the file to write the output to.
      * @throws IOException if something goes wrong.
      */
-    void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
+    void generate( ServicesDescriptor descriptor, File outputDirectory, String filenamet, String openApiUrl )
         throws IOException;
 
 }
