@@ -115,6 +115,8 @@ public class ServiceDocGenReport
 
     private ClassLoader projectClassloader;
 
+    private boolean generatingSite;
+
     /**
      * {@inheritDoc}
      */
@@ -156,7 +158,7 @@ public class ServiceDocGenReport
     {
         return true;
     }
-    
+
     private List<ServiceDocGenTemplate> getTemplates()
     {
         if( CollectionUtils.isEmpty( this.templates ) )
@@ -168,12 +170,41 @@ public class ServiceDocGenReport
         return this.templates;
     }
 
+    @Override
+    public void execute()
+        throws MojoExecutionException
+    {
+        try
+        {
+            this.generatingSite = false;
+            generateReport();
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Unexpected Error!", e );
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void executeReport( Locale locale )
         throws MavenReportException
+    {
+        try
+        {
+            this.generatingSite = true;
+            generateReport();
+        }
+        catch ( Exception e )
+        {
+            throw new MavenReportException( "Unexpected Error!", e );
+        }
+    }
+
+    private void generateReport()
+        throws Exception
     {
         this.classnamePattern = Pattern.compile( this.classnameRegex );
 
@@ -183,44 +214,34 @@ public class ServiceDocGenReport
             builder.setEncoding( this.sourceEncoding );
         }
 
-        try
+        List<JavaClass> serviceClasses = scanServices( builder );
+        if ( serviceClasses.isEmpty() )
         {
-            List<JavaClass> serviceClasses = scanServices( builder );
-            if ( serviceClasses.isEmpty() )
-            {
-                getLog().info( "No services found - omitting service documentation generation." );
-                return;
-            }
-            Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
-                this.introspectFields );
-            ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
-            sortServiceOperationsByPath( services );
+            getLog().info( "No services found - omitting service documentation generation." );
+            return;
+        }
+        Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
+            this.introspectFields );
+        ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
+        sortServiceOperationsByPath( services );
 
-            for( ServiceDocGenTemplate template : getTemplates() )
+        for( ServiceDocGenTemplate template : getTemplates() )
+        {
+            String outputName = template.getOutputNameWithFallback();
+            String templateName = template.getTemplateName();
+            getLog().info( "Generating output file " + outputName + " for " + templateName + "..." );
+            ServicesGenerator generator =
+                new VelocityServicesGenerator( Util.appendPath( this.templatePath, templateName ) );
+            File reportDirectory = new File( this.outputDirectory, this.reportFolder );
+            if ( !reportDirectory.isDirectory() )
             {
-                getLog().info( "Generating output..." );
-                ServicesGenerator generator =
-                    new VelocityServicesGenerator( Util.appendPath( this.templatePath, template.getTemplateName() ) );
-
-                File reportDirectory = new File( this.outputDirectory, this.reportFolder );
-                if ( !reportDirectory.isDirectory() )
+                boolean ok = reportDirectory.mkdirs();
+                if ( !ok )
                 {
-                    boolean ok = reportDirectory.mkdirs();
-                    if ( !ok )
-                    {
-                        throw new MojoExecutionException( "Could not create directory " + reportDirectory );
-                    }
+                    throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                 }
-                generator.generate( services, reportDirectory, template.getOutputNameWithFallback() );
             }
-        }
-        catch ( MavenReportException e )
-        {
-            throw e;
-        }
-        catch ( Exception e )
-        {
-            throw new MavenReportException( "Unexpected Error!", e );
+            generator.generate( services, reportDirectory, outputName );
         }
     }
 
