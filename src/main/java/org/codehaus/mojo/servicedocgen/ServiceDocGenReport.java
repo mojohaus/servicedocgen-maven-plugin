@@ -211,7 +211,7 @@ public class ServiceDocGenReport
                         throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                     }
                 }
-                generator.generate( services, reportDirectory, template.getOutputName() );
+                generator.generate( services, reportDirectory, template.getOutputNameWithFallback() );
             }
         }
         catch ( MavenReportException e )
