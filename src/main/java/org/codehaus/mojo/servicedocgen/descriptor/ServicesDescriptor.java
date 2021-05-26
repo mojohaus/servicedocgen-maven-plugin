@@ -54,9 +54,9 @@ public class ServicesDescriptor
     private List<ErrorDescriptor> errors;
 
     private ExternalDocumentationDescriptor externalDocs;
-    
+
     private String schemaDefinitionJson;
-    
+
     private String schemaDefinitionYaml;
 
     /**
@@ -301,6 +301,15 @@ public class ServicesDescriptor
     public void setSchemaDefinitionYaml( String schemaDefinitionYaml )
     {
         this.schemaDefinitionYaml = schemaDefinitionYaml;
+    }
+
+    /**
+     * @return a new default instance of {@link ServiceDescriptor}.
+     */
+    public static ServicesDescriptor createDefault()
+    {
+        ServicesDescriptor descriptor = new ServicesDescriptor();
+        return descriptor;
     }
 
 }
