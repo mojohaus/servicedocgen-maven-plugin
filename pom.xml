@@ -27,7 +27,7 @@
     <version>61</version>
   </parent>
   <artifactId>servicedocgen-maven-plugin</artifactId>
-  <version>1.0.0-beta-5-SNAPSHOT</version>
+  <version>1.0.0-beta-4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Maven Service Documentation Generator Plugin</name>
   <description>Plugin to generate documentation for services (JAX-RS).</description>
