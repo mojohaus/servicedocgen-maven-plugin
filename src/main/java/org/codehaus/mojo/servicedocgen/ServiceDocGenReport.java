@@ -115,6 +115,10 @@ public class ServiceDocGenReport
 
     private ClassLoader projectClassloader;
 
+    private JavaProjectBuilder builder;
+
+    private List<JavaClass> serviceClasses;
+
     private boolean generatingSite;
 
     /**
@@ -170,6 +174,41 @@ public class ServiceDocGenReport
         return this.templates;
     }
 
+    private JavaProjectBuilder getBuilder() {
+        if (this.builder == null) {
+            this.builder = new JavaProjectBuilder();
+            if ( !Util.isEmpty( this.sourceEncoding ) )
+            {
+                 this.builder.setEncoding( this.sourceEncoding );
+            }
+        }
+        return this.builder;
+    }
+
+    private List<JavaClass> getServiceClasses() {
+
+        if (this.serviceClasses == null) {
+            try
+            {
+                this.serviceClasses = scanServices( getBuilder() );
+            }
+            catch ( IOException e )
+            {
+                throw new RuntimeException( "Unexpected I/O error!", e );
+            }
+        }
+        return this.serviceClasses;
+    }
+
+    private Pattern getClassnamePattern()
+    {
+        if (this.classnamePattern == null)
+        {
+          this.classnamePattern = Pattern.compile( this.classnameRegex );
+        }
+        return this.classnamePattern;
+    }
+
     @Override
     public void execute()
         throws MojoExecutionException
@@ -183,6 +222,12 @@ public class ServiceDocGenReport
         {
             throw new MojoExecutionException( "Unexpected Error!", e );
         }
+    }
+
+    @Override
+    public boolean canGenerateReport()
+    {
+        return !getServiceClasses().isEmpty();
     }
 
     /**
@@ -206,23 +251,14 @@ public class ServiceDocGenReport
     private void generateReport()
         throws Exception
     {
-        this.classnamePattern = Pattern.compile( this.classnameRegex );
-
-        JavaProjectBuilder builder = new JavaProjectBuilder();
-        if ( !Util.isEmpty( this.sourceEncoding ) )
-        {
-            builder.setEncoding( this.sourceEncoding );
-        }
-
-        List<JavaClass> serviceClasses = scanServices( builder );
-        if ( serviceClasses.isEmpty() )
+        if ( getServiceClasses().isEmpty() )
         {
             getLog().info( "No services found - omitting service documentation generation." );
             return;
         }
-        Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), builder, this.descriptor,
+        Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), this.builder, this.descriptor,
             this.introspectFields );
-        ServicesDescriptor services = analyzer.createServicesDescriptor( serviceClasses );
+        ServicesDescriptor services = analyzer.createServicesDescriptor( getServiceClasses() );
         sortServiceOperationsByPath( services );
 
         for( ServiceDocGenTemplate template : getTemplates() )
@@ -248,7 +284,7 @@ public class ServiceDocGenReport
     private List<JavaClass> scanServices( JavaProjectBuilder builder )
         throws IOException
     {
-        List<JavaClass> serviceClasses = new ArrayList<JavaClass>();
+        List<JavaClass> serviceClassList = new ArrayList<JavaClass>();
         for ( String sourceDir : this.project.getCompileSourceRoots() )
         {
             File sourceFolder = new File( sourceDir );
@@ -257,7 +293,7 @@ public class ServiceDocGenReport
                 builder.addSourceFolder( sourceFolder );
                 if ( this.serviceClassName == null )
                 {
-                    scanJavaFilesRecursive( sourceFolder, builder, serviceClasses );
+                    scanJavaFilesRecursive( sourceFolder, builder, serviceClassList );
                 }
             }
         }
@@ -267,10 +303,11 @@ public class ServiceDocGenReport
             boolean isService = isServiceClass( type );
             if ( isService )
             {
-                serviceClasses.add( type );
+                serviceClassList.add( type );
+                getLog().info( "Discovered service: " + type );
             }
         }
-        return serviceClasses;
+        return serviceClassList;
     }
 
     private void scanJavaFilesRecursive( File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses )
@@ -313,7 +350,7 @@ public class ServiceDocGenReport
 
     private boolean isServiceClass( JavaClass type )
     {
-        if ( this.classnamePattern.matcher( type.getName() ).matches() )
+        if ( getClassnamePattern().matcher( type.getName() ).matches() )
         {
             getLog().debug( "Class matches: " + type.getName() );
             for ( JavaAnnotation annotation : type.getAnnotations() )
