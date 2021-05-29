@@ -302,7 +302,7 @@ public class ServiceDocGenReport
                     throw new MojoExecutionException( "Could not create directory " + reportDirectory );
                 }
             }
-            generator.generate( services, reportDirectory, outputName );
+            generator.generate( services, reportDirectory, outputName, openApiUrl );
         }
     }
 
