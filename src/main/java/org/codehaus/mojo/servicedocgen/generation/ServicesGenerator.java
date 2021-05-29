@@ -26,7 +26,7 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 /**
  * Interface for a generator that creates documentation for a given {@link ServicesDescriptor}.
  *
- * @see #generate(ServicesDescriptor, File)
+ * @see #generate(ServicesDescriptor, File, String)
  * @author hohwille
  */
 public interface ServicesGenerator

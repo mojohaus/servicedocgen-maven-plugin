@@ -32,8 +32,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.validation.constraints.NotNull;
@@ -54,6 +54,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
+
+import net.sf.mmm.util.exception.api.IllegalCaseException;
+import net.sf.mmm.util.lang.api.Datatype;
+import net.sf.mmm.util.lang.api.SimpleDatatype;
+import net.sf.mmm.util.math.api.NumberType;
+import net.sf.mmm.util.math.base.MathUtilImpl;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptor;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilder;
+import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilderFactory;
+import net.sf.mmm.util.pojo.descriptor.api.PojoPropertyDescriptor;
+import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArg;
+import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArgMode;
+import net.sf.mmm.util.pojo.descriptor.impl.PojoDescriptorBuilderFactoryImpl;
+import net.sf.mmm.util.reflect.api.AnnotationUtil;
+import net.sf.mmm.util.reflect.api.GenericType;
+import net.sf.mmm.util.reflect.api.ReflectionUtil;
+import net.sf.mmm.util.reflect.base.AnnotationUtilImpl;
+import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
+import net.sf.mmm.util.validation.base.Mandatory;
 
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.Organization;
@@ -81,25 +100,6 @@ import org.codehaus.mojo.servicedocgen.introspection.JavaDocHelper;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
-
-import net.sf.mmm.util.exception.api.IllegalCaseException;
-import net.sf.mmm.util.lang.api.Datatype;
-import net.sf.mmm.util.lang.api.SimpleDatatype;
-import net.sf.mmm.util.math.api.NumberType;
-import net.sf.mmm.util.math.base.MathUtilImpl;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptor;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilder;
-import net.sf.mmm.util.pojo.descriptor.api.PojoDescriptorBuilderFactory;
-import net.sf.mmm.util.pojo.descriptor.api.PojoPropertyDescriptor;
-import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArg;
-import net.sf.mmm.util.pojo.descriptor.api.accessor.PojoPropertyAccessorNonArgMode;
-import net.sf.mmm.util.pojo.descriptor.impl.PojoDescriptorBuilderFactoryImpl;
-import net.sf.mmm.util.reflect.api.AnnotationUtil;
-import net.sf.mmm.util.reflect.api.GenericType;
-import net.sf.mmm.util.reflect.api.ReflectionUtil;
-import net.sf.mmm.util.reflect.base.AnnotationUtilImpl;
-import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
-import net.sf.mmm.util.validation.base.Mandatory;
 
 /**
  * {@link Analyzer} contains the logic to analyze the services on byte-code and source-code level and create the
@@ -138,7 +138,7 @@ public class Analyzer
     private final MavenProject project;
 
     private ServicesDescriptor descriptor;
-    
+
     private Map<String, JElement> schemas = new HashMap<String, JElement>();
 
     /**
@@ -161,6 +161,9 @@ public class Analyzer
         this.reflectionUtil = ReflectionUtilImpl.getInstance();
         this.annotationUtil = AnnotationUtilImpl.getInstance();
         this.builder = builder;
+        if ( descriptor == null ) {
+            descriptor = ServicesDescriptor.createDefault();
+        }
         this.descriptor = descriptor;
         this.pojoDescriptorBuilderFactory = PojoDescriptorBuilderFactoryImpl.getInstance();
         if ( introspectFields )
@@ -247,7 +250,7 @@ public class Analyzer
             ServiceDescriptor service = createServiceDescriptor( type );
             this.descriptor.getServices().add( service );
         }
-        
+
         String schemaJson = getSchemaAsString("json");
         String schemaYaml = getSchemaAsString("yaml");
         this.descriptor.setSchemaDefinitionJson(schemaJson);
@@ -471,7 +474,7 @@ public class Analyzer
             {
                 operationDescriptor.getParameters().add( parameterDescriptor );
             }
-            
+
             if( !this.schemas.containsKey( parameter.getByteTypeString() ) );
             {
                 this.schemas.put(parameter.getByteTypeString(), parameter);
@@ -626,7 +629,7 @@ public class Analyzer
             {
                 response.setStatusCode( Descriptor.STATUS_CODE_SUCCESS );
             }
-            
+
             if( !this.schemas.containsKey( javaElement.getByteTypeString() ) );
             {
                 this.schemas.put( javaElement.getByteTypeString(), javaElement );
@@ -642,7 +645,7 @@ public class Analyzer
             example = createExample( operationDescriptor, javaScriptType, javaElement );
         }
         response.setExample( example );
-        
+
         return response;
     }
 
@@ -902,6 +905,7 @@ public class Analyzer
             new ArrayList<PojoPropertyDescriptor>( pojoDescriptor.getPropertyDescriptors() );
         Comparator<PojoPropertyDescriptor> comparator = new Comparator<PojoPropertyDescriptor>()
         {
+            @Override
             public int compare( PojoPropertyDescriptor o1, PojoPropertyDescriptor o2 )
             {
                 return o1.getName().compareTo( o2.getName() );
@@ -949,27 +953,27 @@ public class Analyzer
             buffer.append( ", ..." );
         }
     }
-    
+
     private String getSchemaAsString( String type )
     {
         PojoDescriptorBuilderFactory pojoDescriptorBuilderFactory = PojoDescriptorBuilderFactoryImpl.getInstance();
         PojoDescriptorBuilder pojoDescriptorBuilder = pojoDescriptorBuilderFactory.createPrivateFieldDescriptorBuilder();
         StringBuffer buffer = new StringBuffer();
         List<String> schemasCreated = new ArrayList<String>();
-        
+
         Iterator<Entry<String, JElement>> it = this.schemas.entrySet().iterator();
         while ( it.hasNext() )
         {
             Entry<String, JElement> entry = it.next();
             JElement javaElement = entry.getValue();
-            if( !javaElement.getSourceType().isPrimitive() && !javaElement.getSourceType().getName().equals( "String" ) ) 
+            if( !javaElement.getSourceType().isPrimitive() && !javaElement.getSourceType().getName().equals( "String" ) )
             {
                 if( entry.getValue().getByteType().getComponentType() == null )
                 {
                     if( type.equals( "json" ) )
                     {
                         createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "      ", schemasCreated );
-                    } else if ( type.equals( "yaml" ) ) 
+                    } else if ( type.equals( "yaml" ) )
                     {
                         createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType(), buffer, "    ", schemasCreated );
                     }
@@ -978,7 +982,7 @@ public class Analyzer
                     if( type.equals( "json" ) )
                     {
                         createSchemaAsJsonForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "      ", schemasCreated );
-                    } else if ( type.equals( "yaml" ) ) 
+                    } else if ( type.equals( "yaml" ) )
                     {
                         createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue().getByteType().getComponentType(), buffer, "    ", schemasCreated );
                     }
@@ -987,22 +991,22 @@ public class Analyzer
         }
         return buffer.toString();
     }
-    
+
     private void createSchemaAsJsonForType( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
     {
         PojoDescriptor<?> pojoDescriptor = pojoDescriptorBuilder.getDescriptor( byteType );
         List<? extends PojoPropertyDescriptor> propertyDescriptors = new ArrayList<PojoPropertyDescriptor>( pojoDescriptor.getPropertyDescriptors() );
         Map<String, GenericType<?>> schemasToCreate = new HashMap<String, GenericType<?>>();
-        
+
         if( !schemasCreated.contains( byteType.getAssignmentClass().getSimpleName() ) )
         {
             String schemaName = byteType.getAssignmentClass().getSimpleName();
             buffer.append( indentation.concat( "'" + schemaName + "': {\n") );
-        
+
             buffer.append( indentation.concat( "  'type': 'object',\n") );
             buffer.append( indentation.concat( "  'properties': {\n") );
             for ( PojoPropertyDescriptor propertyDescriptor : propertyDescriptors )
-            { 
+            {
                 PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor( PojoPropertyAccessorNonArgMode.GET );
                 if ( getter != null )
                 {
@@ -1011,7 +1015,7 @@ public class Analyzer
                     {
                         type = getter.getReturnType().getAssignmentClass().getName();
                     }
-                    
+
                     buffer.append( indentation.concat( "    '" + propertyDescriptor.getName() + "': {\n" ) );
                     if( type.equals( "int" ) || type.equals( "long" ) || type.equals( "byte" ) )
                     {
@@ -1036,7 +1040,7 @@ public class Analyzer
                         {
                             byteTypeToCreate = getter.getReturnType().getComponentType();
                             String typeName = byteTypeToCreate.getTypeName();
-                            
+
                             buffer.append( indentation.concat( "      'type': 'array',\n") );
                             buffer.append( indentation.concat( "      'items': {\n") );
                             if( typeName.equals( "int" ) || typeName.equals( "long" ) || typeName.equals( "byte" ) )
@@ -1060,7 +1064,7 @@ public class Analyzer
                             }
                             buffer.append( indentation.concat( "      }\n" ) );
                         }
-                        
+
                         if( !schemasToCreate.containsKey( byteTypeToCreate.getAssignmentClass().getSimpleName() ) && addSchema )
                         {
                             schemasToCreate.put( byteTypeToCreate.getAssignmentClass().getSimpleName(), byteTypeToCreate );
@@ -1073,9 +1077,9 @@ public class Analyzer
 
             buffer.append( indentation.concat( "  },\n" ) );
             buffer.append( indentation.concat( "},\n" ) );
-            
+
             schemasCreated.add( schemaName );
-                
+
             for( Entry<String, GenericType<?>> entry : schemasToCreate.entrySet() )
             {
                 if( !schemasCreated.contains( entry.getKey() ) )
@@ -1084,25 +1088,25 @@ public class Analyzer
                 }
             }
         }
-        
+
         return;
     }
-    
+
     private void createSchemaAsYamlForType( PojoDescriptorBuilder pojoDescriptorBuilder, GenericType<?> byteType, StringBuffer buffer, String indentation, List<String> schemasCreated )
     {
         PojoDescriptor<?> pojoDescriptor = pojoDescriptorBuilder.getDescriptor( byteType );
         List<? extends PojoPropertyDescriptor> propertyDescriptors = new ArrayList<PojoPropertyDescriptor>( pojoDescriptor.getPropertyDescriptors() );
         Map<String, GenericType<?>> schemasToCreate = new HashMap<String, GenericType<?>>();
-        
+
         if( !schemasCreated.contains( byteType.getAssignmentClass().getSimpleName() ) )
         {
             String schemaName = byteType.getAssignmentClass().getSimpleName();
             buffer.append( indentation.concat( schemaName + ":\n") );
-            
+
             buffer.append( indentation.concat( "  type: object\n" ) );
             buffer.append( indentation.concat( "  properties:\n" ) );
             for ( PojoPropertyDescriptor propertyDescriptor : propertyDescriptors )
-            { 
+            {
                 PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor( PojoPropertyAccessorNonArgMode.GET );
                 if ( getter != null )
                 {
@@ -1111,7 +1115,7 @@ public class Analyzer
                     {
                         type = getter.getReturnType().getAssignmentClass().getName();
                     }
-                    
+
                     buffer.append( indentation.concat( "    " + propertyDescriptor.getName() + ":\n" ) );
                     if( type.equals( "int" ) || type.equals( "long" ) || type.equals( "byte" ) )
                     {
@@ -1137,7 +1141,7 @@ public class Analyzer
                         {
                             byteTypeToCreate = getter.getReturnType().getComponentType();
                             String typeName = byteTypeToCreate.getTypeName();
-                            
+
                             buffer.append( indentation.concat( "      type: array\n" ) );
                             buffer.append( indentation.concat( "      items:\n" ) );
                             if( typeName.equals( "int" ) || typeName.equals( "long" ) || typeName.equals( "byte" ) )
@@ -1160,7 +1164,7 @@ public class Analyzer
                                 buffer.append( indentation.concat( "        $ref: '#/components/schemas/" + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n" ) );
                             }
                         }
-                        
+
                         if ( !schemasToCreate.containsKey(byteTypeToCreate.getAssignmentClass().getSimpleName() ) && addSchema )
                         {
                             schemasToCreate.put( byteTypeToCreate.getAssignmentClass().getSimpleName(), byteTypeToCreate );
@@ -1168,10 +1172,10 @@ public class Analyzer
                     }
                 }
             }
-            
+
             schemasCreated.add( schemaName );
         }
-        
+
         for( Entry<String, GenericType<?>> entry : schemasToCreate.entrySet() )
         {
             if ( !schemasCreated.contains( entry.getKey() ) )
@@ -1179,7 +1183,7 @@ public class Analyzer
                 createSchemaAsYamlForType( pojoDescriptorBuilder, entry.getValue(), buffer, indentation, schemasCreated );
             }
         }
-        
+
         return;
     }
 

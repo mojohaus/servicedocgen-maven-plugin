@@ -118,7 +118,6 @@ public class JMethod
         Type[] parameterByteTypes = byteMethod.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = annotatedParentMethod.getParameterAnnotations();
         this.parameters = new ArrayList<JParameter>( parameterByteTypes.length );
-        this.sourceMethod.getParameters();
         for ( int i = 0; i < parameterByteTypes.length; i++ )
         {
             GenericType<?> parameterByteType = reflectionUtil.createGenericType( parameterByteTypes[i], byteType );

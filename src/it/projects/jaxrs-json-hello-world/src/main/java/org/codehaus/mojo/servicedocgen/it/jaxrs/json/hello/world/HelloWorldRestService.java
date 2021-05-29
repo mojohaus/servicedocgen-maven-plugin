@@ -34,7 +34,7 @@ public interface HelloWorldRestService
      *
      * @param message the message to echo.
      * @return the given message.
-     * @throws IllegalArgumentException in the given message is invalid (e.g. {@code null}).
+     * @throws IllegalArgumentException if the given message is invalid (e.g. {@code null}).
      */
     @POST
     @Path( "/echo" )
