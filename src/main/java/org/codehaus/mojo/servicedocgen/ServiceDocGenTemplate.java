@@ -11,11 +11,10 @@ public class ServiceDocGenTemplate
     public ServiceDocGenTemplate()
     {
     }
-
-    public ServiceDocGenTemplate( String templateName, String outputName )
+    
+    public ServiceDocGenTemplate( String templateName )
     {
         this.templateName = templateName;
-        this.outputName = outputName;
     }
 
     private String templateName;

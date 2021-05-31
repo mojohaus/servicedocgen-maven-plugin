@@ -166,7 +166,7 @@ public class ServiceDocGenReport
         return true;
     }
     
-    protected String getOutputDirectory()
+    protected String getOutputDirectoryPath()
     {
         return this.outputDirectory.getAbsolutePath();
     }
@@ -176,9 +176,11 @@ public class ServiceDocGenReport
         if( CollectionUtils.isEmpty( this.templates ) )
         {
             this.templates = new ArrayList<ServiceDocGenTemplate>();
-            this.templates.add( new ServiceDocGenTemplate( "Service-Documentation.html.vm", "index.html" ) );
-            this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm", "openapi.yaml" ) );
-            this.templates.add( new ServiceDocGenTemplate( "SwaggerUI.html.vm", "swagger.html" ) );
+            ServiceDocGenTemplate template = new ServiceDocGenTemplate( "Service-Documentation.html.vm" );
+            template.setOutputName( "index.html" );
+            this.templates.add( template );
+            this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm" ) );
+            this.templates.add( new ServiceDocGenTemplate( "SwaggerUI.html.vm" ) );
         }
         return this.templates;
     }
@@ -273,15 +275,9 @@ public class ServiceDocGenReport
         String openApiUrl = "";
         for( ServiceDocGenTemplate template : this.getTemplates() )
         {
-            if( template.getTemplateName().equals( "OpenApi.yaml.vm" ) )
+            if( template.getTemplateName().equals( "OpenApi.yaml.vm" ) || template.getTemplateName().equals( "OpenApi.json.vm" ) )
             {
-                openApiUrl = "openapi.yaml";
-                break;
-            }
-                
-            if( template.getTemplateName().equals( "OpenApi.json.vm" ) )
-            {
-                openApiUrl = "openapi.json";
+                openApiUrl = template.getOutputNameWithFallback();
                 break;
             }
         }
@@ -293,7 +289,7 @@ public class ServiceDocGenReport
             getLog().info( "Generating output file " + outputName + " for " + templateName + "..." );
             ServicesGenerator generator =
                 new VelocityServicesGenerator( Util.appendPath( this.templatePath, templateName ) );
-            File reportDirectory = new File( this.getOutputDirectory(), this.reportFolder );
+            File reportDirectory = new File( this.getOutputDirectoryPath(), this.reportFolder );
             if ( !reportDirectory.isDirectory() )
             {
                 boolean ok = reportDirectory.mkdirs();
