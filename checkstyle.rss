@@ -26,9 +26,9 @@ under the License.
     <copyright>&#169;2015 - 2021 MojoHaus</copyright>
     <item>
       <title>File: 32,
-             Errors: 162,
-             Warnings: 4,
-             Infos: 1
+             Errors: 185,
+             Warnings: 7,
+             Infos: 2
       </title>
             <link>https://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html</link>
       <description>
@@ -203,13 +203,13 @@ under the License.
                   <a href="https://www.mojohaus.org/servicedocgen-maven-plugin/servicedocgen-maven-plugin/checkstyle.html#org.codehaus.mojo.servicedocgen.ServiceDocGenReport.java">org/codehaus/mojo/servicedocgen/ServiceDocGenReport.java</a>
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
-                  0
+                  3
                 </td>
                 <td>
-                  4
+                  20
                 </td>
               </tr>
                           <tr>
@@ -349,7 +349,7 @@ under the License.
                   4
                 </td>
                 <td>
-                  109
+                  114
                 </td>
               </tr>
                           <tr>
@@ -433,7 +433,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  3
                 </td>
               </tr>
                           <tr>

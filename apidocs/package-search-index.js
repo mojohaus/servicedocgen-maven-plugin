@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.codehaus.mojo.servicedocgen"},{"l":"org.codehaus.mojo.servicedocgen.descriptor"},{"l":"org.codehaus.mojo.servicedocgen.generation"},{"l":"org.codehaus.mojo.servicedocgen.generation.velocity"},{"l":"org.codehaus.mojo.servicedocgen.introspection"}]
