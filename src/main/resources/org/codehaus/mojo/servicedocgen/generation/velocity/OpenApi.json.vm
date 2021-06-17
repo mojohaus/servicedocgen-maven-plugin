@@ -14,6 +14,11 @@
       "url": "$services.info.license.url"
     }
   },
+  "servers": [
+    {
+      "url": "$services.host:$services.port/$services.basePath"
+    }
+  ],
   "paths": {
 #foreach ($service in $services.services)
 #foreach ($operation in $service.operations)

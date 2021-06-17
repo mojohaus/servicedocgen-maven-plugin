@@ -26,7 +26,7 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 /**
  * Interface for a generator that creates documentation for a given {@link ServicesDescriptor}.
  *
- * @see #generate(ServicesDescriptor, File, String)
+ * @see #generate(ServicesDescriptor, File, String, String)
  * @author hohwille
  */
 public interface ServicesGenerator
@@ -38,9 +38,10 @@ public interface ServicesGenerator
      * @param descriptor the {@link ServicesDescriptor} with the collected meta-data.
      * @param outputDirectory the {@link File#isDirectory() directory} where to write the output to.
      * @param filename the name of the file to write the output to.
+     * @param openApiUrl the url to the OpenApi file
      * @throws IOException if something goes wrong.
      */
-    void generate( ServicesDescriptor descriptor, File outputDirectory, String filename )
+    void generate( ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl )
         throws IOException;
 
 }
