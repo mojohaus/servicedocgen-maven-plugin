@@ -1,0 +1,11 @@
+name: Release Drafter
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update_release_draft:
+    name: Release Drafter
+    uses: mojohaus/.github/.github/workflows/release-drafter.yml@master
