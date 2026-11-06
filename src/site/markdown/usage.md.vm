@@ -1,13 +1,11 @@
-<?xml version="1.0"?>
-<document>
-  <properties>
-    <title>Usage</title>
-  </properties>
+title: Usage
 
-  <body>
-    <section name="Usage">
-      Simply add the plugin to the build section of your POM for the module containing services as following.
-      <source><![CDATA[
+Usage
+=====
+
+Simply add the plugin to the build section of your POM for the module containing services as following.
+
+```xml
   <build>
     <plugins>
       ...
@@ -40,10 +38,9 @@
       </plugin>
     </plugins>
   </build>
-      ]]></source>
-      <subsection name="Result">
-        After you called <code>mvn package</code> you will find the generated documentation in <code>target/servicedoc/</code>.
-      </subsection>
-    </section>
-  </body>
-</document>
+```
+
+Result
+------
+
+After you called `mvn package` you will find the generated documentation in `target/servicedoc/`.
