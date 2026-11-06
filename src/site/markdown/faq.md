@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<faqs title="Frequently Asked Questions">
-  <part id="general">
-    <title>General</title>
-    <faq id="jax-ws">
-      <question>Can you also generate documentation from JAX-WS web-services?</question>
-      <answer>
-        <p>No. Not yet. Please get involved and create a pull-request if you want to have this.</p>
-      </answer>
-    </faq>
-    <faq id="swagger-json">
-      <question>Can you also generate swagger.json?</question>
-      <answer>
-        <p>No. Not yet. Please get involved and create a pull-request if you want to have this.</p>
-      </answer>
-    </faq>
-  </part>
-</faqs>
+title: Frequently Asked Questions
+
+# Frequently Asked Questions
+
+**General**
+
+1. [Can you also generate documentation from JAX-WS web-services?](#jax-ws)
+2. [Can you also generate swagger.json?](#swagger-json)
+
+## General
+
+<a id="jax-ws"></a>
+
+### Can you also generate documentation from JAX-WS web-services?
+
+No. Not yet. Please get involved and create a pull-request if you want to have this.
+
+<a id="swagger-json"></a>
+
+### Can you also generate swagger.json?
+
+No. Not yet. Please get involved and create a pull-request if you want to have this.

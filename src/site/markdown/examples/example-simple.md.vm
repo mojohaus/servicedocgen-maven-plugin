@@ -1,17 +1,18 @@
-<?xml version="1.0"?>
-<document>
-  <properties>
-    <title>Generating Service Documentation for JAX-RS REST-Services</title>
-  </properties>
+title: Generating Service Documentation for JAX-RS REST-Services
 
-  <body>
-    <section name="Activating the plugin">
-      Many projects or applications provide REST-Services using JAX-RS. Often they are nicely documentated using JavaDoc.
-      However, the JavaDoc is not the perfect documentation to quickly see how to use the REST-API.
-      With servicedocgen-maven-plugin you get nice service documentation for free as it is generated from your code. 
-      <subsection name="POM">
-        In your top-level POM set a fixed version ("dev"), add flatten-maven-plugin and define a variable for your central project version:
-        <source><![CDATA[
+Activating the plugin
+=====================
+
+Many projects or applications provide REST-Services using JAX-RS. Often they are nicely documentated using JavaDoc.
+However, the JavaDoc is not the perfect documentation to quickly see how to use the REST-API.
+With servicedocgen-maven-plugin you get nice service documentation for free as it is generated from your code.
+
+POM
+---
+
+In your top-level POM set a fixed version ("dev"), add flatten-maven-plugin and define a variable for your central project version:
+
+```xml
   <build>
     <plugins>
       <plugin>
@@ -58,11 +59,14 @@
       </plugin>
     </plugins>
   </build>
-        ]]></source>
-      </subsection>
-      <subsection name="Service">
-        Now we assume that your project defines the following service:
-        <source><![CDATA[
+```
+
+Service
+-------
+
+Now we assume that your project defines the following service:
+
+```java
 /**
  * This is a REST-Service to say hello to the world.
  */
@@ -100,12 +104,11 @@ public interface HelloWorldRestService
     @Path( "/world" )
     void deleteWorld();
 
-}        ]]></source>
-      </subsection>
-      <subsection name="Generation">
-        Now if you build your project (e.g. <code>mvn clean install</code>) the service documentation will be generated.
-        Here you can see the result for the example given above: <a href="Service-Documentation.html">Service-Documentation.html</a>
-      </subsection>
-    </section>
-  </body>
-</document>
+}
+```
+
+Generation
+----------
+
+Now if you build your project (e.g. `mvn clean install`) the service documentation will be generated.
+Here you can see the result for the example given above: [Service-Documentation.html](Service-Documentation.html)
