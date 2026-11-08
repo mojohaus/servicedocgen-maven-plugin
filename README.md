@@ -39,6 +39,9 @@ The `generate` goal runs in the `prepare-package` phase. To run it on its own:
 mvn compile servicedocgen:generate
 ```
 
+The plugin also works as a report: declared under `<reporting>`, it writes the same files during `mvn site`. This needs
+maven-site-plugin 3.20.0 or later.
+
 See the [usage page](https://www.mojohaus.org/servicedocgen-maven-plugin/usage.html) for the configuration, the
 [goal reference](https://www.mojohaus.org/servicedocgen-maven-plugin/generate-mojo.html) for every parameter, and the
 [FAQ](https://www.mojohaus.org/servicedocgen-maven-plugin/faq.html).
