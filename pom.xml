@@ -139,6 +139,19 @@
       <version>8.7.0</version>
     </dependency>
     <dependency>
+      <!-- 8.x moved the @Mandatory annotation the analyzer reads into its own artifact -->
+      <groupId>net.sf.m-m-m</groupId>
+      <artifactId>mmm-util-validation</artifactId>
+      <version>8.7.0</version>
+    </dependency>
+    <dependency>
+      <!-- the example transfer objects in the tests extend EntityTo, which 8.x moved here -->
+      <groupId>net.sf.m-m-m</groupId>
+      <artifactId>mmm-util-entity</artifactId>
+      <version>8.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.7</version>
