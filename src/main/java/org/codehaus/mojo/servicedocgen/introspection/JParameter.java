@@ -20,9 +20,8 @@ package org.codehaus.mojo.servicedocgen.introspection;
 
 import java.lang.annotation.Annotation;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-
 import com.thoughtworks.qdox.model.JavaParameter;
+import net.sf.mmm.util.reflect.api.GenericType;
 
 /**
  * A parameter declaration of a {@link JMethod}.
@@ -30,9 +29,7 @@ import com.thoughtworks.qdox.model.JavaParameter;
  * @see JMethod#getParameters()
  * @author hohwille
  */
-public class JParameter
-    extends JElement
-{
+public class JParameter extends JElement {
     private final JavaParameter parameter;
 
     private final Annotation[] byteAnnotations;
@@ -48,10 +45,9 @@ public class JParameter
      * @param comment - see {@link #getComment()}.
      * @param index the index of the parameter in the method arguments.
      */
-    public JParameter( GenericType<?> byteType, Annotation[] byteAnnotations, JavaParameter parameter, String comment,
-                       int index )
-    {
-        super( byteType, parameter.getJavaClass(), comment );
+    public JParameter(
+            GenericType<?> byteType, Annotation[] byteAnnotations, JavaParameter parameter, String comment, int index) {
+        super(byteType, parameter.getJavaClass(), comment);
         this.parameter = parameter;
         this.byteAnnotations = byteAnnotations;
         this.index = index;
@@ -60,26 +56,22 @@ public class JParameter
     /**
      * @return the {@link JavaParameter} from source-code analysis. May be <code>null</code>.
      */
-    public JavaParameter getParameter()
-    {
+    public JavaParameter getParameter() {
         return this.parameter;
     }
 
     /**
      * @return the array of {@link Annotation}s from byte-code analysis. Do not modify.
      */
-    public Annotation[] getByteAnnotations()
-    {
+    public Annotation[] getByteAnnotations() {
         return this.byteAnnotations;
     }
 
     /**
      * @return the name of the parameter (from source-code if available).
      */
-    public String getName()
-    {
-        if ( this.parameter == null )
-        {
+    public String getName() {
+        if (this.parameter == null) {
             return "arg" + this.index;
         }
         return this.parameter.getName();
@@ -89,9 +81,7 @@ public class JParameter
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getName();
     }
-
 }

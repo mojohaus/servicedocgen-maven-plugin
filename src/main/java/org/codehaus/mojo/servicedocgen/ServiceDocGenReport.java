@@ -18,6 +18,8 @@
  */
 package org.codehaus.mojo.servicedocgen;
 
+import javax.ws.rs.Path;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,8 +33,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.Path;
-
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.JavaAnnotation;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -48,11 +52,6 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
 import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGenerator;
 
-import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.JavaAnnotation;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaSource;
-
 /**
  * {@link AbstractMojo Maven Plugin} to automatically generate documentation for services of the current project.
  * <ol>
@@ -67,15 +66,20 @@ import com.thoughtworks.qdox.model.JavaSource;
  *
  * @author hohwille
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, requiresDirectInvocation = false, executionStrategy = "once-per-session", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceDocGenReport
-    extends AbstractMavenReport
-{
+@Mojo(
+        name = "generate",
+        defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
+        requiresProject = true,
+        requiresDirectInvocation = false,
+        executionStrategy = "once-per-session",
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+public class ServiceDocGenReport extends AbstractMavenReport {
 
     /**
      * The directory where the generated service documentation will be written to.
      */
-    @Parameter( defaultValue = "servicedoc" )
+    @Parameter(defaultValue = "servicedoc")
     private String reportFolder;
 
     /**
@@ -87,33 +91,33 @@ public class ServiceDocGenReport
     /**
      * The regex {@link Pattern} that service classes have to match.
      */
-    @Parameter( defaultValue = ".*Service.*" )
+    @Parameter(defaultValue = ".*Service.*")
     private String classnameRegex;
 
     private Pattern classnamePattern;
 
-    @Parameter( required = false )
+    @Parameter(required = false)
     private ServicesDescriptor descriptor;
 
-    @Parameter( defaultValue = "${project.runtimeClasspathElements}", readonly = true )
+    @Parameter(defaultValue = "${project.runtimeClasspathElements}", readonly = true)
     private List<String> runtimeClasspathElements;
 
-    @Parameter( defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity" )
+    @Parameter(defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity")
     private String templatePath;
 
-    @Parameter( required = false )
+    @Parameter(required = false)
     private List<ServiceDocGenTemplate> templates;
 
-    @Parameter( defaultValue = "${project.build.sourceEncoding}" )
+    @Parameter(defaultValue = "${project.build.sourceEncoding}")
     private String sourceEncoding;
-    
-    @Parameter( defaultValue = "${project.reporting.outputDirectory}", readonly = true, required = true )
+
+    @Parameter(defaultValue = "${project.reporting.outputDirectory}", readonly = true, required = true)
     protected File outputDirectory;
 
     /**
      * Set to <code>true</code> if you want to introspect fields of Java beans and <code>false</code> for getters.
      */
-    @Parameter( defaultValue = "false" )
+    @Parameter(defaultValue = "false")
     private boolean introspectFields;
 
     private ClassLoader projectClassloader;
@@ -128,59 +132,52 @@ public class ServiceDocGenReport
      * {@inheritDoc}
      */
     @Override
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return "servicedoc/index";
     }
 
-    protected ResourceBundle getBundle( Locale locale )
-    {
+    protected ResourceBundle getBundle(Locale locale) {
 
-        return ResourceBundle.getBundle( "servicedocgen-report", locale, getClass().getClassLoader() );
+        return ResourceBundle.getBundle(
+                "servicedocgen-report", locale, getClass().getClassLoader());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getName( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.servicedocgen.name" );
+    public String getName(Locale locale) {
+        return getBundle(locale).getString("report.servicedocgen.name");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getDescription( Locale locale )
-    {
-        return getBundle( locale ).getString( "report.servicedocgen.description" );
+    public String getDescription(Locale locale) {
+        return getBundle(locale).getString("report.servicedocgen.description");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isExternalReport()
-    {
+    public boolean isExternalReport() {
         return true;
     }
-    
-    protected String getOutputDirectoryPath()
-    {
+
+    protected String getOutputDirectoryPath() {
         return this.outputDirectory.getAbsolutePath();
     }
 
-    private List<ServiceDocGenTemplate> getTemplates()
-    {
-        if( CollectionUtils.isEmpty( this.templates ) )
-        {
+    private List<ServiceDocGenTemplate> getTemplates() {
+        if (CollectionUtils.isEmpty(this.templates)) {
             this.templates = new ArrayList<ServiceDocGenTemplate>();
-            ServiceDocGenTemplate template = new ServiceDocGenTemplate( "Service-Documentation.html.vm" );
-            template.setOutputName( "index.html" );
-            this.templates.add( template );
-            this.templates.add( new ServiceDocGenTemplate( "OpenApi.yaml.vm" ) );
-            this.templates.add( new ServiceDocGenTemplate( "SwaggerUI.html.vm" ) );
+            ServiceDocGenTemplate template = new ServiceDocGenTemplate("Service-Documentation.html.vm");
+            template.setOutputName("index.html");
+            this.templates.add(template);
+            this.templates.add(new ServiceDocGenTemplate("OpenApi.yaml.vm"));
+            this.templates.add(new ServiceDocGenTemplate("SwaggerUI.html.vm"));
         }
         return this.templates;
     }
@@ -188,9 +185,8 @@ public class ServiceDocGenReport
     private JavaProjectBuilder getBuilder() {
         if (this.builder == null) {
             this.builder = new JavaProjectBuilder();
-            if ( !Util.isEmpty( this.sourceEncoding ) )
-            {
-                 this.builder.setEncoding( this.sourceEncoding );
+            if (!Util.isEmpty(this.sourceEncoding)) {
+                this.builder.setEncoding(this.sourceEncoding);
             }
         }
         return this.builder;
@@ -199,45 +195,34 @@ public class ServiceDocGenReport
     private List<JavaClass> getServiceClasses() {
 
         if (this.serviceClasses == null) {
-            try
-            {
-                this.serviceClasses = scanServices( getBuilder() );
-            }
-            catch ( IOException e )
-            {
-                throw new RuntimeException( "Unexpected I/O error!", e );
+            try {
+                this.serviceClasses = scanServices(getBuilder());
+            } catch (IOException e) {
+                throw new RuntimeException("Unexpected I/O error!", e);
             }
         }
         return this.serviceClasses;
     }
 
-    private Pattern getClassnamePattern()
-    {
-        if (this.classnamePattern == null)
-        {
-          this.classnamePattern = Pattern.compile( this.classnameRegex );
+    private Pattern getClassnamePattern() {
+        if (this.classnamePattern == null) {
+            this.classnamePattern = Pattern.compile(this.classnameRegex);
         }
         return this.classnamePattern;
     }
 
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-        try
-        {
+    public void execute() throws MojoExecutionException {
+        try {
             this.generatingSite = false;
             generateReport();
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Unexpected Error!", e );
+        } catch (Exception e) {
+            throw new MojoExecutionException("Unexpected Error!", e);
         }
     }
 
     @Override
-    public boolean canGenerateReport()
-    {
+    public boolean canGenerateReport() {
         return !getServiceClasses().isEmpty();
     }
 
@@ -245,140 +230,105 @@ public class ServiceDocGenReport
      * {@inheritDoc}
      */
     @Override
-    protected void executeReport( Locale locale )
-        throws MavenReportException
-    {
-        try
-        {
+    protected void executeReport(Locale locale) throws MavenReportException {
+        try {
             this.generatingSite = true;
             generateReport();
-        }
-        catch ( Exception e )
-        {
-            throw new MavenReportException( "Unexpected Error!", e );
+        } catch (Exception e) {
+            throw new MavenReportException("Unexpected Error!", e);
         }
     }
 
-    private void generateReport()
-        throws Exception
-    {
-        if ( getServiceClasses().isEmpty() )
-        {
-            getLog().info( "No services found - omitting service documentation generation." );
+    private void generateReport() throws Exception {
+        if (getServiceClasses().isEmpty()) {
+            getLog().info("No services found - omitting service documentation generation.");
             return;
         }
-        Analyzer analyzer = new Analyzer( getLog(), this.project, getProjectClassloader(), this.builder, this.descriptor,
-            this.introspectFields );
-        ServicesDescriptor services = analyzer.createServicesDescriptor( getServiceClasses() );
-        sortServiceOperationsByPath( services );
+        Analyzer analyzer = new Analyzer(
+                getLog(), this.project, getProjectClassloader(), this.builder, this.descriptor, this.introspectFields);
+        ServicesDescriptor services = analyzer.createServicesDescriptor(getServiceClasses());
+        sortServiceOperationsByPath(services);
 
         String openApiUrl = "";
-        for( ServiceDocGenTemplate template : this.getTemplates() )
-        {
-            if( template.getTemplateName().equals( "OpenApi.yaml.vm" ) || template.getTemplateName().equals( "OpenApi.json.vm" ) )
-            {
+        for (ServiceDocGenTemplate template : this.getTemplates()) {
+            if (template.getTemplateName().equals("OpenApi.yaml.vm")
+                    || template.getTemplateName().equals("OpenApi.json.vm")) {
                 openApiUrl = template.getOutputNameWithFallback();
                 break;
             }
         }
 
-        for( ServiceDocGenTemplate template : getTemplates() )
-        {
+        for (ServiceDocGenTemplate template : getTemplates()) {
             String outputName = template.getOutputNameWithFallback();
             String templateName = template.getTemplateName();
-            getLog().info( "Generating output file " + outputName + " for " + templateName + "..." );
+            getLog().info("Generating output file " + outputName + " for " + templateName + "...");
             ServicesGenerator generator =
-                new VelocityServicesGenerator( Util.appendPath( this.templatePath, templateName ) );
-            File reportDirectory = new File( this.getOutputDirectoryPath(), this.reportFolder );
-            if ( !reportDirectory.isDirectory() )
-            {
+                    new VelocityServicesGenerator(Util.appendPath(this.templatePath, templateName));
+            File reportDirectory = new File(this.getOutputDirectoryPath(), this.reportFolder);
+            if (!reportDirectory.isDirectory()) {
                 boolean ok = reportDirectory.mkdirs();
-                if ( !ok )
-                {
-                    throw new MojoExecutionException( "Could not create directory " + reportDirectory );
+                if (!ok) {
+                    throw new MojoExecutionException("Could not create directory " + reportDirectory);
                 }
             }
-            generator.generate( services, reportDirectory, outputName, openApiUrl );
+            generator.generate(services, reportDirectory, outputName, openApiUrl);
         }
     }
 
-    private List<JavaClass> scanServices( JavaProjectBuilder builder )
-        throws IOException
-    {
+    private List<JavaClass> scanServices(JavaProjectBuilder builder) throws IOException {
         List<JavaClass> serviceClassList = new ArrayList<JavaClass>();
-        for ( String sourceDir : this.project.getCompileSourceRoots() )
-        {
-            File sourceFolder = new File( sourceDir );
-            if ( sourceFolder.isDirectory() )
-            {
-                builder.addSourceFolder( sourceFolder );
-                if ( this.serviceClassName == null )
-                {
-                    scanJavaFilesRecursive( sourceFolder, builder, serviceClassList );
+        for (String sourceDir : this.project.getCompileSourceRoots()) {
+            File sourceFolder = new File(sourceDir);
+            if (sourceFolder.isDirectory()) {
+                builder.addSourceFolder(sourceFolder);
+                if (this.serviceClassName == null) {
+                    scanJavaFilesRecursive(sourceFolder, builder, serviceClassList);
                 }
             }
         }
-        if ( this.serviceClassName != null )
-        {
-            JavaClass type = builder.getClassByName( this.serviceClassName );
-            boolean isService = isServiceClass( type );
-            if ( isService )
-            {
-                serviceClassList.add( type );
-                getLog().info( "Discovered service: " + type );
+        if (this.serviceClassName != null) {
+            JavaClass type = builder.getClassByName(this.serviceClassName);
+            boolean isService = isServiceClass(type);
+            if (isService) {
+                serviceClassList.add(type);
+                getLog().info("Discovered service: " + type);
             }
         }
         return serviceClassList;
     }
 
-    private void scanJavaFilesRecursive( File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses )
-        throws IOException
-    {
+    private void scanJavaFilesRecursive(File sourceDir, JavaProjectBuilder builder, List<JavaClass> serviceClasses)
+            throws IOException {
         File[] children = sourceDir.listFiles();
-        if ( children == null )
-        {
-            getLog().debug( "Directory does not exist: " + sourceDir );
+        if (children == null) {
+            getLog().debug("Directory does not exist: " + sourceDir);
             return;
         }
-        for ( File file : children )
-        {
-            if ( file.isDirectory() )
-            {
-                scanJavaFilesRecursive( file, builder, serviceClasses );
-            }
-            else if ( file.getName().endsWith( ".java" ) )
-            {
-                try
-                {
-                    JavaSource source = builder.addSource( file );
-                    for ( JavaClass type : source.getClasses() )
-                    {
-                        boolean isService = isServiceClass( type );
-                        if ( isService )
-                        {
-                            serviceClasses.add( type );
+        for (File file : children) {
+            if (file.isDirectory()) {
+                scanJavaFilesRecursive(file, builder, serviceClasses);
+            } else if (file.getName().endsWith(".java")) {
+                try {
+                    JavaSource source = builder.addSource(file);
+                    for (JavaClass type : source.getClasses()) {
+                        boolean isService = isServiceClass(type);
+                        if (isService) {
+                            serviceClasses.add(type);
                         }
                     }
-                }
-                catch ( Exception e )
-                {
-                    getLog().debug( "Error parsing file: " + file, e );
+                } catch (Exception e) {
+                    getLog().debug("Error parsing file: " + file, e);
                 }
             }
         }
-
     }
 
-    private boolean isServiceClass( JavaClass type )
-    {
-        if ( getClassnamePattern().matcher( type.getName() ).matches() )
-        {
-            getLog().debug( "Class matches: " + type.getName() );
-            for ( JavaAnnotation annotation : type.getAnnotations() )
-            {
-                if ( Path.class.getName().equals( annotation.getType().getFullyQualifiedName() ) )
-                {
-                    getLog().info( "Found service: " + type.getName() );
+    private boolean isServiceClass(JavaClass type) {
+        if (getClassnamePattern().matcher(type.getName()).matches()) {
+            getLog().debug("Class matches: " + type.getName());
+            for (JavaAnnotation annotation : type.getAnnotations()) {
+                if (Path.class.getName().equals(annotation.getType().getFullyQualifiedName())) {
+                    getLog().info("Found service: " + type.getName());
                     return true;
                 }
             }
@@ -386,52 +336,38 @@ public class ServiceDocGenReport
         return false;
     }
 
-    private ClassLoader getProjectClassloader()
-        throws MojoExecutionException
-    {
-        if ( this.projectClassloader == null )
-        {
-            this.projectClassloader = new URLClassLoader( buildClasspathUrls(), this.getClass().getClassLoader() );
+    private ClassLoader getProjectClassloader() throws MojoExecutionException {
+        if (this.projectClassloader == null) {
+            this.projectClassloader =
+                    new URLClassLoader(buildClasspathUrls(), this.getClass().getClassLoader());
         }
         return this.projectClassloader;
     }
 
-    private URL[] buildClasspathUrls()
-        throws MojoExecutionException
-    {
-        List<URL> urls = new ArrayList<URL>( this.runtimeClasspathElements.size() );
-        for ( String element : this.runtimeClasspathElements )
-        {
-            try
-            {
-                URL url = new File( element ).toURI().toURL();
-                urls.add( url );
-                getLog().debug( "Adding to classloader: " + url.toString() );
-            }
-            catch ( MalformedURLException e )
-            {
-                throw new MojoExecutionException( "Unable to access project dependency: " + element, e );
+    private URL[] buildClasspathUrls() throws MojoExecutionException {
+        List<URL> urls = new ArrayList<URL>(this.runtimeClasspathElements.size());
+        for (String element : this.runtimeClasspathElements) {
+            try {
+                URL url = new File(element).toURI().toURL();
+                urls.add(url);
+                getLog().debug("Adding to classloader: " + url.toString());
+            } catch (MalformedURLException e) {
+                throw new MojoExecutionException("Unable to access project dependency: " + element, e);
             }
         }
-        return urls.toArray( new URL[urls.size()] );
+        return urls.toArray(new URL[urls.size()]);
     }
 
-    private void sortServiceOperationsByPath( ServicesDescriptor services )
-    {
-        for ( ServiceDescriptor service : services.getServices() )
-        {
+    private void sortServiceOperationsByPath(ServicesDescriptor services) {
+        for (ServiceDescriptor service : services.getServices()) {
             List<OperationDescriptor> operations = service.getOperations();
-            Collections.sort( operations, new Comparator<OperationDescriptor>()
-            {
+            Collections.sort(operations, new Comparator<OperationDescriptor>() {
 
                 @Override
-                public int compare( OperationDescriptor o1, OperationDescriptor o2 )
-                {
-                    return o1.getPath().compareTo( o2.getPath() );
+                public int compare(OperationDescriptor o1, OperationDescriptor o2) {
+                    return o1.getPath().compareTo(o2.getPath());
                 }
-
-            } );
+            });
         }
     }
-
 }

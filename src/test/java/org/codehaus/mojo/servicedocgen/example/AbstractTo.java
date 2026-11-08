@@ -7,10 +7,7 @@ import net.sf.mmm.util.transferobject.api.EntityTo;
 /**
  * @author hohwille
  */
-public class AbstractTo
-    extends EntityTo<Long>
-{
+public class AbstractTo extends EntityTo<Long> {
 
     private static final long serialVersionUID = 1L;
-
 }

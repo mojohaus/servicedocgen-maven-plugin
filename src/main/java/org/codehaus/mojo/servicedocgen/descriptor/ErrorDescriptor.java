@@ -27,34 +27,49 @@ import net.sf.mmm.util.pattern.base.RegexInfixPatternCompiler;
  *
  * @author hohwille
  */
-public class ErrorDescriptor
-    extends AbstractDescriptor
-{
+public class ErrorDescriptor extends AbstractDescriptor {
 
     /** Default for {@link #getJsonExample()}. */
     public static final String DEFAULT_JSON_EXAMPLE = "{\"message\": \"text\",\n" + //
-        "  \"code\": \"text\",\n" + //
-        "  \"uuid\": \"text\",\n" + //
-        "  \"errors\": {\n" + //
-        "    \"bean.property.path\": [\n" + //
-        "       \"Error message 1\",\n" + //
-        "       \"Error message 2\"\n" + //
-        "    ], \n" + //
-        "    ...\n" + //
-        "  }\n" + //
-        "}";
+            "  \"code\": \"text\",\n"
+            + //
+            "  \"uuid\": \"text\",\n"
+            + //
+            "  \"errors\": {\n"
+            + //
+            "    \"bean.property.path\": [\n"
+            + //
+            "       \"Error message 1\",\n"
+            + //
+            "       \"Error message 2\"\n"
+            + //
+            "    ], \n"
+            + //
+            "    ...\n"
+            + //
+            "  }\n"
+            + //
+            "}";
 
     /** Default for {@link #getXmlExample()}. */
     public static final String DEFAULT_XML_EXAMPLE = "<error code='text' uuid='text'>\n" + //
-        "  <message>text</message>\n" + //
-        "  <violations>\n" + //
-        "    <violation path='bean.property.path'>\n" + //
-        "      <message>Error message 1</message>\n" + //
-        "      <message>Error message 2</message>\n" + //
-        "    </violation>\n" + //
-        "    ...\n" + //
-        "  </violations>\n" + //
-        "</error>";
+            "  <message>text</message>\n"
+            + //
+            "  <violations>\n"
+            + //
+            "    <violation path='bean.property.path'>\n"
+            + //
+            "      <message>Error message 1</message>\n"
+            + //
+            "      <message>Error message 2</message>\n"
+            + //
+            "    </violation>\n"
+            + //
+            "    ...\n"
+            + //
+            "  </violations>\n"
+            + //
+            "</error>";
 
     private String errorName;
 
@@ -75,10 +90,8 @@ public class ErrorDescriptor
     /**
      * @return the errorNameRegex
      */
-    public String getErrorName()
-    {
-        if ( this.errorName == null )
-        {
+    public String getErrorName() {
+        if (this.errorName == null) {
             return "";
         }
         return this.errorName;
@@ -87,89 +100,75 @@ public class ErrorDescriptor
     /**
      * @param errorNameRegex is the errorNameRegex to set
      */
-    public void setErrorName( String errorNameRegex )
-    {
+    public void setErrorName(String errorNameRegex) {
         this.errorName = errorNameRegex;
     }
 
     /**
      * @return the jsonExample
      */
-    public String getJsonExample()
-    {
+    public String getJsonExample() {
         return this.jsonExample;
     }
 
     /**
      * @param jsonExample is the jsonExample to set
      */
-    public void setJsonExample( String jsonExample )
-    {
+    public void setJsonExample(String jsonExample) {
         this.jsonExample = jsonExample;
     }
 
     /**
      * @return the xmlExample
      */
-    public String getXmlExample()
-    {
+    public String getXmlExample() {
         return this.xmlExample;
     }
 
     /**
      * @param xmlExample is the xmlExample to set
      */
-    public void setXmlExample( String xmlExample )
-    {
+    public void setXmlExample(String xmlExample) {
         this.xmlExample = xmlExample;
     }
 
     /**
      * @return the statusCode
      */
-    public String getStatusCode()
-    {
+    public String getStatusCode() {
         return this.statusCode;
     }
 
     /**
      * @param statusCode is the statusCode to set
      */
-    public void setStatusCode( String statusCode )
-    {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
 
     /**
      * @return the comment to use if no more specific comment is available (esp. in case of {@link Match#always}).
      */
-    public String getComment()
-    {
+    public String getComment() {
         return this.comment;
     }
 
     /**
      * @param comment is the comment to set
      */
-    public void setComment( String comment )
-    {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
     /**
      * @return the errorNamePattern
      */
-    public Pattern getErrorNamePattern()
-    {
-        if ( ( this.errorNamePattern == null ) && ( this.errorName != null ) )
-        {
-            if ( this.errorName.isEmpty() )
-            {
-                this.errorNamePattern = Pattern.compile( ".*" );
-            }
-            else
-            {
-                this.errorNamePattern = RegexInfixPatternCompiler.INSTANCE.compile( this.errorName );
+    public Pattern getErrorNamePattern() {
+        if ((this.errorNamePattern == null) && (this.errorName != null)) {
+            if (this.errorName.isEmpty()) {
+                this.errorNamePattern = Pattern.compile(".*");
+            } else {
+                this.errorNamePattern = RegexInfixPatternCompiler.INSTANCE.compile(this.errorName);
             }
         }
         return this.errorNamePattern;
@@ -178,32 +177,28 @@ public class ErrorDescriptor
     /**
      * @return the match
      */
-    public Match getMatch()
-    {
+    public Match getMatch() {
         return this.match;
     }
 
     /**
      * @param match is the match to set
      */
-    public void setMatch( Match match )
-    {
+    public void setMatch(Match match) {
         this.match = match;
     }
 
     /**
      * @return the errorClass
      */
-    public Class<?> getErrorClass()
-    {
+    public Class<?> getErrorClass() {
         return this.errorClass;
     }
 
     /**
      * @param errorClass is the errorClass to set
      */
-    public void setErrorClass( Class<?> errorClass )
-    {
+    public void setErrorClass(Class<?> errorClass) {
         this.errorClass = errorClass;
     }
 
@@ -211,16 +206,14 @@ public class ErrorDescriptor
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getErrorName() + "[" + this.match + "]@" + this.statusCode;
     }
 
     /**
      * Mode to match {@link ErrorDescriptor#getErrorName() error name}.
      */
-    public static enum Match
-    {
+    public static enum Match {
 
         /** As {@link Pattern regular expression}. */
         regex,
@@ -231,5 +224,4 @@ public class ErrorDescriptor
         /** This error is added as response to every operation independent of declared exceptions. */
         always
     }
-
 }

@@ -33,9 +33,7 @@ import org.codehaus.mojo.servicedocgen.introspection.JType;
  * @see ServicesDescriptor#getServices()
  * @author hohwille
  */
-public class ServiceDescriptor
-    extends AbstractDescriptor
-{
+public class ServiceDescriptor extends AbstractDescriptor {
 
     private String id;
 
@@ -56,13 +54,10 @@ public class ServiceDescriptor
     /**
      * @return the id
      */
-    public String getId()
-    {
-        if ( this.id == null )
-        {
-            if ( this.javaType != null )
-            {
-                return this.javaType.getByteType().getRetrievalClass().getName().replaceAll( "[.$]", "_" );
+    public String getId() {
+        if (this.id == null) {
+            if (this.javaType != null) {
+                return this.javaType.getByteType().getRetrievalClass().getName().replaceAll("[.$]", "_");
             }
         }
         return this.id;
@@ -71,66 +66,57 @@ public class ServiceDescriptor
     /**
      * @param id is the id to set
      */
-    public void setId( String id )
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     /**
      * @param name is the name to set
      */
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return this.description;
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the basePath
      */
-    public String getBasePath()
-    {
+    public String getBasePath() {
         return this.basePath;
     }
 
     /**
      * @param basePath is the basePath to set
      */
-    public void setBasePath( String basePath )
-    {
+    public void setBasePath(String basePath) {
         this.basePath = basePath;
     }
 
     /**
      * @return the paths
      */
-    public List<OperationDescriptor> getOperations()
-    {
-        if ( this.operations == null )
-        {
+    public List<OperationDescriptor> getOperations() {
+        if (this.operations == null) {
             this.operations = new ArrayList<OperationDescriptor>();
         }
         return this.operations;
@@ -140,19 +126,16 @@ public class ServiceDescriptor
      * @return a {@link Map} {@link Map#get(Object) mapping} from {@link OperationDescriptor#getHttpMethod()
      *         HTTP-method} to {@link OperationDescriptor}.
      */
-    public Map<String, List<OperationDescriptor>> getOperationsGroupedByHttpMethod()
-    {
+    public Map<String, List<OperationDescriptor>> getOperationsGroupedByHttpMethod() {
 
         Map<String, List<OperationDescriptor>> map = new HashMap<String, List<OperationDescriptor>>();
-        for ( OperationDescriptor path : getOperations() )
-        {
-            List<OperationDescriptor> pathList = map.get( path.getHttpMethod() );
-            if ( pathList == null )
-            {
+        for (OperationDescriptor path : getOperations()) {
+            List<OperationDescriptor> pathList = map.get(path.getHttpMethod());
+            if (pathList == null) {
                 pathList = new ArrayList<OperationDescriptor>();
-                map.put( path.getHttpMethod(), pathList );
+                map.put(path.getHttpMethod(), pathList);
             }
-            pathList.add( path );
+            pathList.add(path);
         }
         return map;
     }
@@ -160,18 +143,15 @@ public class ServiceDescriptor
     /**
      * @param paths is the paths to set
      */
-    public void setOperations( List<OperationDescriptor> paths )
-    {
+    public void setOperations(List<OperationDescriptor> paths) {
         this.operations = paths;
     }
 
     /**
      * @return the consumes
      */
-    public Set<String> getConsumes()
-    {
-        if ( this.consumes == null )
-        {
+    public Set<String> getConsumes() {
+        if (this.consumes == null) {
             this.consumes = new HashSet<String>();
         }
         return this.consumes;
@@ -180,18 +160,15 @@ public class ServiceDescriptor
     /**
      * @param consumes is the consumes to set
      */
-    public void setConsumes( Set<String> consumes )
-    {
+    public void setConsumes(Set<String> consumes) {
         this.consumes = consumes;
     }
 
     /**
      * @return the produces
      */
-    public Set<String> getProduces()
-    {
-        if ( this.produces == null )
-        {
+    public Set<String> getProduces() {
+        if (this.produces == null) {
             this.produces = new HashSet<String>();
         }
         return this.produces;
@@ -200,25 +177,21 @@ public class ServiceDescriptor
     /**
      * @param produces is the produces to set
      */
-    public void setProduces( Set<String> produces )
-    {
+    public void setProduces(Set<String> produces) {
         this.produces = produces;
     }
 
     /**
      * @return the javaType
      */
-    public JType getJavaType()
-    {
+    public JType getJavaType() {
         return this.javaType;
     }
 
     /**
      * @param javaType is the javaType to set
      */
-    public void setJavaType( JType javaType )
-    {
+    public void setJavaType(JType javaType) {
         this.javaType = javaType;
     }
-
 }
