@@ -24,8 +24,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  * @see ServicesDescriptor
  * @author hohwille
  */
-public interface Descriptor
-{
+public interface Descriptor {
 
     /** HTTP GET method. */
     String HTTP_METHOD_GET = "get";
@@ -98,5 +97,4 @@ public interface Descriptor
 
     /** HTTP status code for internal server error. */
     String STATUS_CODE_INTERNAL_SERVER_ERROR = "500";
-
 }

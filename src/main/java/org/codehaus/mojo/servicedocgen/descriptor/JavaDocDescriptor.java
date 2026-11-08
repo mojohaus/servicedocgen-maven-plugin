@@ -23,8 +23,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  *
  * @author hohwille
  */
-public class JavaDocDescriptor
-{
+public class JavaDocDescriptor {
 
     private String packagePrefix;
 
@@ -33,8 +32,7 @@ public class JavaDocDescriptor
     /**
      * The constructor.
      */
-    public JavaDocDescriptor()
-    {
+    public JavaDocDescriptor() {
         super();
     }
 
@@ -44,8 +42,7 @@ public class JavaDocDescriptor
      * @param packagePrefix - see {@link #getPackagePrefix()}.
      * @param url - see {@link #getUrl()}.
      */
-    public JavaDocDescriptor( String packagePrefix, String url )
-    {
+    public JavaDocDescriptor(String packagePrefix, String url) {
         super();
         this.packagePrefix = packagePrefix;
         this.url = url;
@@ -54,10 +51,8 @@ public class JavaDocDescriptor
     /**
      * @return the prefix of the {@link Package} mapped to this {@link #getUrl() JavaDoc URL}.
      */
-    public String getPackagePrefix()
-    {
-        if ( this.packagePrefix == null )
-        {
+    public String getPackagePrefix() {
+        if (this.packagePrefix == null) {
             return "";
         }
         return this.packagePrefix;
@@ -66,25 +61,21 @@ public class JavaDocDescriptor
     /**
      * @param packagePrefix is the packagePrefix to set
      */
-    public void setPackagePrefix( String packagePrefix )
-    {
+    public void setPackagePrefix(String packagePrefix) {
         this.packagePrefix = packagePrefix;
     }
 
     /**
      * @return the base URL of the JavaDoc for this {@link #getPackagePrefix() package prefix}.
      */
-    public String getUrl()
-    {
+    public String getUrl() {
         return this.url;
     }
 
     /**
      * @param url is the url to set
      */
-    public void setUrl( String url )
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
-
 }

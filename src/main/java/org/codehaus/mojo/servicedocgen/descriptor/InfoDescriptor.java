@@ -23,9 +23,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  *
  * @author hohwille
  */
-public class InfoDescriptor
-    extends AbstractDescriptor
-{
+public class InfoDescriptor extends AbstractDescriptor {
 
     private String title;
 
@@ -42,97 +40,84 @@ public class InfoDescriptor
     /**
      * @return the title
      */
-    public String getTitle()
-    {
+    public String getTitle() {
         return this.title;
     }
 
     /**
      * @param title is the title to set
      */
-    public void setTitle( String title )
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
     /**
      * @return the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return this.description;
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the termsOfService
      */
-    public String getTermsOfService()
-    {
+    public String getTermsOfService() {
         return this.termsOfService;
     }
 
     /**
      * @param termsOfService is the termsOfService to set
      */
-    public void setTermsOfService( String termsOfService )
-    {
+    public void setTermsOfService(String termsOfService) {
         this.termsOfService = termsOfService;
     }
 
     /**
      * @return the contact
      */
-    public ContactDescriptor getContact()
-    {
+    public ContactDescriptor getContact() {
         return this.contact;
     }
 
     /**
      * @param contact is the contact to set
      */
-    public void setContact( ContactDescriptor contact )
-    {
+    public void setContact(ContactDescriptor contact) {
         this.contact = contact;
     }
 
     /**
      * @return the license
      */
-    public LicenseDescriptor getLicense()
-    {
+    public LicenseDescriptor getLicense() {
         return this.license;
     }
 
     /**
      * @param license is the license to set
      */
-    public void setLicense( LicenseDescriptor license )
-    {
+    public void setLicense(LicenseDescriptor license) {
         this.license = license;
     }
 
     /**
      * @return the version
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return this.version;
     }
 
     /**
      * @param version is the version to set
      */
-    public void setVersion( String version )
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
-
 }

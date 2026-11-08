@@ -23,9 +23,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  *
  * @author hohwille
  */
-public class LicenseDescriptor
-    extends AbstractDescriptor
-{
+public class LicenseDescriptor extends AbstractDescriptor {
 
     private String name;
 
@@ -34,33 +32,28 @@ public class LicenseDescriptor
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     /**
      * @param name is the name to set
      */
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the url
      */
-    public String getUrl()
-    {
-        return notNull( this.url );
+    public String getUrl() {
+        return notNull(this.url);
     }
 
     /**
      * @param url is the url to set
      */
-    public void setUrl( String url )
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
-
 }

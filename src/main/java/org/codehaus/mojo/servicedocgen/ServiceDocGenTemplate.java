@@ -5,15 +5,11 @@ package org.codehaus.mojo.servicedocgen;
  *
  * @author jguenther
  */
-public class ServiceDocGenTemplate
-{
+public class ServiceDocGenTemplate {
 
-    public ServiceDocGenTemplate()
-    {
-    }
-    
-    public ServiceDocGenTemplate( String templateName )
-    {
+    public ServiceDocGenTemplate() {}
+
+    public ServiceDocGenTemplate(String templateName) {
         this.templateName = templateName;
     }
 
@@ -24,32 +20,28 @@ public class ServiceDocGenTemplate
     /**
      * @return the filename of the velocity template used for generation.
      */
-    public String getTemplateName()
-    {
+    public String getTemplateName() {
         return this.templateName;
     }
 
     /**
      * @param templateName is the new value of {@link #getTemplateName()}.
      */
-    public void setTemplateName( String templateName )
-    {
+    public void setTemplateName(String templateName) {
         this.templateName = templateName;
     }
 
     /**
      * @return the filename of the file to generate from the template.
      */
-    public String getOutputName()
-    {
+    public String getOutputName() {
         return this.outputName;
     }
 
     /**
      * @param outputName is the new value of {@link #getOutputName()}.
      */
-    public void setOutputName( String outputName )
-    {
+    public void setOutputName(String outputName) {
 
         this.outputName = outputName;
     }
@@ -60,8 +52,7 @@ public class ServiceDocGenTemplate
      *         excluding the ".vm" extension.
      * @see #getOutputName()
      */
-    public String getOutputNameWithFallback()
-    {
+    public String getOutputNameWithFallback() {
 
         if ((this.outputName == null) || this.outputName.isEmpty()) {
             if ((this.templateName != null) && this.templateName.endsWith(".vm")) {
@@ -70,5 +61,4 @@ public class ServiceDocGenTemplate
         }
         return this.outputName;
     }
-
 }

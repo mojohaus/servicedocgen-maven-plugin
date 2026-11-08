@@ -18,17 +18,15 @@
  */
 package org.codehaus.mojo.servicedocgen.introspection;
 
+import com.thoughtworks.qdox.model.JavaClass;
 import net.sf.mmm.util.lang.api.Visitor;
 import net.sf.mmm.util.reflect.api.GenericType;
 import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
 
-import com.thoughtworks.qdox.model.JavaClass;
-
 /**
  * @author hohwille
  */
-public abstract class JElement
-{
+public abstract class JElement {
 
     private final GenericType<?> byteType;
 
@@ -43,8 +41,7 @@ public abstract class JElement
      * @param sourceType - see {@link #getSourceType()}.
      * @param comment - see {@link #getComment()}.
      */
-    public JElement( GenericType<?> byteType, JavaClass sourceType, String comment )
-    {
+    public JElement(GenericType<?> byteType, JavaClass sourceType, String comment) {
         super();
         this.sourceType = sourceType;
         this.comment = comment;
@@ -54,41 +51,35 @@ public abstract class JElement
     /**
      * @return the type of the byte-code analysis.
      */
-    public GenericType<?> getByteType()
-    {
+    public GenericType<?> getByteType() {
         return this.byteType;
     }
 
     /**
      * @return a compact string representation of {@link #getByteType()}.
      */
-    public String getByteTypeString()
-    {
+    public String getByteTypeString() {
         final StringBuilder appendable = new StringBuilder();
-        Visitor<Class<?>> classFormatter = new Visitor<Class<?>>()
-        {
-            public void visit( Class<?> value )
-            {
-                appendable.append( value.getSimpleName() );
+        Visitor<Class<?>> classFormatter = new Visitor<Class<?>>() {
+            public void visit(Class<?> value) {
+                appendable.append(value.getSimpleName());
             }
         };
-        ReflectionUtilImpl.getInstance().toString( getByteType(), appendable, classFormatter );
+        ReflectionUtilImpl.getInstance().toString(getByteType(), appendable, classFormatter);
         return appendable.toString();
     }
 
     /**
      * @return the type of the source-code analysis. May be <code>null</code>.
      */
-    public JavaClass getSourceType()
-    {
+    public JavaClass getSourceType() {
         return this.sourceType;
     }
 
     /**
      * @return the JavaDoc comment. Will be empty if not available.
      */
-    public String getComment()
-    {
+    public String getComment() {
         return this.comment;
     }
 }

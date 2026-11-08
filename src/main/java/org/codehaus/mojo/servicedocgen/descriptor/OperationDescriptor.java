@@ -31,10 +31,7 @@ import org.codehaus.mojo.servicedocgen.introspection.JMethod;
  * @see ServiceDescriptor#getOperations()
  * @author hohwille
  */
-public class OperationDescriptor
-    extends AbstractDescriptor
-    implements Comparable<OperationDescriptor>
-{
+public class OperationDescriptor extends AbstractDescriptor implements Comparable<OperationDescriptor> {
 
     private String id;
 
@@ -59,13 +56,10 @@ public class OperationDescriptor
     /**
      * @return the id
      */
-    public String getId()
-    {
-        if ( this.id == null )
-        {
-            if ( this.path != null )
-            {
-                return this.httpMethod + "_" + this.path.replaceAll( "[/{}]", "_" );
+    public String getId() {
+        if (this.id == null) {
+            if (this.path != null) {
+                return this.httpMethod + "_" + this.path.replaceAll("[/{}]", "_");
             }
         }
         return this.id;
@@ -74,82 +68,71 @@ public class OperationDescriptor
     /**
      * @param id is the id to set
      */
-    public void setId( String id )
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the path
      */
-    public String getPath()
-    {
+    public String getPath() {
         return this.path;
     }
 
     /**
      * @param path is the path to set
      */
-    public void setPath( String path )
-    {
+    public void setPath(String path) {
         this.path = path;
     }
 
     /**
      * @return the method
      */
-    public String getHttpMethod()
-    {
+    public String getHttpMethod() {
         return this.httpMethod;
     }
 
     /**
      * @param method is the method to set
      */
-    public void setHttpMethod( String method )
-    {
+    public void setHttpMethod(String method) {
         this.httpMethod = method;
     }
 
     /**
      * @return the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return this.description;
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the deprecated
      */
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return this.deprecated;
     }
 
     /**
      * @param deprecated is the deprecated to set
      */
-    public void setDeprecated( boolean deprecated )
-    {
+    public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
     }
 
     /**
      * @return the consumes
      */
-    public Set<String> getConsumes()
-    {
-        if ( this.consumes == null )
-        {
+    public Set<String> getConsumes() {
+        if (this.consumes == null) {
             this.consumes = new HashSet<String>();
         }
         return this.consumes;
@@ -158,18 +141,15 @@ public class OperationDescriptor
     /**
      * @param consumes is the consumes to set
      */
-    public void setConsumes( Set<String> consumes )
-    {
+    public void setConsumes(Set<String> consumes) {
         this.consumes = consumes;
     }
 
     /**
      * @return the produces
      */
-    public Set<String> getProduces()
-    {
-        if ( this.produces == null )
-        {
+    public Set<String> getProduces() {
+        if (this.produces == null) {
             this.produces = new HashSet<String>();
         }
         return this.produces;
@@ -178,18 +158,15 @@ public class OperationDescriptor
     /**
      * @param produces is the produces to set
      */
-    public void setProduces( Set<String> produces )
-    {
+    public void setProduces(Set<String> produces) {
         this.produces = produces;
     }
 
     /**
      * @return the parameters
      */
-    public List<ParameterDescriptor> getParameters()
-    {
-        if ( this.parameters == null )
-        {
+    public List<ParameterDescriptor> getParameters() {
+        if (this.parameters == null) {
             this.parameters = new ArrayList<ParameterDescriptor>();
         }
         return this.parameters;
@@ -198,18 +175,15 @@ public class OperationDescriptor
     /**
      * @param parameters is the parameters to set
      */
-    public void setParameters( List<ParameterDescriptor> parameters )
-    {
+    public void setParameters(List<ParameterDescriptor> parameters) {
         this.parameters = parameters;
     }
 
     /**
      * @return the responses
      */
-    public List<ResponseDescriptor> getResponses()
-    {
-        if ( this.responses == null )
-        {
+    public List<ResponseDescriptor> getResponses() {
+        if (this.responses == null) {
             this.responses = new ArrayList<ResponseDescriptor>();
         }
         return this.responses;
@@ -218,42 +192,35 @@ public class OperationDescriptor
     /**
      * @param responses is the responses to set
      */
-    public void setResponses( List<ResponseDescriptor> responses )
-    {
+    public void setResponses(List<ResponseDescriptor> responses) {
         this.responses = responses;
     }
 
     /**
      * @return the javaMethod
      */
-    public JMethod getJavaMethod()
-    {
+    public JMethod getJavaMethod() {
         return this.javaMethod;
     }
 
     /**
      * @param javaMethod is the javaMethod to set
      */
-    public void setJavaMethod( JMethod javaMethod )
-    {
+    public void setJavaMethod(JMethod javaMethod) {
         this.javaMethod = javaMethod;
     }
 
     /**
      * {@inheritDoc}
      */
-    public int compareTo( OperationDescriptor o )
-    {
-        if ( o == null )
-        {
+    public int compareTo(OperationDescriptor o) {
+        if (o == null) {
             return 1;
         }
-        int result = this.httpMethod.compareTo( o.httpMethod );
-        if ( result == 0 )
-        {
-            result = this.path.compareTo( o.path );
+        int result = this.httpMethod.compareTo(o.httpMethod);
+        if (result == 0) {
+            result = this.path.compareTo(o.path);
         }
         return result;
     }
-
 }

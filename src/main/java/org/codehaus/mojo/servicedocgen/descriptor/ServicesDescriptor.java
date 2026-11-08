@@ -29,9 +29,7 @@ import java.util.Set;
  * @see #getServices()
  * @author hohwille
  */
-public class ServicesDescriptor
-    extends AbstractDescriptor
-{
+public class ServicesDescriptor extends AbstractDescriptor {
 
     private InfoDescriptor info;
 
@@ -62,18 +60,15 @@ public class ServicesDescriptor
     /**
      * The constructor.
      */
-    public ServicesDescriptor()
-    {
+    public ServicesDescriptor() {
         super();
     }
 
     /**
      * @return the info
      */
-    public InfoDescriptor getInfo()
-    {
-        if ( this.info == null )
-        {
+    public InfoDescriptor getInfo() {
+        if (this.info == null) {
             this.info = new InfoDescriptor();
         }
         return this.info;
@@ -82,66 +77,57 @@ public class ServicesDescriptor
     /**
      * @param info is the info to set
      */
-    public void setInfo( InfoDescriptor info )
-    {
+    public void setInfo(InfoDescriptor info) {
         this.info = info;
     }
 
     /**
      * @return the host
      */
-    public String getHost()
-    {
+    public String getHost() {
         return this.host;
     }
 
     /**
      * @param host is the host to set
      */
-    public void setHost( String host )
-    {
+    public void setHost(String host) {
         this.host = host;
     }
 
     /**
      * @return the port
      */
-    public int getPort()
-    {
+    public int getPort() {
         return this.port;
     }
 
     /**
      * @param port is the port to set
      */
-    public void setPort( int port )
-    {
+    public void setPort(int port) {
         this.port = port;
     }
 
     /**
      * @return the basePath
      */
-    public String getBasePath()
-    {
+    public String getBasePath() {
         return this.basePath;
     }
 
     /**
      * @param basePath is the basePath to set
      */
-    public void setBasePath( String basePath )
-    {
+    public void setBasePath(String basePath) {
         this.basePath = basePath;
     }
 
     /**
      * @return the javadocs
      */
-    public List<JavaDocDescriptor> getJavadocs()
-    {
-        if ( this.javadocs == null )
-        {
+    public List<JavaDocDescriptor> getJavadocs() {
+        if (this.javadocs == null) {
             this.javadocs = new ArrayList<JavaDocDescriptor>();
         }
         return this.javadocs;
@@ -150,18 +136,15 @@ public class ServicesDescriptor
     /**
      * @param javadocs is the javadocs to set
      */
-    public void setJavadocs( List<JavaDocDescriptor> javadocs )
-    {
+    public void setJavadocs(List<JavaDocDescriptor> javadocs) {
         this.javadocs = javadocs;
     }
 
     /**
      * @return the schemes
      */
-    public Set<String> getSchemes()
-    {
-        if ( this.schemes == null )
-        {
+    public Set<String> getSchemes() {
+        if (this.schemes == null) {
             this.schemes = new HashSet<String>();
         }
         return this.schemes;
@@ -170,18 +153,15 @@ public class ServicesDescriptor
     /**
      * @param schemes is the schemes to set
      */
-    public void setSchemes( Set<String> schemes )
-    {
+    public void setSchemes(Set<String> schemes) {
         this.schemes = schemes;
     }
 
     /**
      * @return the consumes
      */
-    public Set<String> getConsumes()
-    {
-        if ( this.consumes == null )
-        {
+    public Set<String> getConsumes() {
+        if (this.consumes == null) {
             this.consumes = new HashSet<String>();
         }
         return this.consumes;
@@ -190,18 +170,15 @@ public class ServicesDescriptor
     /**
      * @param consumes is the consumes to set
      */
-    public void setConsumes( Set<String> consumes )
-    {
+    public void setConsumes(Set<String> consumes) {
         this.consumes = consumes;
     }
 
     /**
      * @return the produces
      */
-    public Set<String> getProduces()
-    {
-        if ( this.produces == null )
-        {
+    public Set<String> getProduces() {
+        if (this.produces == null) {
             this.produces = new HashSet<String>();
         }
         return this.produces;
@@ -210,18 +187,15 @@ public class ServicesDescriptor
     /**
      * @param produces is the produces to set
      */
-    public void setProduces( Set<String> produces )
-    {
+    public void setProduces(Set<String> produces) {
         this.produces = produces;
     }
 
     /**
      * @return the services
      */
-    public List<ServiceDescriptor> getServices()
-    {
-        if ( this.services == null )
-        {
+    public List<ServiceDescriptor> getServices() {
+        if (this.services == null) {
             this.services = new ArrayList<ServiceDescriptor>();
         }
         return this.services;
@@ -230,18 +204,15 @@ public class ServicesDescriptor
     /**
      * @param services is the services to set
      */
-    public void setServices( List<ServiceDescriptor> services )
-    {
+    public void setServices(List<ServiceDescriptor> services) {
         this.services = services;
     }
 
     /**
      * @return the errors
      */
-    public List<ErrorDescriptor> getErrors()
-    {
-        if ( this.errors == null )
-        {
+    public List<ErrorDescriptor> getErrors() {
+        if (this.errors == null) {
             this.errors = new ArrayList<ErrorDescriptor>();
         }
         return this.errors;
@@ -250,66 +221,57 @@ public class ServicesDescriptor
     /**
      * @param errors is the errors to set
      */
-    public void setErrors( List<ErrorDescriptor> errors )
-    {
+    public void setErrors(List<ErrorDescriptor> errors) {
         this.errors = errors;
     }
 
     /**
      * @return the externalDocs
      */
-    public ExternalDocumentationDescriptor getExternalDocs()
-    {
+    public ExternalDocumentationDescriptor getExternalDocs() {
         return this.externalDocs;
     }
 
     /**
      * @param externalDocs is the externalDocs to set
      */
-    public void setExternalDocs( ExternalDocumentationDescriptor externalDocs )
-    {
+    public void setExternalDocs(ExternalDocumentationDescriptor externalDocs) {
         this.externalDocs = externalDocs;
     }
 
     /**
      * @return the schema definition as json
      */
-    public String getSchemaDefinitionJson()
-    {
+    public String getSchemaDefinitionJson() {
         return this.schemaDefinitionJson;
     }
 
     /**
      * @param schemaDefinitionJson is the schema definition as json to set
      */
-    public void setSchemaDefinitionJson( String schemaDefinitionJson )
-    {
+    public void setSchemaDefinitionJson(String schemaDefinitionJson) {
         this.schemaDefinitionJson = schemaDefinitionJson;
     }
 
     /**
      * @return the schema definition as yaml
      */
-    public String getSchemaDefinitionYaml()
-    {
+    public String getSchemaDefinitionYaml() {
         return this.schemaDefinitionYaml;
     }
 
     /**
      * @param schemaDefinitionYaml is the schema definition as yaml to set
      */
-    public void setSchemaDefinitionYaml( String schemaDefinitionYaml )
-    {
+    public void setSchemaDefinitionYaml(String schemaDefinitionYaml) {
         this.schemaDefinitionYaml = schemaDefinitionYaml;
     }
 
     /**
      * @return a new default instance of {@link ServiceDescriptor}.
      */
-    public static ServicesDescriptor createDefault()
-    {
+    public static ServicesDescriptor createDefault() {
         ServicesDescriptor descriptor = new ServicesDescriptor();
         return descriptor;
     }
-
 }

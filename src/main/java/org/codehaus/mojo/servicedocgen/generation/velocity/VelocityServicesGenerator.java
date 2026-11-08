@@ -40,9 +40,7 @@ import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
  *
  * @author hohwille
  */
-public class VelocityServicesGenerator
-    implements ServicesGenerator
-{
+public class VelocityServicesGenerator implements ServicesGenerator {
 
     private static final String ENCODING = "UTF-8";
 
@@ -59,40 +57,35 @@ public class VelocityServicesGenerator
      *
      * @param templatePath the classpath location where to look for velocity templates.
      */
-    public VelocityServicesGenerator( String templatePath )
-    {
+    public VelocityServicesGenerator(String templatePath) {
         super();
         this.engine = new VelocityEngine();
-        this.engine.setProperty( RuntimeConstants.RESOURCE_LOADER, "classpath" );
-        this.engine.setProperty( "classpath.resource.loader.class", ClasspathResourceLoader.class.getName() );
+        this.engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+        this.engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         this.engine.init();
 
         ToolManager manager = new ToolManager();
         this.context = manager.createContext();
         this.templatePath = templatePath;
-        this.template = this.engine.getTemplate( templatePath, ENCODING );
+        this.template = this.engine.getTemplate(templatePath, ENCODING);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void generate( ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl )
-        throws IOException
-    {
-        this.context.put( "services", descriptor );
-        this.context.put( "EscapeHelper", EscapeHelper.class );
+    public void generate(ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl)
+            throws IOException {
+        this.context.put("services", descriptor);
+        this.context.put("EscapeHelper", EscapeHelper.class);
         this.context.put("openApiUrl", openApiUrl);
-        File outputFile = new File( outputDirectory, filename );
-        OutputStream out = new FileOutputStream( outputFile );
-        try
-        {
-            Writer writer = new OutputStreamWriter( out, ENCODING );
-            this.template.merge( this.context, writer );
+        File outputFile = new File(outputDirectory, filename);
+        OutputStream out = new FileOutputStream(outputFile);
+        try {
+            Writer writer = new OutputStreamWriter(out, ENCODING);
+            this.template.merge(this.context, writer);
             writer.close();
-        }
-        finally
-        {
+        } finally {
             out.close();
         }
     }

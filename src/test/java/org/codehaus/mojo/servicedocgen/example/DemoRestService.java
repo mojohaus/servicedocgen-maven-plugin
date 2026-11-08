@@ -2,8 +2,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0 */
 package org.codehaus.mojo.servicedocgen.example;
 
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,16 +11,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import java.util.List;
+
 /**
  * This is a cool REST-Service to demonstrate <code>servicedocgen-maven-plugin</code>.
  *
  * @author hohwille
  */
-@Path( "/demo/v1" )
-@Consumes( MediaType.APPLICATION_JSON )
-@Produces( MediaType.APPLICATION_JSON )
-public interface DemoRestService
-{
+@Path("/demo/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface DemoRestService {
     /**
      * Finds the {@link DemoTo} with the given <code>id</code>.
      *
@@ -30,8 +29,8 @@ public interface DemoRestService
      * @return the object with the given id.
      */
     @GET
-    @Path( "/string/{id}" )
-    DemoTo<String> findString( @PathParam( "id" ) long id );
+    @Path("/string/{id}")
+    DemoTo<String> findString(@PathParam("id") long id);
 
     /**
      * Saves the given {@link DemoTo}.
@@ -40,8 +39,8 @@ public interface DemoRestService
      * @return the updated object with id and version from database.
      */
     @POST
-    @Path( "/string" )
-    DemoTo<String> saveString( DemoTo<String> object );
+    @Path("/string")
+    DemoTo<String> saveString(DemoTo<String> object);
 
     /**
      * Deletes the {@link DemoTo} with the given <code>id</code>.
@@ -49,8 +48,8 @@ public interface DemoRestService
      * @param id the primary key of the object to delete.
      */
     @DELETE
-    @Path( "/string/{id}" )
-    void deleteString( @PathParam( "id" ) long id );
+    @Path("/string/{id}")
+    void deleteString(@PathParam("id") long id);
 
     /**
      * Saves the given {@link DemoTo}s.
@@ -59,8 +58,8 @@ public interface DemoRestService
      * @return the updated objects with id and version from database.
      */
     @POST
-    @Path( "/longs" )
-    List<DemoTo<Long>> saveLongs( List<DemoTo<Long>> objects );
+    @Path("/longs")
+    List<DemoTo<Long>> saveLongs(List<DemoTo<Long>> objects);
 
     /**
      * Test operation that always throws an error.
@@ -69,8 +68,6 @@ public interface DemoRestService
      * @throws UnsupportedOperationException never.
      */
     @GET
-    @Path( "/error" )
-    void testError()
-        throws IllegalStateException, UnsupportedOperationException;
-
+    @Path("/error")
+    void testError() throws IllegalStateException, UnsupportedOperationException;
 }

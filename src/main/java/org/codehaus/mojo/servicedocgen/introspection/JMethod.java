@@ -26,23 +26,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-import net.sf.mmm.util.reflect.api.ReflectionUtil;
-
-import org.codehaus.mojo.servicedocgen.Util;
-
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
 import com.thoughtworks.qdox.model.JavaParameter;
+import net.sf.mmm.util.reflect.api.GenericType;
+import net.sf.mmm.util.reflect.api.ReflectionUtil;
+import org.codehaus.mojo.servicedocgen.Util;
 
 /**
  * Rich representation of a {@link Method} with both byte-code and source-code analysis information.
  *
  * @author hohwille
  */
-public class JMethod
-{
+public class JMethod {
 
     private final JType type;
 
@@ -64,9 +61,8 @@ public class JMethod
      * @param byteMethod - see {@link #getByteMethod()}.
      * @param type - see {@link #getType()}.
      */
-    public JMethod( Method byteMethod, JType type )
-    {
-        this( byteMethod, type, byteMethod );
+    public JMethod(Method byteMethod, JType type) {
+        this(byteMethod, type, byteMethod);
     }
 
     /**
@@ -77,8 +73,7 @@ public class JMethod
      * @param annotatedParentMethod the {@link Method} containing the JAX-RS annotation that may be a parent
      *            {@link Method} of <code>byteMethod</code>.
      */
-    public JMethod( Method byteMethod, JType type, Method annotatedParentMethod )
-    {
+    public JMethod(Method byteMethod, JType type, Method annotatedParentMethod) {
         super();
         this.type = type;
         this.byteMethod = byteMethod;
@@ -86,7 +81,7 @@ public class JMethod
         GenericType<?> byteType = type.getByteType();
         ReflectionUtil reflectionUtil = type.getReflectionUtil();
         JavaDocHelper javaDocHelper = type.getJavaDocHelper();
-        this.sourceMethod = findSourceMethod( sourceType, byteMethod );
+        this.sourceMethod = findSourceMethod(sourceType, byteMethod);
 
         // get source information
         List<JavaParameter> parameterSourceInfos = null;
@@ -95,98 +90,82 @@ public class JMethod
         Map<String, String> exceptionMap = null;
         JavaClass returnSourceType = null;
         String returnComment = "";
-        if ( this.sourceMethod != null )
-        {
-            this.comment = javaDocHelper.parseJavaDoc( sourceType, byteType, this.sourceMethod.getComment() );
+        if (this.sourceMethod != null) {
+            this.comment = javaDocHelper.parseJavaDoc(sourceType, byteType, this.sourceMethod.getComment());
             parameterSourceInfos = this.sourceMethod.getParameters();
-            parameterMap = getTagListAsMap( this.sourceMethod.getTagsByName( "param" ), false );
+            parameterMap = getTagListAsMap(this.sourceMethod.getTagsByName("param"), false);
             exceptionSourceTypes = this.sourceMethod.getExceptions();
-            exceptionMap = getTagListAsMap( this.sourceMethod.getTagsByName( "throws" ), true );
-            DocletTag returnTag = this.sourceMethod.getTagByName( "return" );
-            if ( returnTag != null )
-            {
-                returnComment = javaDocHelper.parseJavaDoc( sourceType, byteType, returnTag.getValue() );
+            exceptionMap = getTagListAsMap(this.sourceMethod.getTagsByName("throws"), true);
+            DocletTag returnTag = this.sourceMethod.getTagByName("return");
+            if (returnTag != null) {
+                returnComment = javaDocHelper.parseJavaDoc(sourceType, byteType, returnTag.getValue());
             }
             returnSourceType = this.sourceMethod.getReturns();
-        }
-        else
-        {
+        } else {
             this.comment = "";
         }
 
         // create parameters
         Type[] parameterByteTypes = byteMethod.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = annotatedParentMethod.getParameterAnnotations();
-        this.parameters = new ArrayList<JParameter>( parameterByteTypes.length );
-        for ( int i = 0; i < parameterByteTypes.length; i++ )
-        {
-            GenericType<?> parameterByteType = reflectionUtil.createGenericType( parameterByteTypes[i], byteType );
-            JavaParameter parameterSourceType = get( parameterSourceInfos, i );
+        this.parameters = new ArrayList<JParameter>(parameterByteTypes.length);
+        for (int i = 0; i < parameterByteTypes.length; i++) {
+            GenericType<?> parameterByteType = reflectionUtil.createGenericType(parameterByteTypes[i], byteType);
+            JavaParameter parameterSourceType = get(parameterSourceInfos, i);
             String parameterComment = "";
-            if ( ( parameterSourceType != null ) && ( parameterMap != null ) )
-            {
+            if ((parameterSourceType != null) && (parameterMap != null)) {
                 // QDox bug - not working...
                 // comment = sourceParameter.getComment();
-                parameterComment =
-                    javaDocHelper.parseJavaDoc( sourceType, byteType, parameterMap.get( parameterSourceType.getName() ) );
+                parameterComment = javaDocHelper.parseJavaDoc(
+                        sourceType, byteType, parameterMap.get(parameterSourceType.getName()));
             }
-            this.parameters.add( new JParameter( parameterByteType, parameterAnnotations[i], parameterSourceType,
-                                                 parameterComment, i ) );
+            this.parameters.add(new JParameter(
+                    parameterByteType, parameterAnnotations[i], parameterSourceType, parameterComment, i));
         }
 
         // create exceptions
         Type[] exceptionByteTypes = byteMethod.getGenericExceptionTypes();
-        this.exceptions = new ArrayList<JException>( exceptionByteTypes.length );
-        for ( int i = 0; i < exceptionByteTypes.length; i++ )
-        {
-            JavaClass exceptionSourceType = get( exceptionSourceTypes, i );
-            GenericType<?> exceptionByteType = reflectionUtil.createGenericType( exceptionByteTypes[i], byteType );
+        this.exceptions = new ArrayList<JException>(exceptionByteTypes.length);
+        for (int i = 0; i < exceptionByteTypes.length; i++) {
+            JavaClass exceptionSourceType = get(exceptionSourceTypes, i);
+            GenericType<?> exceptionByteType = reflectionUtil.createGenericType(exceptionByteTypes[i], byteType);
             String exceptionComment = "";
-            if ( exceptionMap != null )
-            {
-                exceptionComment =
-                    javaDocHelper.parseJavaDoc( sourceType,
-                                                byteType,
-                                                exceptionMap.get( exceptionByteType.getAssignmentClass().getSimpleName() ) );
+            if (exceptionMap != null) {
+                exceptionComment = javaDocHelper.parseJavaDoc(
+                        sourceType,
+                        byteType,
+                        exceptionMap.get(exceptionByteType.getAssignmentClass().getSimpleName()));
             }
-            this.exceptions.add( new JException( exceptionByteType, exceptionSourceType, exceptionComment ) );
+            this.exceptions.add(new JException(exceptionByteType, exceptionSourceType, exceptionComment));
         }
 
         // create return
-        GenericType<?> returnByteType = reflectionUtil.createGenericType( byteMethod.getGenericReturnType(), byteType );
-        this.returns = new JReturn( returnByteType, returnSourceType, returnComment );
+        GenericType<?> returnByteType = reflectionUtil.createGenericType(byteMethod.getGenericReturnType(), byteType);
+        this.returns = new JReturn(returnByteType, returnSourceType, returnComment);
     }
 
-    private static <T> T get( List<T> list, int index )
-    {
+    private static <T> T get(List<T> list, int index) {
 
-        if ( list == null )
-        {
+        if (list == null) {
             return null;
         }
-        if ( index >= list.size() )
-        {
+        if (index >= list.size()) {
             return null;
         }
-        return list.get( index );
+        return list.get(index);
     }
 
-    private static JavaMethod findSourceMethod( JavaClass sourceClass, Method byteMethod )
-    {
-        for ( JavaMethod sourceMethod : sourceClass.getMethods() )
-        {
-            if ( sourceMethod.getName().equals( byteMethod.getName() ) )
-            {
+    private static JavaMethod findSourceMethod(JavaClass sourceClass, Method byteMethod) {
+        for (JavaMethod sourceMethod : sourceClass.getMethods()) {
+            if (sourceMethod.getName().equals(byteMethod.getName())) {
                 List<JavaParameter> sourceParameters = sourceMethod.getParameters();
                 Class<?>[] byteParameters = byteMethod.getParameterTypes();
-                if ( sourceParameters.size() == byteParameters.length )
-                {
-                    for ( int i = 0; i < byteParameters.length; i++ )
-                    {
+                if (sourceParameters.size() == byteParameters.length) {
+                    for (int i = 0; i < byteParameters.length; i++) {
                         String byteTypeName = byteParameters[i].getName();
-                        String sourceTypeName = sourceParameters.get( i ).getType().getFullyQualifiedName();
-                        if ( !byteTypeName.equals( sourceTypeName ) )
-                        {
+                        String sourceTypeName =
+                                sourceParameters.get(i).getType().getFullyQualifiedName();
+                        if (!byteTypeName.equals(sourceTypeName)) {
                             return null;
                         }
                     }
@@ -197,22 +176,18 @@ public class JMethod
         return null;
     }
 
-    private static Map<String, String> getTagListAsMap( List<DocletTag> tagList, boolean simpleName )
-    {
+    private static Map<String, String> getTagListAsMap(List<DocletTag> tagList, boolean simpleName) {
         Map<String, String> map = new HashMap<String, String>();
-        for ( DocletTag tag : tagList )
-        {
+        for (DocletTag tag : tagList) {
             String value = tag.getValue();
-            int firstSpace = value.indexOf( ' ' );
-            if ( firstSpace > 0 )
-            {
-                String subTag = value.substring( 0, firstSpace );
-                if ( simpleName )
-                {
-                    subTag = Util.getSimpleName( subTag );
+            int firstSpace = value.indexOf(' ');
+            if (firstSpace > 0) {
+                String subTag = value.substring(0, firstSpace);
+                if (simpleName) {
+                    subTag = Util.getSimpleName(subTag);
                 }
-                String comment = value.substring( firstSpace + 1 );
-                map.put( subTag, comment );
+                String comment = value.substring(firstSpace + 1);
+                map.put(subTag, comment);
             }
         }
         return map;
@@ -221,64 +196,56 @@ public class JMethod
     /**
      * @return the type
      */
-    public JType getType()
-    {
+    public JType getType() {
         return this.type;
     }
 
     /**
      * @return the sourceMethod
      */
-    public JavaMethod getSourceMethod()
-    {
+    public JavaMethod getSourceMethod() {
         return this.sourceMethod;
     }
 
     /**
      * @return the byteMethod
      */
-    public Method getByteMethod()
-    {
+    public Method getByteMethod() {
         return this.byteMethod;
     }
 
     /**
      * @return the parameters
      */
-    public List<JParameter> getParameters()
-    {
+    public List<JParameter> getParameters() {
         return this.parameters;
     }
 
     /**
      * @return the exceptions
      */
-    public List<JException> getExceptions()
-    {
+    public List<JException> getExceptions() {
         return this.exceptions;
     }
 
     /**
      * @return the returns
      */
-    public JReturn getReturns()
-    {
+    public JReturn getReturns() {
         return this.returns;
     }
 
     /**
      * @return the comment
      */
-    public String getComment()
-    {
+    public String getComment() {
         return this.comment;
     }
 
     /**
      * @return the {@link Method#getName() name} of the {@link Method}.
      */
-    public String getName()
-    {
+    public String getName() {
 
         return this.byteMethod.getName();
     }
@@ -287,9 +254,7 @@ public class JMethod
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.byteMethod.toString();
     }
-
 }

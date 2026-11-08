@@ -18,10 +18,9 @@
  */
 package org.codehaus.mojo.servicedocgen.introspection;
 
+import com.thoughtworks.qdox.model.JavaClass;
 import net.sf.mmm.util.reflect.api.GenericType;
 import net.sf.mmm.util.reflect.api.ReflectionUtil;
-
-import com.thoughtworks.qdox.model.JavaClass;
 
 /**
  * Rich representation of a {@link Class} with both byte-code and source-code analysis.
@@ -29,9 +28,7 @@ import com.thoughtworks.qdox.model.JavaClass;
  * @see JMethod
  * @author hohwille
  */
-public class JType
-    extends JElement
-{
+public class JType extends JElement {
 
     private final ReflectionUtil reflectionUtil;
 
@@ -45,11 +42,12 @@ public class JType
      * @param reflectionUtil the {@link ReflectionUtil} used for byte-code analysis.
      * @param javaDocHelper the {@link JavaDocHelper} for parsing JavaDoc in source-code analysis.
      */
-    public JType( GenericType<?> byteType, JavaClass sourceType, ReflectionUtil reflectionUtil,
-                  JavaDocHelper javaDocHelper )
-    {
-        super( byteType, sourceType, ( sourceType == null ) ? "" : javaDocHelper.parseJavaDoc( sourceType, byteType,
-                                                                                               sourceType.getComment() ) );
+    public JType(
+            GenericType<?> byteType, JavaClass sourceType, ReflectionUtil reflectionUtil, JavaDocHelper javaDocHelper) {
+        super(
+                byteType,
+                sourceType,
+                (sourceType == null) ? "" : javaDocHelper.parseJavaDoc(sourceType, byteType, sourceType.getComment()));
         this.reflectionUtil = reflectionUtil;
         this.javaDocHelper = javaDocHelper;
     }
@@ -57,16 +55,14 @@ public class JType
     /**
      * @return the {@link ReflectionUtil} used for byte-code analysis.
      */
-    ReflectionUtil getReflectionUtil()
-    {
+    ReflectionUtil getReflectionUtil() {
         return this.reflectionUtil;
     }
 
     /**
      * @return the {@link JavaDocHelper} for parsing JavaDoc in source-code analysis.
      */
-    JavaDocHelper getJavaDocHelper()
-    {
+    JavaDocHelper getJavaDocHelper() {
         return this.javaDocHelper;
     }
 
@@ -74,9 +70,7 @@ public class JType
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getByteTypeString();
     }
-
 }

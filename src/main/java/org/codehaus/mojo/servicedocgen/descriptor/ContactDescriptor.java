@@ -25,9 +25,7 @@ import org.codehaus.mojo.servicedocgen.Util;
  *
  * @author hohwille
  */
-public class ContactDescriptor
-    extends AbstractDescriptor
-{
+public class ContactDescriptor extends AbstractDescriptor {
 
     private String name;
 
@@ -38,16 +36,11 @@ public class ContactDescriptor
     /**
      * @return the name
      */
-    public String getName()
-    {
-        if ( this.name == null )
-        {
-            if ( this.email != null )
-            {
+    public String getName() {
+        if (this.name == null) {
+            if (this.email != null) {
                 return this.email;
-            }
-            else if ( this.url != null )
-            {
+            } else if (this.url != null) {
                 return this.url;
             }
         }
@@ -57,53 +50,45 @@ public class ContactDescriptor
     /**
      * @param name is the name to set
      */
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the url
      */
-    public String getUrl()
-    {
-        return notNull( this.url );
+    public String getUrl() {
+        return notNull(this.url);
     }
 
     /**
      * @param url is the url to set
      */
-    public void setUrl( String url )
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
 
     /**
      * @return the email
      */
-    public String getEmail()
-    {
-        return notNull( this.email );
+    public String getEmail() {
+        return notNull(this.email);
     }
 
     /**
      * @param email is the email to set
      */
-    public void setEmail( String email )
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     /**
      * @return the hyperlink reference of this contact.
      */
-    public String getHref()
-    {
-        if ( !Util.isEmpty( this.email ) )
-        {
+    public String getHref() {
+        if (!Util.isEmpty(this.email)) {
             return "mailto:" + this.email;
         }
         return getUrl();
     }
-
 }

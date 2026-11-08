@@ -26,9 +26,7 @@ import org.codehaus.mojo.servicedocgen.introspection.JElement;
  * @see OperationDescriptor#getResponses()
  * @author hohwille
  */
-public class ResponseDescriptor
-    extends AbstractDescriptor
-{
+public class ResponseDescriptor extends AbstractDescriptor {
     private String statusCode;
 
     private String reason;
@@ -44,96 +42,84 @@ public class ResponseDescriptor
     /**
      * @return the statusCode
      */
-    public String getStatusCode()
-    {
+    public String getStatusCode() {
         return this.statusCode;
     }
 
     /**
      * @param statusCode is the statusCode to set
      */
-    public void setStatusCode( String statusCode )
-    {
+    public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
     }
 
     /**
      * @return the reason
      */
-    public String getReason()
-    {
-        return notNull( this.reason );
+    public String getReason() {
+        return notNull(this.reason);
     }
 
     /**
      * @param reason is the reason to set
      */
-    public void setReason( String reason )
-    {
+    public void setReason(String reason) {
         this.reason = reason;
     }
 
     /**
      * @return the description
      */
-    public String getDescription()
-    {
-        return notNull( this.description );
+    public String getDescription() {
+        return notNull(this.description);
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the example
      */
-    public String getExample()
-    {
+    public String getExample() {
         return this.example;
     }
 
     /**
      * @param example is the example to set
      */
-    public void setExample( String example )
-    {
+    public void setExample(String example) {
         this.example = example;
     }
 
     /**
      * @return the javaScriptType
      */
-    public String getJavaScriptType()
-    {
+    public String getJavaScriptType() {
         return this.javaScriptType;
     }
 
     /**
      * @param javaScriptType is the javaScriptType to set
      */
-    public void setJavaScriptType( String javaScriptType )
-    {
+    public void setJavaScriptType(String javaScriptType) {
         this.javaScriptType = javaScriptType;
     }
 
     /**
      * @return the javaElement
      */
-    public JElement getJavaElement()
-    {
+    public JElement getJavaElement() {
         return this.javaElement;
     }
 
     /**
      * @param javaElement is the javaElement to set
      */
-    public void setJavaElement( JElement javaElement )
-    {
+    public void setJavaElement(JElement javaElement) {
         this.javaElement = javaElement;
     }
 
@@ -141,9 +127,7 @@ public class ResponseDescriptor
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.reason + "/" + this.statusCode + "(" + getJavaElement().getByteTypeString() + ")";
     }
-
 }
