@@ -38,13 +38,15 @@ import com.thoughtworks.qdox.model.JavaAnnotation;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaSource;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.reporting.AbstractMavenReport;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.reporting.MavenReport;
 import org.apache.maven.reporting.MavenReportException;
 import org.codehaus.mojo.servicedocgen.descriptor.OperationDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServiceDescriptor;
@@ -74,7 +76,10 @@ import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGener
         executionStrategy = "once-per-session",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class ServiceDocGenReport extends AbstractMavenReport {
+public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
+
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    private MavenProject project;
 
     /**
      * The directory where the generated service documentation will be written to.
@@ -125,8 +130,6 @@ public class ServiceDocGenReport extends AbstractMavenReport {
     private JavaProjectBuilder builder;
 
     private List<JavaClass> serviceClasses;
-
-    private boolean generatingSite;
 
     /**
      * {@inheritDoc}
@@ -214,7 +217,6 @@ public class ServiceDocGenReport extends AbstractMavenReport {
     @Override
     public void execute() throws MojoExecutionException {
         try {
-            this.generatingSite = false;
             generateReport();
         } catch (Exception e) {
             throw new MojoExecutionException("Unexpected Error!", e);
@@ -228,15 +230,31 @@ public class ServiceDocGenReport extends AbstractMavenReport {
 
     /**
      * {@inheritDoc}
+     *
+     * <p>The documentation is an external report: it is written to its own files, not to the sink.</p>
      */
     @Override
-    protected void executeReport(Locale locale) throws MavenReportException {
+    public void generate(Sink sink, Locale locale) throws MavenReportException {
         try {
-            this.generatingSite = true;
             generateReport();
         } catch (Exception e) {
             throw new MavenReportException("Unexpected Error!", e);
         }
+    }
+
+    @Override
+    public String getCategoryName() {
+        return CATEGORY_PROJECT_REPORTS;
+    }
+
+    @Override
+    public void setReportOutputDirectory(File reportOutputDirectory) {
+        this.outputDirectory = reportOutputDirectory;
+    }
+
+    @Override
+    public File getReportOutputDirectory() {
+        return this.outputDirectory;
     }
 
     private void generateReport() throws Exception {
