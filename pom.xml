@@ -163,7 +163,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-impl</artifactId>
+      <artifactId>maven-reporting-api</artifactId>
       <version>4.0.0</version>
     </dependency>
     <dependency>
