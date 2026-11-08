@@ -33,3 +33,8 @@ assert 'Apache Software Licenese' == html.body.div[0].div.div[2].span.a.text()
 assert 'DemoRestService' == html.body.div[1].ul.li.div.h2.span[0].a.text()
 assert 'This is a cool REST-Service to demonstrate servicedocgen-maven-plugin.' == html.body.div[1].ul.li.div.h2.span[1].a.text()
 
+// every Velocity tool reference must have been rendered
+for (name in ['index.html', 'OpenApi.yaml', 'SwaggerUI.html']) {
+    def text = new File(basedir, 'target/site/servicedoc/' + name).text
+    assert !(text =~ /\$(esc|display)\./) : "unrendered Velocity tool reference in ${name}"
+}

@@ -31,6 +31,7 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.ToolManager;
+import org.apache.velocity.tools.config.ConfigurationUtils;
 import org.codehaus.mojo.servicedocgen.EscapeHelper;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.generation.ServicesGenerator;
@@ -60,11 +61,15 @@ public class VelocityServicesGenerator implements ServicesGenerator {
     public VelocityServicesGenerator(String templatePath) {
         super();
         this.engine = new VelocityEngine();
-        this.engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-        this.engine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+        this.engine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath");
+        this.engine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
+        // keep the whitespace handling of Velocity 1.7, which the templates (YAML in particular) were written for
+        this.engine.setProperty(RuntimeConstants.SPACE_GOBBLING, RuntimeConstants.SpaceGobbling.BC.toString());
         this.engine.init();
 
         ToolManager manager = new ToolManager();
+        // Velocity Tools 3 no longer loads the generic tools ($esc, $display, ...) by default, as 2.0 did
+        manager.configure(ConfigurationUtils.getGenericTools());
         this.context = manager.createContext();
         this.templatePath = templatePath;
         this.template = this.engine.getTemplate(templatePath, ENCODING);
