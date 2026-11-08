@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import groovy.xml.XmlSlurper
+
 File doc = new File( basedir, 'target/site/servicedoc/index.html' )
 assert doc.exists()
 
