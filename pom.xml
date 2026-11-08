@@ -109,7 +109,13 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.6.1</version>
+      <version>4.1.0</version>
+    </dependency>
+    <dependency>
+      <!-- the Doxia 1.x site renderer needs the XML classes that left plexus-utils 4; plexus-xml 4.x is for Maven 4 -->
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-xml</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
