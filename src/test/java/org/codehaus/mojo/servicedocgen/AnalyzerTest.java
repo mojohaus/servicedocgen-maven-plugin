@@ -91,6 +91,10 @@ public class AnalyzerTest
         assertThat( serviceDescriptor.getDescription() ).isEqualTo( "This is a cool REST-Service to demonstrate <code>servicedocgen-maven-plugin</code>." );
         List<OperationDescriptor> operations = serviceDescriptor.getOperations();
         assertThat( operations ).hasSize( 5 );
+        // the Long id is a scalar, not a nested schema that would introspect java.lang.Long
+        String schemaJson = descriptor.getSchemaDefinitionJson();
+        assertThat( schemaJson ).contains( "'id': {" ).contains( "'type': 'integer'" ).doesNotContain( "'Long': {" );
+        assertThat( descriptor.getSchemaDefinitionYaml() ).doesNotContain( "Long:" );
         // operations are ordered by HTTP method and path
 
         // check first operation
