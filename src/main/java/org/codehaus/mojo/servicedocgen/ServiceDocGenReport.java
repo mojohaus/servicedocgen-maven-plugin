@@ -37,7 +37,6 @@ import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaAnnotation;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaSource;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -174,7 +173,7 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
     }
 
     private List<ServiceDocGenTemplate> getTemplates() {
-        if (CollectionUtils.isEmpty(this.templates)) {
+        if (this.templates == null || this.templates.isEmpty()) {
             this.templates = new ArrayList<ServiceDocGenTemplate>();
             ServiceDocGenTemplate template = new ServiceDocGenTemplate("Service-Documentation.html.vm");
             template.setOutputName("index.html");
