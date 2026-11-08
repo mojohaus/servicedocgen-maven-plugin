@@ -47,7 +47,7 @@
     </developer>
   </developers>
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>3.9.0</maven>
   </prerequisites>
   <scm>
     <connection>scm:git:https://github.com/mojohaus/servicedocgen-maven-plugin.git</connection>
@@ -79,6 +79,7 @@
   </distributionManagement>
   <properties>
     <mavenVersion>3.9.16</mavenVersion>
+    <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
   </properties>
   <dependencies>
     <dependency>
