@@ -152,16 +152,6 @@
 
   <profiles>
     <profile>
-      <id>jdk9+</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <properties>
-        <!-- JavaDocHelper resolves {@value} references by reflecting into private fields of JDK classes -->
-        <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
-      </properties>
-    </profile>
-    <profile>
       <id>run-its</id>
       <activation>
         <property>
