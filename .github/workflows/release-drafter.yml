@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   update_release_draft:
     name: Release Drafter
-    uses: mojohaus/.github/.github/workflows/release-drafter.yml@master
+    uses: apache/maven-gh-actions-shared/.github/workflows/release-drafter.yml@v5
