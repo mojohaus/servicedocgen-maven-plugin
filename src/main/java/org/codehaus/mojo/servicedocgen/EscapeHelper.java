@@ -5,15 +5,13 @@ package org.codehaus.mojo.servicedocgen;
  *
  * @author jguenther
  */
-public class EscapeHelper
-{
+public class EscapeHelper {
 
     /**
-    * @param jsonString the json string to escape
-    * @return the escaped json string
-    */
-    public static String escapeJson( String jsonString )
-    {
-        return jsonString.replace( "\"", "\\\"" );
+     * @param jsonString the json string to escape
+     * @return the escaped json string
+     */
+    public static String escapeJson(String jsonString) {
+        return jsonString.replace("\"", "\\\"");
     }
 }

@@ -18,9 +18,8 @@
  */
 package org.codehaus.mojo.servicedocgen.introspection;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-
 import com.thoughtworks.qdox.model.JavaClass;
+import net.sf.mmm.util.reflect.api.GenericType;
 
 /**
  * An return declaration of a {@link JMethod}.
@@ -28,9 +27,7 @@ import com.thoughtworks.qdox.model.JavaClass;
  * @see JMethod#getReturns()
  * @author hohwille
  */
-public class JReturn
-    extends JElement
-{
+public class JReturn extends JElement {
 
     /**
      * The constructor.
@@ -39,17 +36,15 @@ public class JReturn
      * @param sourceType - see {@link #getSourceType()}.
      * @param comment - see {@link #getComment()}.
      */
-    public JReturn( GenericType<?> byteType, JavaClass sourceType, String comment )
-    {
-        super( byteType, sourceType, comment );
+    public JReturn(GenericType<?> byteType, JavaClass sourceType, String comment) {
+        super(byteType, sourceType, comment);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getByteTypeString();
     }
 }

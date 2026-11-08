@@ -23,9 +23,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  *
  * @author hohwille
  */
-public class HeaderDescriptor
-    extends AbstractDescriptor
-{
+public class HeaderDescriptor extends AbstractDescriptor {
 
     private String description;
 
@@ -36,49 +34,42 @@ public class HeaderDescriptor
     /**
      * @return the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return this.description;
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the type
      */
-    public String getJavaScriptType()
-    {
+    public String getJavaScriptType() {
         return this.javaScriptType;
     }
 
     /**
      * @param type is the type to set
      */
-    public void setJavaScriptType( String type )
-    {
+    public void setJavaScriptType(String type) {
         this.javaScriptType = type;
     }
 
     /**
      * @return the format
      */
-    public String getFormat()
-    {
+    public String getFormat() {
         return this.format;
     }
 
     /**
      * @param format is the format to set
      */
-    public void setFormat( String format )
-    {
+    public void setFormat(String format) {
         this.format = format;
     }
-
 }

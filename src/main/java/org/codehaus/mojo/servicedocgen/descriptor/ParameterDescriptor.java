@@ -26,9 +26,7 @@ import org.codehaus.mojo.servicedocgen.introspection.JParameter;
  * @see OperationDescriptor#getParameters()
  * @author hohwille
  */
-public class ParameterDescriptor
-    extends AbstractDescriptor
-{
+public class ParameterDescriptor extends AbstractDescriptor {
 
     private String name;
 
@@ -49,16 +47,14 @@ public class ParameterDescriptor
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     /**
      * @param name is the name to set
      */
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -71,26 +67,22 @@ public class ParameterDescriptor
      * @see #LOCATION_COOKIE
      * @return the in
      */
-    public String getLocation()
-    {
+    public String getLocation() {
         return this.location;
     }
 
     /**
      * @param location is the location to set
      */
-    public void setLocation( String location )
-    {
+    public void setLocation(String location) {
         this.location = location;
     }
 
     /**
      * @return the description
      */
-    public String getDescription()
-    {
-        if ( this.description == null )
-        {
+    public String getDescription() {
+        if (this.description == null) {
             return "";
         }
         return this.description;
@@ -99,89 +91,77 @@ public class ParameterDescriptor
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the example
      */
-    public String getExample()
-    {
+    public String getExample() {
         return this.example;
     }
 
     /**
      * @param example is the example to set
      */
-    public void setExample( String example )
-    {
+    public void setExample(String example) {
         this.example = example;
     }
 
     /**
      * @return the defaultValue
      */
-    public String getDefaultValue()
-    {
-        return notNull( this.defaultValue );
+    public String getDefaultValue() {
+        return notNull(this.defaultValue);
     }
 
     /**
      * @param defaultValue is the defaultValue to set
      */
-    public void setDefaultValue( String defaultValue )
-    {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     /**
      * @return the required
      */
-    public boolean isRequired()
-    {
+    public boolean isRequired() {
         return this.required;
     }
 
     /**
      * @param required is the required to set
      */
-    public void setRequired( boolean required )
-    {
+    public void setRequired(boolean required) {
         this.required = required;
     }
 
     /**
      * @return the javaScriptType
      */
-    public String getJavaScriptType()
-    {
+    public String getJavaScriptType() {
         return this.javaScriptType;
     }
 
     /**
      * @param javaScriptType is the javaScriptType to set
      */
-    public void setJavaScriptType( String javaScriptType )
-    {
+    public void setJavaScriptType(String javaScriptType) {
         this.javaScriptType = javaScriptType;
     }
 
     /**
      * @return the javaParameter
      */
-    public JParameter getJavaParameter()
-    {
+    public JParameter getJavaParameter() {
         return this.javaParameter;
     }
 
     /**
      * @param javaParameter is the javaParameter to set
      */
-    public void setJavaParameter( JParameter javaParameter )
-    {
+    public void setJavaParameter(JParameter javaParameter) {
         this.javaParameter = javaParameter;
     }
-
 }

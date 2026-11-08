@@ -23,42 +23,40 @@ package org.codehaus.mojo.servicedocgen;
  *
  * @author hohwille
  */
-public enum JavaScriptType
-{
+public enum JavaScriptType {
 
     /** A decimal {@link Number}. */
-    NUMBER( "number", "1.0" ),
+    NUMBER("number", "1.0"),
 
     /** A non-decimal {@link Number} ({@link Byte}, {@link Short}, {@link Integer}, or {@link Long}). */
-    INTEGER( "integer", "1" ),
+    INTEGER("integer", "1"),
 
     /** A {@link Boolean} flag. */
-    BOOLEAN( "boolean", "true" ),
+    BOOLEAN("boolean", "true"),
 
     /** An {@link Class#isArray() array}. */
-    ARRAY( "array", "[...]" ),
+    ARRAY("array", "[...]"),
 
     /** A {@link String}. */
-    STRING( "string", "\"text\"" ),
+    STRING("string", "\"text\""),
 
     /** A {@link String}. */
-    DATE( "string", "\"1999-12-31T23:59:59.999Z\"" ),
+    DATE("string", "\"1999-12-31T23:59:59.999Z\""),
 
     /** A type as {@link String}. */
-    TYPE( "string", "\"package.Class\"" ),
+    TYPE("string", "\"package.Class\""),
 
     /** The {@link Void} type. */
-    VOID( "-", null ),
+    VOID("-", null),
 
     /** Any other data {@link Object}. */
-    OBJECT( "object", "{...}" );
+    OBJECT("object", "{...}");
 
     private final String name;
 
     private final String example;
 
-    private JavaScriptType( String name, String example )
-    {
+    private JavaScriptType(String name, String example) {
         this.name = name;
         this.example = example;
     }
@@ -66,16 +64,14 @@ public enum JavaScriptType
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     /**
      * @return the example
      */
-    public String getExample()
-    {
+    public String getExample() {
         return this.example;
     }
 
@@ -83,9 +79,7 @@ public enum JavaScriptType
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.name;
     }
-
 }

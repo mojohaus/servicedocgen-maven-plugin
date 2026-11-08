@@ -21,18 +21,13 @@ package org.codehaus.mojo.servicedocgen.descriptor;
 /**
  * @author hohwille
  */
-public abstract class AbstractDescriptor
-    implements Descriptor
-{
+public abstract class AbstractDescriptor implements Descriptor {
 
-    protected static String notNull( String value )
-    {
+    protected static String notNull(String value) {
 
-        if ( value == null )
-        {
+        if (value == null) {
             return "";
         }
         return value;
     }
-
 }

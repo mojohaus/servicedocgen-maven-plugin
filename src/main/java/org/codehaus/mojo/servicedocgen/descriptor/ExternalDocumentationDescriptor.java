@@ -23,9 +23,7 @@ package org.codehaus.mojo.servicedocgen.descriptor;
  *
  * @author hohwille
  */
-public class ExternalDocumentationDescriptor
-    extends AbstractDescriptor
-{
+public class ExternalDocumentationDescriptor extends AbstractDescriptor {
 
     private String description;
 
@@ -34,33 +32,28 @@ public class ExternalDocumentationDescriptor
     /**
      * @return the description
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return this.description;
     }
 
     /**
      * @param description is the description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     /**
      * @return the url
      */
-    public String getUrl()
-    {
+    public String getUrl() {
         return this.url;
     }
 
     /**
      * @param url is the url to set
      */
-    public void setUrl( String url )
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
-
 }

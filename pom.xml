@@ -32,12 +32,13 @@
   <name>Maven Service Documentation Generator Plugin</name>
   <description>Plugin to generate documentation for services (JAX-RS).</description>
   <inceptionYear>2015</inceptionYear>
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
-  <properties>
-    <mavenVersion>3.9.16</mavenVersion>
-  </properties>
+  <licenses>
+    <license>
+      <name>Apache Software Licenese</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <comments />
+    </license>
+  </licenses>
   <developers>
     <developer>
       <id>hohwille</id>
@@ -45,6 +46,40 @@
       <email>hohwille@users.sourceforge.net</email>
     </developer>
   </developers>
+  <prerequisites>
+    <maven>${mavenVersion}</maven>
+  </prerequisites>
+  <scm>
+    <connection>scm:git:https://github.com/mojohaus/servicedocgen-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mojohaus/servicedocgen-maven-plugin.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/mojohaus/servicedocgen-maven-plugin</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/mojohaus/servicedocgen-maven-plugin/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>travis</system>
+    <url>https://travis-ci.org/mojohaus/servicedocgen-maven-plugin</url>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>ossrh-staging</id>
+      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh-snapshots</id>
+      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>github</id>
+      <url>scm:git:ssh://git@github.com/mojohaus/servicedocgen-maven-plugin.git</url>
+    </site>
+  </distributionManagement>
+  <properties>
+    <mavenVersion>3.9.16</mavenVersion>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -164,15 +199,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>install</goal>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <debug>true</debug>
               <!--
@@ -196,19 +222,20 @@
               <projectsDirectory>src/it/projects</projectsDirectory>
               <postBuildHookScript>verify</postBuildHookScript>
             </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>install</goal>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>mrm-maven-plugin</artifactId>
             <version>1.6.0</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>start</goal>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <propertyName>repository.proxy.url</propertyName>
               <repositories>
@@ -218,44 +245,17 @@
                 <proxyRepo />
               </repositories>
             </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>start</goal>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-  <licenses>
-    <license>
-      <name>Apache Software Licenese</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <comments />
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:https://github.com/mojohaus/servicedocgen-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/mojohaus/servicedocgen-maven-plugin.git</developerConnection>
-    <url>https://github.com/mojohaus/servicedocgen-maven-plugin</url>
-    <tag>HEAD</tag>
-  </scm>
-  <issueManagement>
-    <system>github</system>
-    <url>https://github.com/mojohaus/servicedocgen-maven-plugin/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>travis</system>
-    <url>https://travis-ci.org/mojohaus/servicedocgen-maven-plugin</url>
-  </ciManagement>
-  <distributionManagement>
-    <repository>
-      <id>ossrh-staging</id>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>ossrh-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <site>
-      <id>github</id>
-      <url>scm:git:ssh://git@github.com/mojohaus/servicedocgen-maven-plugin.git</url>
-    </site>
-  </distributionManagement>
 </project>

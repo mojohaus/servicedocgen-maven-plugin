@@ -29,8 +29,7 @@ import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
  * @see #generate(ServicesDescriptor, File, String, String)
  * @author hohwille
  */
-public interface ServicesGenerator
-{
+public interface ServicesGenerator {
 
     /**
      * Generates the documentation as output.
@@ -41,7 +40,6 @@ public interface ServicesGenerator
      * @param openApiUrl the url to the OpenApi file
      * @throws IOException if something goes wrong.
      */
-    void generate( ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl )
-        throws IOException;
-
+    void generate(ServicesDescriptor descriptor, File outputDirectory, String filename, String openApiUrl)
+            throws IOException;
 }

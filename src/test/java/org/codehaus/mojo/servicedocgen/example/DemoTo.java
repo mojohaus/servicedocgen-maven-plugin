@@ -5,9 +5,7 @@ package org.codehaus.mojo.servicedocgen.example;
 /**
  * @author hohwille
  */
-public class DemoTo<T>
-    extends AbstractTo
-{
+public class DemoTo<T> extends AbstractTo {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,33 +16,28 @@ public class DemoTo<T>
     /**
      * @return the type
      */
-    public T getType()
-    {
+    public T getType() {
         return this.type;
     }
 
     /**
      * @param type is the type to set
      */
-    public void setType( T type )
-    {
+    public void setType(T type) {
         this.type = type;
     }
 
     /**
      * @return the parent
      */
-    public DemoTo<T> getParent()
-    {
+    public DemoTo<T> getParent() {
         return this.parent;
     }
 
     /**
      * @param parent is the parent to set
      */
-    public void setParent( DemoTo<T> parent )
-    {
+    public void setParent(DemoTo<T> parent) {
         this.parent = parent;
     }
-
 }

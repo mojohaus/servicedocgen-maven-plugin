@@ -25,14 +25,12 @@ import java.util.Set;
  *
  * @author hohwille
  */
-public final class Util
-{
+public final class Util {
 
     /**
      * Construction forbidden.
      */
-    private Util()
-    {
+    private Util() {
         super();
     }
 
@@ -40,13 +38,11 @@ public final class Util
      * @param className a {@link Class#getName() class name}.
      * @return the {@link Class#getSimpleName() simple name}.
      */
-    public static String getSimpleName( String className )
-    {
+    public static String getSimpleName(String className) {
 
-        int lastDot = className.lastIndexOf( '.' );
-        if ( lastDot > 0 )
-        {
-            return className.substring( lastDot + 1 );
+        int lastDot = className.lastIndexOf('.');
+        if (lastDot > 0) {
+            return className.substring(lastDot + 1);
         }
         return className;
     }
@@ -57,11 +53,9 @@ public final class Util
      * @return {@link Object#toString()} of <code>value</code> or <code>fallback</code> if <code>value</code> is
      *         <code>null</code>.
      */
-    public static String toString( Object value, String fallback )
-    {
+    public static String toString(Object value, String fallback) {
 
-        if ( value == null )
-        {
+        if (value == null) {
             return fallback;
         }
         return value.toString();
@@ -72,11 +66,9 @@ public final class Util
      * @return <code>true</code> if the given {@link String} is {@link String#isEmpty() empty} or <code>null</code>,
      *         <code>false</code> otherwise.
      */
-    public static boolean isEmpty( String value )
-    {
+    public static boolean isEmpty(String value) {
 
-        if ( value == null )
-        {
+        if (value == null) {
             return true;
         }
         return value.isEmpty();
@@ -87,19 +79,14 @@ public final class Util
      * @param path the path to append.
      * @return the concatenation of both paths with an intermediate slash ("/") if needed.
      */
-    public static String appendPath( String pathPrefix, String path )
-    {
+    public static String appendPath(String pathPrefix, String path) {
 
-        if ( ( pathPrefix == null ) || ( pathPrefix.isEmpty() ) )
-        {
+        if ((pathPrefix == null) || (pathPrefix.isEmpty())) {
             return path;
         }
-        if ( pathPrefix.endsWith( "/" ) )
-        {
+        if (pathPrefix.endsWith("/")) {
             return pathPrefix + path;
-        }
-        else
-        {
+        } else {
             return pathPrefix + "/" + path;
         }
     }
@@ -108,11 +95,9 @@ public final class Util
      * @param value the {@link String} to trim.
      * @return the {@link String#trim() trimmed} {@link String} or <code>null</code> if <code>null</code> was given.
      */
-    public static String getTrimmed( String value )
-    {
+    public static String getTrimmed(String value) {
 
-        if ( value == null )
-        {
+        if (value == null) {
             return "";
         }
         return value.trim();
@@ -125,20 +110,15 @@ public final class Util
      *         {@link String#contains(CharSequence) contains} the given <code>substring</code>, <code>false</code>
      *         otherwise.
      */
-    public static boolean containsSubstring( Set<String> set, String substring )
-    {
-        if ( set == null )
-        {
+    public static boolean containsSubstring(Set<String> set, String substring) {
+        if (set == null) {
             return false;
         }
-        for ( String s : set )
-        {
-            if ( s.contains( substring ) )
-            {
+        for (String s : set) {
+            if (s.contains(substring)) {
                 return true;
             }
         }
         return false;
     }
-
 }

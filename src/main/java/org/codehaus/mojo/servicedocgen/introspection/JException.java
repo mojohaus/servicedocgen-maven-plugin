@@ -18,9 +18,8 @@
  */
 package org.codehaus.mojo.servicedocgen.introspection;
 
-import net.sf.mmm.util.reflect.api.GenericType;
-
 import com.thoughtworks.qdox.model.JavaClass;
+import net.sf.mmm.util.reflect.api.GenericType;
 
 /**
  * An exception declaration of a {@link JMethod}.
@@ -28,9 +27,7 @@ import com.thoughtworks.qdox.model.JavaClass;
  * @see JMethod#getExceptions()
  * @author hohwille
  */
-public class JException
-    extends JElement
-{
+public class JException extends JElement {
 
     /**
      * The constructor.
@@ -39,18 +36,15 @@ public class JException
      * @param sourceType - see {@link #getSourceType()}.
      * @param comment - see {@link #getComment()}.
      */
-    public JException( GenericType<?> byteType, JavaClass sourceType, String comment )
-    {
-        super( byteType, sourceType, comment );
+    public JException(GenericType<?> byteType, JavaClass sourceType, String comment) {
+        super(byteType, sourceType, comment);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getByteTypeString();
     }
-
 }
