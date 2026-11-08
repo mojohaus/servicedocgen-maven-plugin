@@ -1,7 +1,6 @@
 title: Usage
 
-Usage
-=====
+# Usage
 
 Simply add the plugin to the build section of your POM for the module containing services as following.
 
@@ -40,7 +39,6 @@ Simply add the plugin to the build section of your POM for the module containing
   </build>
 ```
 
-Result
-------
+## Result
 
 After you called `mvn package` you will find the generated documentation in `target/servicedoc/`.
