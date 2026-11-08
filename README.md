@@ -1,20 +1,26 @@
-# MojoHaus ServicedocGen Maven Plugin
+# MojoHaus ServiceDocGen Maven Plugin
 
-This is the [servicedocgen-maven-plugin](http://www.mojohaus.org/servicedocgen-maven-plugin/).
+This is the [servicedocgen-maven-plugin](https://www.mojohaus.org/servicedocgen-maven-plugin/).
 
-[![Build Status](https://travis-ci.org/mojohaus/servicedocgen-maven-plugin.svg?branch=master)](https://travis-ci.org/mojohaus/servicedocgen-maven-plugin)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/mojohaus/servicedocgen-maven-plugin.svg?label=License)](https://www.apache.org/licenses/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.codehaus.mojo/servicedocgen-maven-plugin.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/org.codehaus.mojo/servicedocgen-maven-plugin)
+[![GitHub CI](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml/badge.svg)](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml)
 
-## Quickstart
+The plugin documents the JAX-RS services of a project. It reads the JavaDoc from the source code and the types from
+the compiled classes, and writes an HTML page, an OpenAPI description and a Swagger UI page to
+`target/site/servicedoc`.
 
-This plugin automatically generates a nice documentation for your REST-Services from JAX-RS annotated classes or interfaces.
+It needs Maven 3.9.0 or later and Java 8 or later. Maven 4 is not supported yet.
 
-```
+## Usage
+
+```xml
 <build>
   <plugins>
     <plugin>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>servicedocgen-maven-plugin</artifactId>
-      <!--<version>INSERT LATEST VERSION HERE</version>-->
+      <version><!-- latest version from Maven Central --></version>
       <executions>
         <execution>
           <goals>
@@ -22,13 +28,20 @@ This plugin automatically generates a nice documentation for your REST-Services 
           </goals>
         </execution>
       </executions>
-      <configuration>
-        <!-- See usage on maven site from link above for details -->
-      </configuration>
     </plugin>
   </plugins>
 </build>
 ```
+
+The `generate` goal runs in the `prepare-package` phase. To run it on its own:
+
+```
+mvn compile servicedocgen:generate
+```
+
+See the [usage page](https://www.mojohaus.org/servicedocgen-maven-plugin/usage.html) for the configuration, the
+[goal reference](https://www.mojohaus.org/servicedocgen-maven-plugin/generate-mojo.html) for every parameter, and the
+[FAQ](https://www.mojohaus.org/servicedocgen-maven-plugin/faq.html).
 
 ## Releasing
 
