@@ -23,3 +23,6 @@ jobs:
   build:
     name: Verify
     uses: mojohaus/.github/.github/workflows/maven-verify.yml@master
+    with:
+      # the plugin targets Maven 3 only
+      maven4-enabled: false
