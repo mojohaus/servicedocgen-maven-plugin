@@ -64,7 +64,7 @@ public class JavaDocHelper {
 
     private static final String TAG_VALUE = "value";
 
-    private static final Set<String> JAVA_LANG_TYPES = new HashSet<String>(Arrays.asList(
+    private static final Set<String> JAVA_LANG_TYPES = new HashSet<>(Arrays.asList(
             "AbstractMethodError",
             "AbstractStringBuilder",
             "Appendable",
@@ -220,28 +220,19 @@ public class JavaDocHelper {
 
     private static final CharFilter NO_SPACE_OR_HASH = new CharFilter() {
         public boolean accept(char c) {
-            if ((c == '#') || (c == ' ')) {
-                return false;
-            }
-            return true;
+            return !((c == '#') || (c == ' '));
         }
     };
 
     private static final CharFilter NO_SPACE_OR_OPENING_BRACE = new CharFilter() {
         public boolean accept(char c) {
-            if ((c == '(') || (c == ' ')) {
-                return false;
-            }
-            return true;
+            return !((c == '(') || (c == ' '));
         }
     };
 
     private static final CharFilter NO_COMMA_OR_CLOSING_BRACE = new CharFilter() {
         public boolean accept(char c) {
-            if ((c == ',') || (c == ')')) {
-                return false;
-            }
-            return true;
+            return !((c == ',') || (c == ')'));
         }
     };
 
@@ -264,8 +255,8 @@ public class JavaDocHelper {
         super();
         this.classloader = classloader;
         this.builder = builder;
-        this.javaDocs = new ArrayList<JavaDocDescriptor>();
-        Map<String, JavaDocDescriptor> map = new HashMap<String, JavaDocDescriptor>();
+        this.javaDocs = new ArrayList<>();
+        Map<String, JavaDocDescriptor> map = new HashMap<>();
         for (JavaDocDescriptor javaDocDescriptor : javaDocs) {
             String url = javaDocDescriptor.getUrl();
             if (!url.endsWith("/")) {

@@ -47,11 +47,10 @@ public class JavaDocHelperTest extends Assertions {
     private JavaDocHelper createJavaDocHelper(JavaProjectBuilder builder) {
         builder.addSourceFolder(new File("src/main/java"));
         builder.addSourceFolder(new File("src/test/java"));
-        JavaDocHelper helper = new JavaDocHelper(
+        return new JavaDocHelper(
                 Thread.currentThread().getContextClassLoader(),
                 builder,
                 Arrays.asList(new JavaDocDescriptor("", JAVADOC_URL)));
-        return helper;
     }
 
     private String parseMethodJavaDoc(String methodName) {
@@ -62,8 +61,7 @@ public class JavaDocHelperTest extends Assertions {
         List<JavaType> emptyList = Collections.emptyList();
         JavaMethod sourceMethod = sourceClass.getMethod(methodName, emptyList, false);
         GenericType<?> byteType = ReflectionUtilImpl.getInstance().createGenericType(JavaDocHelperTest.class);
-        String parsedJavaDoc = helper.parseJavaDoc(sourceClass, byteType, sourceMethod.getComment());
-        return parsedJavaDoc;
+        return helper.parseJavaDoc(sourceClass, byteType, sourceMethod.getComment());
     }
 
     /**

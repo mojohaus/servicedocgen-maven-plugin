@@ -47,7 +47,7 @@ public class JType extends JElement {
         super(
                 byteType,
                 sourceType,
-                (sourceType == null) ? "" : javaDocHelper.parseJavaDoc(sourceType, byteType, sourceType.getComment()));
+                sourceType == null ? "" : javaDocHelper.parseJavaDoc(sourceType, byteType, sourceType.getComment()));
         this.reflectionUtil = reflectionUtil;
         this.javaDocHelper = javaDocHelper;
     }

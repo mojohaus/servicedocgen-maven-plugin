@@ -108,7 +108,7 @@ public class JMethod {
         // create parameters
         Type[] parameterByteTypes = byteMethod.getGenericParameterTypes();
         Annotation[][] parameterAnnotations = annotatedParentMethod.getParameterAnnotations();
-        this.parameters = new ArrayList<JParameter>(parameterByteTypes.length);
+        this.parameters = new ArrayList<>(parameterByteTypes.length);
         for (int i = 0; i < parameterByteTypes.length; i++) {
             GenericType<?> parameterByteType = reflectionUtil.createGenericType(parameterByteTypes[i], byteType);
             JavaParameter parameterSourceType = get(parameterSourceInfos, i);
@@ -125,7 +125,7 @@ public class JMethod {
 
         // create exceptions
         Type[] exceptionByteTypes = byteMethod.getGenericExceptionTypes();
-        this.exceptions = new ArrayList<JException>(exceptionByteTypes.length);
+        this.exceptions = new ArrayList<>(exceptionByteTypes.length);
         for (int i = 0; i < exceptionByteTypes.length; i++) {
             JavaClass exceptionSourceType = get(exceptionSourceTypes, i);
             GenericType<?> exceptionByteType = reflectionUtil.createGenericType(exceptionByteTypes[i], byteType);
@@ -177,7 +177,7 @@ public class JMethod {
     }
 
     private static Map<String, String> getTagListAsMap(List<DocletTag> tagList, boolean simpleName) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (DocletTag tag : tagList) {
             String value = tag.getValue();
             int firstSpace = value.indexOf(' ');

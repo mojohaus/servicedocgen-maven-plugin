@@ -136,7 +136,7 @@ public class Analyzer {
 
     private ServicesDescriptor descriptor;
 
-    private Map<String, JElement> schemas = new HashMap<String, JElement>();
+    private Map<String, JElement> schemas = new HashMap<>();
 
     /**
      * The constructor.
@@ -188,7 +188,7 @@ public class Analyzer {
                     errorDescriptor.setErrorClass(errorClass);
                 } else if (errorDescriptor.getMatch() == Match.regex) {
                     String errorName = errorDescriptor.getErrorName();
-                    if (errorName.isEmpty() || errorName.equals(".") || errorName.equals(".*")) {
+                    if (errorName.isEmpty() || ".".equals(errorName) || ".*".equals(errorName)) {
                         hasFallback = true;
                     }
                 }
@@ -413,8 +413,7 @@ public class Analyzer {
                 operationDescriptor.getParameters().add(parameterDescriptor);
             }
 
-            if (!this.schemas.containsKey(parameter.getByteTypeString()))
-                ;
+            if (!this.schemas.containsKey(parameter.getByteTypeString())) {}
             {
                 this.schemas.put(parameter.getByteTypeString(), parameter);
             }
@@ -532,8 +531,7 @@ public class Analyzer {
                 response.setStatusCode(Descriptor.STATUS_CODE_SUCCESS);
             }
 
-            if (!this.schemas.containsKey(javaElement.getByteTypeString()))
-                ;
+            if (!this.schemas.containsKey(javaElement.getByteTypeString())) {}
             {
                 this.schemas.put(javaElement.getByteTypeString(), javaElement);
             }
@@ -563,7 +561,7 @@ public class Analyzer {
             case always:
                 // yes, this is not a bug.
                 // always means it will always produce an error result but independent of a specific exception
-                return (byteClass == Throwable.class);
+                return byteClass == Throwable.class;
             default:
                 throw new IllegalCaseException(Match.class, match);
         }
@@ -659,7 +657,7 @@ public class Analyzer {
         if (javaScriptType == JavaScriptType.VOID) {
             return null;
         }
-        boolean retrieval = (element instanceof JReturn);
+        boolean retrieval = element instanceof JReturn;
         GenericType<?> byteType = element.getByteType();
         Class<?> byteClass;
         if (retrieval) {
@@ -668,7 +666,7 @@ public class Analyzer {
             byteClass = byteType.getAssignmentClass();
         }
         StringBuilder buffer = new StringBuilder();
-        createExample(javaScriptType, byteType, byteClass, "", buffer, new HashSet<Class<?>>(), retrieval);
+        createExample(javaScriptType, byteType, byteClass, "", buffer, new HashSet<>(), retrieval);
         return buffer.toString();
     }
 
@@ -750,7 +748,7 @@ public class Analyzer {
         };
         Collections.sort(propertyDescriptors, comparator);
         for (PojoPropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            if (!propertyDescriptor.getName().equals("class")) {
+            if (!"class".equals(propertyDescriptor.getName())) {
                 PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor(PojoPropertyAccessorNonArgMode.GET);
                 if (getter != null) {
                     if (repeating) {
@@ -791,18 +789,18 @@ public class Analyzer {
         PojoDescriptorBuilder pojoDescriptorBuilder =
                 pojoDescriptorBuilderFactory.createPrivateFieldDescriptorBuilder();
         StringBuffer buffer = new StringBuffer();
-        List<String> schemasCreated = new ArrayList<String>();
+        List<String> schemasCreated = new ArrayList<>();
 
         Iterator<Entry<String, JElement>> it = this.schemas.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, JElement> entry = it.next();
             JElement javaElement = entry.getValue();
             GenericType<?> byteType = javaElement.getByteType();
-            GenericType<?> schemaType = (byteType.getComponentType() == null) ? byteType : byteType.getComponentType();
+            GenericType<?> schemaType = byteType.getComponentType() == null ? byteType : byteType.getComponentType();
             if (getSchemaType(schemaType) == null) {
-                if (type.equals("json")) {
+                if ("json".equals(type)) {
                     createSchemaAsJsonForType(pojoDescriptorBuilder, schemaType, buffer, "      ", schemasCreated);
-                } else if (type.equals("yaml")) {
+                } else if ("yaml".equals(type)) {
                     createSchemaAsYamlForType(pojoDescriptorBuilder, schemaType, buffer, "    ", schemasCreated);
                 }
             }
@@ -864,7 +862,7 @@ public class Analyzer {
             }
             List<? extends PojoPropertyDescriptor> propertyDescriptors =
                     new ArrayList<PojoPropertyDescriptor>(pojoDescriptor.getPropertyDescriptors());
-            Map<String, GenericType<?>> schemasToCreate = new HashMap<String, GenericType<?>>();
+            Map<String, GenericType<?>> schemasToCreate = new HashMap<>();
             buffer.append(indentation.concat("'" + schemaName + "': {\n"));
 
             buffer.append(indentation.concat("  'type': 'object',\n"));
@@ -942,7 +940,7 @@ public class Analyzer {
             }
             List<? extends PojoPropertyDescriptor> propertyDescriptors =
                     new ArrayList<PojoPropertyDescriptor>(pojoDescriptor.getPropertyDescriptors());
-            Map<String, GenericType<?>> schemasToCreate = new HashMap<String, GenericType<?>>();
+            Map<String, GenericType<?>> schemasToCreate = new HashMap<>();
             buffer.append(indentation.concat(schemaName + ":\n"));
 
             buffer.append(indentation.concat("  type: object\n"));

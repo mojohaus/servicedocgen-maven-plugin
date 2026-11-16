@@ -213,7 +213,7 @@ public class ErrorDescriptor extends AbstractDescriptor {
     /**
      * Mode to match {@link ErrorDescriptor#getErrorName() error name}.
      */
-    public static enum Match {
+    public enum Match {
 
         /** As {@link Pattern regular expression}. */
         regex,
