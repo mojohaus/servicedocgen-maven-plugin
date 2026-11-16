@@ -84,10 +84,11 @@ public class JavaDocHelperTest extends Assertions {
     /**
      * Test of {@link UriInfo link tag to JEE class}.
      */
+    @Test
     public void testLinkJeeClass() {
         String parsedJavaDoc = parseMethodJavaDoc("testLinkJeeClass");
         String expected = "Test of <code><a href='" + JavaDocHelper.JAVADOC_JAVAEE_URL
-                + "/javax/ws/rs/core/UriInfo.html'>" + "link tag to JEE class</a></code>.";
+                + "javax/ws/rs/core/UriInfo.html'>" + "link tag to JEE class</a></code>.";
         assertThat(parsedJavaDoc).isEqualTo(expected);
     }
 
