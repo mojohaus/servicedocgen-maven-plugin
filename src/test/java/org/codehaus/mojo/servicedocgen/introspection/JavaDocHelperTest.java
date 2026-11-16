@@ -33,7 +33,7 @@ import net.sf.mmm.util.reflect.api.GenericType;
 import net.sf.mmm.util.reflect.base.ReflectionUtilImpl;
 import org.assertj.core.api.Assertions;
 import org.codehaus.mojo.servicedocgen.descriptor.JavaDocDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test-case for {@link JavaDocHelper}.
