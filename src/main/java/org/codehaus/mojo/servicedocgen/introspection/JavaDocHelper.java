@@ -508,7 +508,8 @@ public class JavaDocHelper {
      */
     private String findJavaDocUrl(String qualifiedName) {
         for (JavaDocDescriptor javaDocDescriptor : this.javaDocs) {
-            if (qualifiedName.startsWith(javaDocDescriptor.getPackagePrefix())) {
+            String prefix = javaDocDescriptor.getPackagePrefix();
+            if (prefix.isEmpty() || qualifiedName.equals(prefix) || qualifiedName.startsWith(prefix + ".")) {
                 return javaDocDescriptor.getUrl();
             }
         }
