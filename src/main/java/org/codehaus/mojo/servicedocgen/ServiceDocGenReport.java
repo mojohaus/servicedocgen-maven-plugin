@@ -174,7 +174,7 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
 
     private List<ServiceDocGenTemplate> getTemplates() {
         if (this.templates == null || this.templates.isEmpty()) {
-            this.templates = new ArrayList<ServiceDocGenTemplate>();
+            this.templates = new ArrayList<>();
             ServiceDocGenTemplate template = new ServiceDocGenTemplate("Service-Documentation.html.vm");
             template.setOutputName("index.html");
             this.templates.add(template);
@@ -268,8 +268,8 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
 
         String openApiUrl = "";
         for (ServiceDocGenTemplate template : this.getTemplates()) {
-            if (template.getTemplateName().equals("OpenApi.yaml.vm")
-                    || template.getTemplateName().equals("OpenApi.json.vm")) {
+            if ("OpenApi.yaml.vm".equals(template.getTemplateName())
+                    || "OpenApi.json.vm".equals(template.getTemplateName())) {
                 openApiUrl = template.getOutputNameWithFallback();
                 break;
             }
@@ -293,7 +293,7 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
     }
 
     private List<JavaClass> scanServices(JavaProjectBuilder builder) throws IOException {
-        List<JavaClass> serviceClassList = new ArrayList<JavaClass>();
+        List<JavaClass> serviceClassList = new ArrayList<>();
         for (String sourceDir : this.project.getCompileSourceRoots()) {
             File sourceFolder = new File(sourceDir);
             if (sourceFolder.isDirectory()) {
@@ -362,7 +362,7 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
     }
 
     private URL[] buildClasspathUrls() throws MojoExecutionException {
-        List<URL> urls = new ArrayList<URL>(this.runtimeClasspathElements.size());
+        List<URL> urls = new ArrayList<>(this.runtimeClasspathElements.size());
         for (String element : this.runtimeClasspathElements) {
             try {
                 URL url = new File(element).toURI().toURL();

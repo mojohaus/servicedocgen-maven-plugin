@@ -133,7 +133,7 @@ public class OperationDescriptor extends AbstractDescriptor implements Comparabl
      */
     public Set<String> getConsumes() {
         if (this.consumes == null) {
-            this.consumes = new HashSet<String>();
+            this.consumes = new HashSet<>();
         }
         return this.consumes;
     }
@@ -150,7 +150,7 @@ public class OperationDescriptor extends AbstractDescriptor implements Comparabl
      */
     public Set<String> getProduces() {
         if (this.produces == null) {
-            this.produces = new HashSet<String>();
+            this.produces = new HashSet<>();
         }
         return this.produces;
     }
@@ -167,7 +167,7 @@ public class OperationDescriptor extends AbstractDescriptor implements Comparabl
      */
     public List<ParameterDescriptor> getParameters() {
         if (this.parameters == null) {
-            this.parameters = new ArrayList<ParameterDescriptor>();
+            this.parameters = new ArrayList<>();
         }
         return this.parameters;
     }
@@ -184,7 +184,7 @@ public class OperationDescriptor extends AbstractDescriptor implements Comparabl
      */
     public List<ResponseDescriptor> getResponses() {
         if (this.responses == null) {
-            this.responses = new ArrayList<ResponseDescriptor>();
+            this.responses = new ArrayList<>();
         }
         return this.responses;
     }

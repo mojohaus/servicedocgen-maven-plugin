@@ -117,7 +117,7 @@ public class ServiceDescriptor extends AbstractDescriptor {
      */
     public List<OperationDescriptor> getOperations() {
         if (this.operations == null) {
-            this.operations = new ArrayList<OperationDescriptor>();
+            this.operations = new ArrayList<>();
         }
         return this.operations;
     }
@@ -128,11 +128,11 @@ public class ServiceDescriptor extends AbstractDescriptor {
      */
     public Map<String, List<OperationDescriptor>> getOperationsGroupedByHttpMethod() {
 
-        Map<String, List<OperationDescriptor>> map = new HashMap<String, List<OperationDescriptor>>();
+        Map<String, List<OperationDescriptor>> map = new HashMap<>();
         for (OperationDescriptor path : getOperations()) {
             List<OperationDescriptor> pathList = map.get(path.getHttpMethod());
             if (pathList == null) {
-                pathList = new ArrayList<OperationDescriptor>();
+                pathList = new ArrayList<>();
                 map.put(path.getHttpMethod(), pathList);
             }
             pathList.add(path);
@@ -152,7 +152,7 @@ public class ServiceDescriptor extends AbstractDescriptor {
      */
     public Set<String> getConsumes() {
         if (this.consumes == null) {
-            this.consumes = new HashSet<String>();
+            this.consumes = new HashSet<>();
         }
         return this.consumes;
     }
@@ -169,7 +169,7 @@ public class ServiceDescriptor extends AbstractDescriptor {
      */
     public Set<String> getProduces() {
         if (this.produces == null) {
-            this.produces = new HashSet<String>();
+            this.produces = new HashSet<>();
         }
         return this.produces;
     }

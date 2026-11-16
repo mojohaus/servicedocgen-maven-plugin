@@ -58,14 +58,13 @@ public class AnalyzerTest extends Assertions {
         errorDescriptor.setJsonExample(JSON_ERROR_EXAMPLE);
         errorDescriptor.setStatusCode(ERROR_STATUS_CODE);
         descriptor.getErrors().add(errorDescriptor);
-        Analyzer analyzer = new Analyzer(
+        return new Analyzer(
                 new SystemStreamLog(),
                 null,
                 Thread.currentThread().getContextClassLoader(),
                 builder,
                 descriptor,
                 false);
-        return analyzer;
     }
 
     /**

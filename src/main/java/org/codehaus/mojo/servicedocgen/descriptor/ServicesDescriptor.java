@@ -128,7 +128,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public List<JavaDocDescriptor> getJavadocs() {
         if (this.javadocs == null) {
-            this.javadocs = new ArrayList<JavaDocDescriptor>();
+            this.javadocs = new ArrayList<>();
         }
         return this.javadocs;
     }
@@ -145,7 +145,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public Set<String> getSchemes() {
         if (this.schemes == null) {
-            this.schemes = new HashSet<String>();
+            this.schemes = new HashSet<>();
         }
         return this.schemes;
     }
@@ -162,7 +162,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public Set<String> getConsumes() {
         if (this.consumes == null) {
-            this.consumes = new HashSet<String>();
+            this.consumes = new HashSet<>();
         }
         return this.consumes;
     }
@@ -179,7 +179,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public Set<String> getProduces() {
         if (this.produces == null) {
-            this.produces = new HashSet<String>();
+            this.produces = new HashSet<>();
         }
         return this.produces;
     }
@@ -196,7 +196,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public List<ServiceDescriptor> getServices() {
         if (this.services == null) {
-            this.services = new ArrayList<ServiceDescriptor>();
+            this.services = new ArrayList<>();
         }
         return this.services;
     }
@@ -213,7 +213,7 @@ public class ServicesDescriptor extends AbstractDescriptor {
      */
     public List<ErrorDescriptor> getErrors() {
         if (this.errors == null) {
-            this.errors = new ArrayList<ErrorDescriptor>();
+            this.errors = new ArrayList<>();
         }
         return this.errors;
     }
@@ -271,7 +271,6 @@ public class ServicesDescriptor extends AbstractDescriptor {
      * @return a new default instance of {@link ServiceDescriptor}.
      */
     public static ServicesDescriptor createDefault() {
-        ServicesDescriptor descriptor = new ServicesDescriptor();
-        return descriptor;
+        return new ServicesDescriptor();
     }
 }
