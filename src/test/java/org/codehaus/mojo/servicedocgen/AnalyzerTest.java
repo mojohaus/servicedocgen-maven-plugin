@@ -36,7 +36,7 @@ import org.codehaus.mojo.servicedocgen.descriptor.ResponseDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServiceDescriptor;
 import org.codehaus.mojo.servicedocgen.descriptor.ServicesDescriptor;
 import org.codehaus.mojo.servicedocgen.example.DemoRestService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author hohwille
