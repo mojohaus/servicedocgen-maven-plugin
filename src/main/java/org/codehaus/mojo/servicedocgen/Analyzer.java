@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -272,7 +271,7 @@ public class Analyzer {
                 serviceDescriptor.getOperations().add(operationDescriptor);
             }
         }
-        Collections.sort(serviceDescriptor.getOperations());
+        serviceDescriptor.getOperations().sort(null);
         return serviceDescriptor;
     }
 
@@ -746,7 +745,7 @@ public class Analyzer {
                 return o1.getName().compareTo(o2.getName());
             }
         };
-        Collections.sort(propertyDescriptors, comparator);
+        propertyDescriptors.sort(comparator);
         for (PojoPropertyDescriptor propertyDescriptor : propertyDescriptors) {
             if (!"class".equals(propertyDescriptor.getName())) {
                 PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor(PojoPropertyAccessorNonArgMode.GET);

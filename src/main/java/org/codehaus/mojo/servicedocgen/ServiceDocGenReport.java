@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -378,7 +377,7 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
     private void sortServiceOperationsByPath(ServicesDescriptor services) {
         for (ServiceDescriptor service : services.getServices()) {
             List<OperationDescriptor> operations = service.getOperations();
-            Collections.sort(operations, new Comparator<OperationDescriptor>() {
+            operations.sort(new Comparator<OperationDescriptor>() {
 
                 @Override
                 public int compare(OperationDescriptor o1, OperationDescriptor o2) {
