@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -271,7 +272,7 @@ public class Analyzer {
                 serviceDescriptor.getOperations().add(operationDescriptor);
             }
         }
-        serviceDescriptor.getOperations().sort(null);
+        Collections.sort(serviceDescriptor.getOperations());
         return serviceDescriptor;
     }
 
