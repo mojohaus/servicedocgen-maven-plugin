@@ -61,6 +61,7 @@ public abstract class JElement {
     public String getByteTypeString() {
         final StringBuilder appendable = new StringBuilder();
         Visitor<Class<?>> classFormatter = new Visitor<Class<?>>() {
+            @Override
             public void visit(Class<?> value) {
                 appendable.append(value.getSimpleName());
             }
