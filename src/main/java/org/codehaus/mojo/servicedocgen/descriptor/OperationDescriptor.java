@@ -213,6 +213,7 @@ public class OperationDescriptor extends AbstractDescriptor implements Comparabl
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(OperationDescriptor o) {
         if (o == null) {
             return 1;

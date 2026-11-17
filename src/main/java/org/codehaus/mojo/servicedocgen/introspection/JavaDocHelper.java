@@ -219,18 +219,21 @@ public class JavaDocHelper {
             new JavaDocDescriptor("com.google.common", "docs.guava-libraries.googlecode.com/git/javadoc/"));
 
     private static final CharFilter NO_SPACE_OR_HASH = new CharFilter() {
+        @Override
         public boolean accept(char c) {
             return !((c == '#') || (c == ' '));
         }
     };
 
     private static final CharFilter NO_SPACE_OR_OPENING_BRACE = new CharFilter() {
+        @Override
         public boolean accept(char c) {
             return !((c == '(') || (c == ' '));
         }
     };
 
     private static final CharFilter NO_COMMA_OR_CLOSING_BRACE = new CharFilter() {
+        @Override
         public boolean accept(char c) {
             return !((c == ',') || (c == ')'));
         }
