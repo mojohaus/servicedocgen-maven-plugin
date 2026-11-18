@@ -739,12 +739,7 @@ public class Analyzer {
         boolean repeating = false;
         List<? extends PojoPropertyDescriptor> propertyDescriptors =
                 new ArrayList<PojoPropertyDescriptor>(pojoDescriptor.getPropertyDescriptors());
-        Comparator<PojoPropertyDescriptor> comparator = new Comparator<PojoPropertyDescriptor>() {
-            @Override
-            public int compare(PojoPropertyDescriptor o1, PojoPropertyDescriptor o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        };
+        Comparator<PojoPropertyDescriptor> comparator = Comparator.comparing(PojoPropertyDescriptor::getName);
         propertyDescriptors.sort(comparator);
         for (PojoPropertyDescriptor propertyDescriptor : propertyDescriptors) {
             if (!"class".equals(propertyDescriptor.getName())) {
