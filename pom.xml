@@ -205,10 +205,6 @@
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
               <debug>true</debug>
-              <!--
-              <showErrors>true</showErrors>
-              <streamLogs>true</streamLogs>
-              -->
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <settingsFile>src/it/mrm/settings.xml</settingsFile>
@@ -220,7 +216,6 @@
               </properties>
               <goals>
                 <goal>clean</goal>
-                <!--<goal>${project.groupId}:${project.artifactId}:${project.version}:generate</goal> -->
                 <goal>package</goal>
               </goals>
               <projectsDirectory>src/it/projects</projectsDirectory>
