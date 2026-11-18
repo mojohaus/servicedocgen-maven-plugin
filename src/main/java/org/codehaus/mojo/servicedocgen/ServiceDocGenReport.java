@@ -371,19 +371,13 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
                 throw new MojoExecutionException("Unable to access project dependency: " + element, e);
             }
         }
-        return urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[0]);
     }
 
     private void sortServiceOperationsByPath(ServicesDescriptor services) {
         for (ServiceDescriptor service : services.getServices()) {
             List<OperationDescriptor> operations = service.getOperations();
-            operations.sort(new Comparator<OperationDescriptor>() {
-
-                @Override
-                public int compare(OperationDescriptor o1, OperationDescriptor o2) {
-                    return o1.getPath().compareTo(o2.getPath());
-                }
-            });
+            operations.sort(Comparator.comparing(OperationDescriptor::getPath));
         }
     }
 }
