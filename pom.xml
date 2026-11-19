@@ -59,10 +59,6 @@
     <system>github</system>
     <url>https://github.com/mojohaus/servicedocgen-maven-plugin/issues</url>
   </issueManagement>
-  <ciManagement>
-    <system>travis</system>
-    <url>https://travis-ci.org/mojohaus/servicedocgen-maven-plugin</url>
-  </ciManagement>
   <distributionManagement>
     <site>
       <id>github</id>
