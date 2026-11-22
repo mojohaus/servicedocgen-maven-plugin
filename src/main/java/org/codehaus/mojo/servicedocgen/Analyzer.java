@@ -846,46 +846,55 @@ public class Analyzer {
         if (!schemasCreated.contains(byteType.getAssignmentClass().getSimpleName())) {
             String schemaName = byteType.getAssignmentClass().getSimpleName();
             PojoDescriptor<?> pojoDescriptor = getDescriptorOrNull(pojoDescriptorBuilder, byteType);
+            // the schemas are members of one JSON object, so every schema but the first starts with a separator
+            if (buffer.length() > 0) {
+                buffer.append(",\n");
+            }
             if (pojoDescriptor == null) {
                 // keep the $ref written by the caller resolvable
-                buffer.append(indentation.concat("'" + schemaName + "': {\n"));
-                buffer.append(indentation.concat("  'type': 'object'\n"));
-                buffer.append(indentation.concat("},\n"));
+                buffer.append(indentation.concat("\"" + schemaName + "\": {\n"));
+                buffer.append(indentation.concat("  \"type\": \"object\"\n"));
+                buffer.append(indentation.concat("}"));
                 schemasCreated.add(schemaName);
                 return;
             }
             List<? extends PojoPropertyDescriptor> propertyDescriptors =
                     new ArrayList<PojoPropertyDescriptor>(pojoDescriptor.getPropertyDescriptors());
             Map<String, GenericType<?>> schemasToCreate = new HashMap<>();
-            buffer.append(indentation.concat("'" + schemaName + "': {\n"));
+            buffer.append(indentation.concat("\"" + schemaName + "\": {\n"));
 
-            buffer.append(indentation.concat("  'type': 'object',\n"));
-            buffer.append(indentation.concat("  'properties': {\n"));
+            buffer.append(indentation.concat("  \"type\": \"object\",\n"));
+            buffer.append(indentation.concat("  \"properties\": {\n"));
+            boolean firstProperty = true;
             for (PojoPropertyDescriptor propertyDescriptor : propertyDescriptors) {
                 PojoPropertyAccessorNonArg getter = propertyDescriptor.getAccessor(PojoPropertyAccessorNonArgMode.GET);
                 if (getter != null) {
-                    buffer.append(indentation.concat("    '" + propertyDescriptor.getName() + "': {\n"));
+                    if (!firstProperty) {
+                        buffer.append(",\n");
+                    }
+                    firstProperty = false;
+                    buffer.append(indentation.concat("    \"" + propertyDescriptor.getName() + "\": {\n"));
                     String schemaType = getSchemaType(getter.getReturnType());
                     if (schemaType != null) {
-                        buffer.append(indentation.concat("      'type': '" + schemaType + "'\n"));
+                        buffer.append(indentation.concat("      \"type\": \"" + schemaType + "\"\n"));
                     } else {
                         boolean addSchema = true;
                         GenericType<?> byteTypeToCreate;
                         if (getter.getReturnType().getComponentType() == null) {
                             byteTypeToCreate = getter.getReturnType();
-                            buffer.append(indentation.concat("      $ref: '#/components/schemas/"
-                                    + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n"));
+                            buffer.append(indentation.concat("      \"$ref\": \"#/components/schemas/"
+                                    + byteTypeToCreate.getAssignmentClass().getSimpleName() + "\"\n"));
                         } else {
                             byteTypeToCreate = getter.getReturnType().getComponentType();
-                            buffer.append(indentation.concat("      'type': 'array',\n"));
-                            buffer.append(indentation.concat("      'items': {\n"));
+                            buffer.append(indentation.concat("      \"type\": \"array\",\n"));
+                            buffer.append(indentation.concat("      \"items\": {\n"));
                             String itemType = getSchemaType(byteTypeToCreate);
                             if (itemType != null) {
-                                buffer.append(indentation.concat("        'type': '" + itemType + "'\n"));
+                                buffer.append(indentation.concat("        \"type\": \"" + itemType + "\"\n"));
                                 addSchema = false;
                             } else {
-                                buffer.append(indentation.concat("        $ref: '#/components/schemas/"
-                                        + byteTypeToCreate.getAssignmentClass().getSimpleName() + "'\n"));
+                                buffer.append(indentation.concat("        \"$ref\": \"#/components/schemas/"
+                                        + byteTypeToCreate.getAssignmentClass().getSimpleName() + "\"\n"));
                             }
                             buffer.append(indentation.concat("      }\n"));
                         }
@@ -898,12 +907,13 @@ public class Analyzer {
                         }
                     }
 
-                    buffer.append(indentation.concat("    },\n"));
+                    buffer.append(indentation.concat("    }"));
                 }
             }
 
-            buffer.append(indentation.concat("  },\n"));
-            buffer.append(indentation.concat("},\n"));
+            buffer.append(firstProperty ? "" : "\n");
+            buffer.append(indentation.concat("  }\n"));
+            buffer.append(indentation.concat("}"));
 
             schemasCreated.add(schemaName);
 

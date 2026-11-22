@@ -92,7 +92,15 @@ public class AnalyzerTest extends Assertions {
         assertThat(operations).hasSize(5);
         // the Long id is a scalar, not a nested schema that would introspect java.lang.Long
         String schemaJson = descriptor.getSchemaDefinitionJson();
-        assertThat(schemaJson).contains("'id': {").contains("'type': 'integer'").doesNotContain("'Long': {");
+        assertThat(schemaJson)
+                .contains("\"id\": {")
+                .contains("\"type\": \"integer\"")
+                .doesNotContain("\"Long\": {");
+        // the schemas are members of a JSON object: no trailing commas, no single quotes
+        assertThat(schemaJson)
+                .doesNotContain("'")
+                .doesNotContainPattern(",\\s*[}\\]]")
+                .doesNotEndWith(",");
         assertThat(descriptor.getSchemaDefinitionYaml()).doesNotContain("Long:");
         // operations are ordered by HTTP method and path
 
