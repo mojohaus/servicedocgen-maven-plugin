@@ -19,4 +19,6 @@ No. Not yet. Please get involved and create a pull-request if you want to have t
 
 ### Can you also generate swagger.json?
 
-No. Not yet. Please get involved and create a pull-request if you want to have this.
+Not as `swagger.json`, which is the Swagger 2 format. The plugin writes an OpenAPI 3 description as `OpenApi.yaml`
+and a Swagger UI page, `SwaggerUI.html`, next to the HTML documentation in `target/site/servicedoc`. Please get
+involved and create a pull-request if you want to have more.
