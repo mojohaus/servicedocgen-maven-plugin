@@ -1,0 +1,110 @@
+title: Generating Service Documentation for JAX-RS REST-Services
+
+# Activating the plugin
+
+Many projects or applications provide REST-Services using JAX-RS. Often they are nicely documentated using JavaDoc.
+However, the JavaDoc is not the perfect documentation to quickly see how to use the REST-API.
+With servicedocgen-maven-plugin you get nice service documentation for free as it is generated from your code.
+
+## POM
+
+In the POM of the module with the services, add the plugin and describe your services in the `descriptor`:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>servicedocgen-maven-plugin</artifactId>
+      <executions>
+        <execution>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+        </execution>
+      </executions>
+      <configuration>
+        <!-- See goal description for details -->
+        <descriptor>
+          <info>
+            <title>Hello World Documentation</title>
+            <description>This is the detailed documentation of the Hello World service.</description>
+          </info>
+          <host>my.service.com</host>
+          <port>8080</port>
+          <basePath>services/rest</basePath>
+          <schemes>
+            <scheme>http</scheme>
+          </schemes>
+          <javadocs>
+            <javadoc>
+              <url>https://my.service.com/apidocs</url>
+            </javadoc>
+          </javadocs>
+          <errors>
+            <error>
+              <errorName>IllegalArgumentException</errorName>
+              <match>regex</match>
+              <statusCode>400</statusCode>
+              <jsonExample>{"message": "text",
+"code": "text",
+"uuid": "text"}</jsonExample>
+            </error>
+          </errors>
+        </descriptor>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+## Service
+
+Now we assume that your project defines the following service:
+
+```java
+/**
+ * This is a REST-Service to say hello to the world.
+ */
+@Path( "/hello-world/v1" )
+@Consumes( MediaType.APPLICATION_JSON )
+@Produces( MediaType.APPLICATION_JSON )
+public interface HelloWorldRestService
+{
+    /**
+     * Says hello to the world.
+     *
+     * @return the String "hello-world".
+     */
+    @GET
+    @Path( "/world" )
+    String helloWorld();
+
+    /**
+     * Echos the given message.
+     *
+     * @param message the message to echo.
+     * @return the given message.
+     * @throws IllegalArgumentException in the given message is invalid (e.g. {@code null}).
+     */
+    @POST
+    @Path( "/echo" )
+    String echo( String message )
+        throws IllegalArgumentException;
+
+    /**
+     * Deletes the world.<br/>
+     * <b>ATTENTION:</b> This method will delete the entire world including yourself. Never call this method!
+     */
+    @DELETE
+    @Path( "/world" )
+    void deleteWorld();
+
+}
+```
+
+## Generation
+
+Now if you build your project (e.g. `mvn clean install`) the service documentation will be generated in
+`target/site/servicedoc`.
+Here you can see the result for the example given above: [Service-Documentation.html](Service-Documentation.html)

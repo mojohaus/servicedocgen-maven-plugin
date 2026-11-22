@@ -62,7 +62,8 @@ import org.codehaus.mojo.servicedocgen.generation.velocity.VelocityServicesGener
  * <li>Generates documentation from the collected meta-data (by default as HTML from a velocity template shipped with
  * this plugin but can be overridden via configuration parameters).</li>
  * </ol>
- * scan and analyze services from the current project via source-code and byte-code analysis. Creates
+ * The files are written to the folder <code>reportFolder</code> below the report output directory, by default
+ * <code>target/site/servicedoc</code>. The goal also works as a report during <code>mvn site</code>.
  *
  * @author hohwille
  */
@@ -80,7 +81,8 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
     private MavenProject project;
 
     /**
-     * The directory where the generated service documentation will be written to.
+     * The name of the folder, below the report output directory, where the generated service documentation will be
+     * written to.
      */
     @Parameter(defaultValue = "servicedoc")
     private String reportFolder;
@@ -99,21 +101,42 @@ public class ServiceDocGenReport extends AbstractMojo implements MavenReport {
 
     private Pattern classnamePattern;
 
+    /**
+     * Describes what the source code cannot tell: <code>info</code> (title, description, version, contact, license),
+     * <code>host</code>, <code>port</code>, <code>basePath</code>, <code>schemes</code>, <code>javadocs</code> to link
+     * types to their Javadoc, <code>errors</code> to document the exceptions that services throw and
+     * <code>externalDocs</code>.
+     */
     @Parameter(required = false)
     private ServicesDescriptor descriptor;
 
     @Parameter(defaultValue = "${project.runtimeClasspathElements}", readonly = true)
     private List<String> runtimeClasspathElements;
 
+    /**
+     * The class path location the velocity templates are read from. Override it to use your own templates.
+     */
     @Parameter(defaultValue = "org/codehaus/mojo/servicedocgen/generation/velocity")
     private String templatePath;
 
+    /**
+     * The templates to generate files from, each with a <code>templateName</code> and an optional
+     * <code>outputName</code>, which defaults to the template name without <code>.vm</code>. If none is configured,
+     * <code>Service-Documentation.html.vm</code> (written as <code>index.html</code>), <code>OpenApi.yaml.vm</code> and
+     * <code>SwaggerUI.html.vm</code> are used. A configured list replaces these defaults.
+     */
     @Parameter(required = false)
     private List<ServiceDocGenTemplate> templates;
 
+    /**
+     * The encoding of the Java source files that are scanned for services and JavaDoc.
+     */
     @Parameter(defaultValue = "${project.build.sourceEncoding}")
     private String sourceEncoding;
 
+    /**
+     * The directory that contains the <code>reportFolder</code>, by default <code>target/site</code>.
+     */
     @Parameter(defaultValue = "${project.reporting.outputDirectory}", readonly = true, required = true)
     protected File outputDirectory;
 

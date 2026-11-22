@@ -2,13 +2,13 @@
 
 This is the [servicedocgen-maven-plugin](https://www.mojohaus.org/servicedocgen-maven-plugin/).
 
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/mojohaus/servicedocgen-maven-plugin.svg?label=License)](https://www.apache.org/licenses/)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/mojohaus/servicedocgen-maven-plugin.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/org.codehaus.mojo/servicedocgen-maven-plugin.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/org.codehaus.mojo/servicedocgen-maven-plugin)
-[![GitHub CI](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml/badge.svg)](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml)
+[![GitHub CI](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/mojohaus/servicedocgen-maven-plugin/actions/workflows/maven.yml?query=branch%3Amaster)
 
 The plugin documents the JAX-RS services of a project. It reads the JavaDoc from the source code and the types from
 the compiled classes, and writes an HTML page, an OpenAPI description and a Swagger UI page to
-`target/site/servicedoc`.
+`target/site/servicedoc`: `index.html`, `OpenApi.yaml` and `SwaggerUI.html`.
 
 It needs Maven 3.9.0 or later and Java 8 or later. Maven 4 is not supported yet.
 
@@ -20,7 +20,7 @@ It needs Maven 3.9.0 or later and Java 8 or later. Maven 4 is not supported yet.
     <plugin>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>servicedocgen-maven-plugin</artifactId>
-      <version><!-- latest version from Maven Central --></version>
+      <version><!-- latest release --></version>
       <executions>
         <execution>
           <goals>
@@ -35,7 +35,7 @@ It needs Maven 3.9.0 or later and Java 8 or later. Maven 4 is not supported yet.
 
 The `generate` goal runs in the `prepare-package` phase. To run it on its own:
 
-```
+```shell
 mvn compile servicedocgen:generate
 ```
 
