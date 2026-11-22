@@ -1,19 +1,37 @@
 openapi: 3.0.0
 info:
-  title: $services.info.title
-  version: $services.info.version
+  title: $!services.info.title
+  version: $!services.info.version
+#if($services.info.description)
   description: $services.info.description
+#end
+#set($contact = $services.info.contact)
+#if($contact && ($contact.name || $contact.url || $contact.email))
   contact:
-    name: $services.info.contact.name
-    url: $services.info.contact.url
-    email: $services.info.contact.email
+#if($contact.name)
+    name: $contact.name
+#end
+#if($contact.url)
+    url: $contact.url
+#end
+#if($contact.email)
+    email: $contact.email
+#end
+#end
+#set($license = $services.info.license)
+#if($license && ($license.name || $license.url))
   license:
-    name: $services.info.license.name
-    url: $services.info.license.url
-    
+#if($license.name)
+    name: $license.name
+#end
+#if($license.url)
+    url: $license.url
+#end
+#end
+
 servers:
-  - url: $services.host:$services.port/$services.basePath
-    
+  - url: $!services.host:$services.port/$!services.basePath
+
 paths:
 #foreach ($service in $services.services)
 #foreach ($operation in $service.operations)

@@ -1,64 +1,91 @@
+#set($q = '"')
+#macro(addMember $members $key $value)
+#if($value)
+#set($ignored = $members.add("${q}${key}${q}: ${q}$EscapeHelper.escapeJson($value)${q}"))
+#end
+#end
+#macro(schema $element $indent)
+#if($element.sourceType.primitive)
+#set($type = $element.byteTypeString)
+#if($type == "int" || $type == "long" || $type == "byte")
+${indent}"type": "integer"
+#elseif($type == "float" || $type == "double")
+${indent}"type": "number"
+#elseif($type == "boolean")
+${indent}"type": "boolean"
+#end
+#elseif($element.byteTypeString == "String")
+${indent}"type": "string"
+#elseif(!$element.byteType.componentType)
+${indent}"$ref": "#/components/schemas/$element.byteType.assignmentClass.simpleName"
+#else
+${indent}"type": "array",
+${indent}"items": {
+${indent}  "$ref": "#/components/schemas/$element.byteType.componentType.assignmentClass.simpleName"
+${indent}}
+#end
+#end
+#set($contactMembers = [])
+#addMember($contactMembers "name" $services.info.contact.name)
+#addMember($contactMembers "url" $services.info.contact.url)
+#addMember($contactMembers "email" $services.info.contact.email)
+#set($licenseMembers = [])
+#addMember($licenseMembers "name" $services.info.license.name)
+#addMember($licenseMembers "url" $services.info.license.url)
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "$services.info.title",
-    "version": "$services.info.version",
-    "description": "$services.info.description",
+    "title": "$EscapeHelper.escapeJson($services.info.title)",
+    "version": "$EscapeHelper.escapeJson($services.info.version)"#if($services.info.description),
+    "description": "$EscapeHelper.escapeJson($services.info.description)"#end#if($contactMembers.size() > 0),
     "contact": {
-      "name": "$services.info.contact.name",
-      "url": "$services.info.contact.url",
-      "email": "$services.info.contact.email",
-    },
+#foreach ($member in $contactMembers)
+      $member#if($foreach.hasNext),#end
+
+#end
+    }#end#if($licenseMembers.size() > 0),
     "license": {
-      "name": "$services.info.license.name",
-      "url": "$services.info.license.url"
-    }
+#foreach ($member in $licenseMembers)
+      $member#if($foreach.hasNext),#end
+
+#end
+    }#end
+
   },
   "servers": [
     {
-      "url": "$services.host:$services.port/$services.basePath"
+      "url": "$EscapeHelper.escapeJson($services.host):$services.port/$EscapeHelper.escapeJson($services.basePath)"
     }
   ],
   "paths": {
+#set($pathCount = 0)
 #foreach ($service in $services.services)
 #foreach ($operation in $service.operations)
-#set( $nextIndex = $foreach.index + 1)
-#set( $previousIndex = $foreach.index - 1)
-#set( $listLength = $service.operations.size())
-#if($foreach.index == 0 || $service.operations.get($foreach.index).path != $service.operations.get($previousIndex).path)
-    "$service.basePath$operation.path": {
+#if($foreach.index == 0 || $operation.path != $service.operations.get($foreach.index - 1).path)
+#set($pathCount = $pathCount + 1)
+#end
+#end
+#end
+#set($pathIndex = 0)
+#foreach ($service in $services.services)
+#set($lastIndex = $service.operations.size() - 1)
+#foreach ($operation in $service.operations)
+#set($index = $foreach.index)
+#set($pathStart = $index == 0 || $operation.path != $service.operations.get($index - 1).path)
+#set($pathEnd = $index == $lastIndex || $operation.path != $service.operations.get($index + 1).path)
+#if($pathStart)
+#set($pathIndex = $pathIndex + 1)
+    "$EscapeHelper.escapeJson("$service.basePath$operation.path")": {
 #end
       "$operation.httpMethod": {
         "description": "$EscapeHelper.escapeJson($operation.description)",
-        "operationId": "$operation.id",
+        "operationId": "$EscapeHelper.escapeJson($operation.id)",
 #if($operation.httpMethod == "post" && $operation.parameters.size() == 1)
         "requestBody": {
           "content": {
             "$display.list($operation.produces)": {
               "schema": {
-#if($operation.parameters.get(0).javaParameter.sourceType.primitive)
-#set($type = $operation.parameters.get(0).javaParameter.byteTypeString)
-#if($type == "int" || $type == "long" || $type == "byte")
-                "type": "integer"
-#elseif($type == "float" || $type == "double")
-                "type": "number"
-#elseif($type == "boolean")
-                "type": "boolean"
-#end                  
-#else
-#if($operation.parameters.get(0).javaParameter.byteTypeString == "String")
-                "type": "string"
-#else
-#if(!$operation.parameters.get(0).javaParameter.byteType.componentType)
-                "$ref": "#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.assignmentClass.simpleName"
-#else
-                "type": "array",
-                "items": {
-                  $ref: "#/components/schemas/$operation.parameters.get(0).javaParameter.byteType.componentType.assignmentClass.simpleName"
-                },
-#end
-#end
-#end      
+#schema($operation.parameters.get(0).javaParameter "                ")
               }
             }
           }
@@ -66,94 +93,52 @@
 #elseif($operation.parameters.size() > 0 )
         "parameters": [
 #foreach ($parameter in $operation.parameters)
-        {
-          "name": "$parameter.name",
-          "in": "$parameter.location",
-          "description": "$EscapeHelper.escapeJson($parameter.description)",
+          {
+            "name": "$EscapeHelper.escapeJson($parameter.name)",
+            "in": "$parameter.location",
+            "description": "$EscapeHelper.escapeJson($parameter.description)",
 #if($parameter.location == "path")
-          "required": true,
+            "required": true,
 #else
-          "required": $parameter.required,
+            "required": $parameter.required,
 #end
-          "schema": {
-#if($parameter.javaParameter.sourceType.primitive)
-#set($type = $parameter.javaParameter.byteTypeString)
-#if($type == "int" || $type == "long" || $type == "byte")
-            "type": "integer"
-#elseif($type == "float" || $type == "double")
-            "type": "number"
-#elseif($type == "boolean")
-            "type": "boolean"
-#end                  
-#else
-#if($parameter.javaParameter.byteTypeString == "String")
-            "type": "string"
-#else
-#if(!$parameter.javaParameter.byteType.componentType)
-            "$ref": "#/components/schemas/$parameter.javaParameter.byteType.assignmentClass.simpleName"
-#else
-            "type": "array",
-            "items": {
-              $ref: "#/components/schemas/$parameter.javaParameter.byteType.componentType.assignmentClass.simpleName"
-            },
-#end
-#end
-#end
-          }
-        },
+            "schema": {
+#schema($parameter.javaParameter "              ")
+            }
+          }#if($foreach.hasNext),#end
+
 #end
         ],
 #end
         "responses": {
 #foreach ($response in $operation.responses)
           "$response.statusCode": {
-            "description": "$EscapeHelper.escapeJson($response.description)",
-#if($response.javaElement.byteTypeString != "void" && $response.statusCode == 200)
+            "description": "$EscapeHelper.escapeJson($response.description)"#if($response.javaElement.byteTypeString != "void" && $response.statusCode == 200),
             "content": {
               "$display.list($operation.produces)": {
                 "schema": {
-#if($response.javaElement.sourceType.primitive)
-#set($type = $response.javaElement.byteTypeString)
-#if($type == "int" || $type == "long" || $type == "byte")
-                  "type": "integer"
-#elseif($type == "float" || $type == "double")
-                  "type": "number"
-#elseif($type == "boolean")
-                  "type": "boolean"
-#end                  
-#else
-#if($response.javaElement.byteTypeString == "String")
-                  "type": "string"
-#else
-#if(!$response.javaElement.byteType.componentType)
-                  "$ref": "#/components/schemas/$response.javaElement.byteType.assignmentClass.simpleName"
-#else
-                  "type": "array",
-                  "items": {
-                    $ref: "#/components/schemas/$response.javaElement.byteType.componentType.assignmentClass.simpleName"
-                  },
-#end
-#end
-#end
+#schema($response.javaElement "                  ")
                 }
               }
-            }
-#end
-          },
+            }#end
+
+          }#if($foreach.hasNext),#end
+
 #end
         }
-      },
-#if($foreach.index == $listLength - 1 || $service.operations.get($foreach.index).path != $service.operations.get($nextIndex).path)
-    },
+      }#if(!$pathEnd),#end
+
+#if($pathEnd)
+    }#if($pathIndex < $pathCount),#end
+
 #end
 #end
 #end
-  },
-#if($services.schemaDefinitionJson != "")  
+  }#if($services.schemaDefinitionJson != ""),
   "components": {
     "schemas": {
 $services.schemaDefinitionJson
     }
-  }
-#end
+  }#end
+
 }
