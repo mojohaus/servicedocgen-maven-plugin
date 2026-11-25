@@ -16,9 +16,9 @@ import groovy.xml.XmlSlurper
 import groovy.json.JsonSlurper
 
 // the JSON template must produce a document a JSON parser accepts, with and without contact and license
-File json = new File( basedir, 'target/site/servicedoc/OpenApi.json' )
+File json = new File(basedir, 'target/site/servicedoc/OpenApi.json')
 assert json.exists()
-def api = new JsonSlurper().parse( json, 'UTF-8' )
+def api = new JsonSlurper().parse(json, 'UTF-8')
 
 assert '3.0.0' == api.openapi
 assert 'OpenAPI "JSON" Demo' == api.info.title
@@ -43,11 +43,11 @@ assert '#/components/schemas/DemoTo' == api.components.schemas.DemoTo.properties
 assert 'integer' == api.components.schemas.DemoTo.properties.id.schema?.type ?: api.components.schemas.DemoTo.properties.id.type
 
 // the YAML template shares the info section
-String yaml = new File( basedir, 'target/site/servicedoc/OpenApi.yaml' ).getText( 'UTF-8' ).replace( '\r\n', '\n' )
-assert yaml.contains( '  contact:\n    name: J\u00f6rg Hohwiller\n' )
-assert yaml.contains( '  license:\n    name: Apache Software Licenese\n' )
+String yaml = new File(basedir, 'target/site/servicedoc/OpenApi.yaml').getText('UTF-8').replace('\r\n', '\n')
+assert yaml.contains('  contact:\n    name: J\u00f6rg Hohwiller\n')
+assert yaml.contains('  license:\n    name: Apache Software Licenese\n')
 
 for (name in ['OpenApi.json', 'OpenApi.yaml']) {
-    def text = new File(basedir, 'target/site/servicedoc/' + name).getText( 'UTF-8' ).replace( '\r\n', '\n' )
+    def text = new File(basedir, 'target/site/servicedoc/' + name).getText('UTF-8').replace('\r\n', '\n')
     assert !text.contains('$services') : "unrendered Velocity reference in ${name}"
 }
