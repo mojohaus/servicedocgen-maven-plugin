@@ -18,12 +18,12 @@
  */
 import groovy.xml.XmlSlurper
 
-File doc = new File( basedir, 'target/site/servicedoc/index.html' )
+File doc = new File(basedir, 'target/site/servicedoc/index.html')
 assert doc.exists()
 
-def html = new XmlSlurper().parse( doc )
+def html = new XmlSlurper().parse(doc)
 
-assert 'Hello World Documentation' ==  html.body.div[0].h1.text()
+assert 'Hello World Documentation' == html.body.div[0].h1.text()
 assert 'This is the detailed documentation of the Hello World service.' == html.body.div[0].div[0].p.text()
 assert '1.0.0-SNAPSHOT' == html.body.div[0].div.div[0].span.text()
 assert 'mailto:joerg.hohwiller@googlemail.com' == html.body.div[0].div.div[1].span.a.@href.text()

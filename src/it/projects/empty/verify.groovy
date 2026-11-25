@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-File doc = new File( basedir, 'target/site/servicedoc/index.html' )
+File doc = new File(basedir, 'target/site/servicedoc/index.html')
 assert !doc.exists()
 
 
